@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <title>OTM Bridge API Specification</title>
+    <script
+     src='https://www.w3.org/Tools/respec/respec-w3c'
+     class='remove'></script>
+    <script class='remove'>
+      var respecConfig = {
+        specStatus: "unofficial",
+        editors: [{
+          name: "Bill Branan",
+          company: "LYRASIS",
+          companyURL: "https://lyrasis.org",
+        }],
+        gitHub: "ucsdlib/otm-specs",
+        shortName: "otm-bridge-api",
+        wg: "One to Many Working Group",
+        wgURI: "https://wiki.duraspace.org/display/OTM",
+        edDraftURI: "https://github.com/ucsdlib/otm-specs/blob/master/otm-bridge.html",
+        overrideCopyright: "<p class='copyright'>This document is licensed under a <a class='subfoot' href='https://creativecommons.org/licenses/by/4.0/' rel='license'>Creative Commons Attribution 4.0 License</a>.</p>",
+        maxTocLevel: 3
+      };
+    </script>
+  </head>
+  <body>
+    <section id='abstract'>
+      <p>
+        The One To Many (OTM) Bridge API Specification is one of two APIs used to support communication between
+        digital content repository systems (Repository) and distributed digital preservation systems (DDP) in
+        order to facilitate depositing, deletion, restoration, and auditing of digital content managed by one
+        or both systems. The APIs defined are the OTM Repository Gateway API (Gateway) for the Repository and
+        the OTM Bridge API (Bridge) for the DDP. The Gateway and the Bridge APIs handle intermediary
+        communication between the Repository and DDP and allow each system to operate without any knowledge
+        of the internals of the other system. Each API is designed to facilitate deployment either as part of
+        or extension to the Repository (in the case of the Gateway) or the DDP (in the case of the Bridge) or
+        as a stand-alone application. They each provide an HTTP-based approach for authentication,
+        communication, and data transfer.
+      </p>
+    </section>
+    <section id='sotd'>
+      <p>
+      </p>
+    </section>
+    <section class="informative">
+      <h2>Notes</h2>
+      <ul>
+        <li>The method of application authentication and authorization may vary by API implementation</li>
+      </ul>
+    </section>
+    <section>
+      <h2>General Endpoints</h2>
+      <p>API endpoints used by all clients</p>
+      <h3><dfn>Bridge Details</dfn></h3>
+      <p>Provides information about the bridge application. Can also be used to verify that the bridge application is available at the expected URL.</p>
+      <ul>
+        <li>Request Type: <code>GET</code></li>
+        <li>Request Path: <code>/</code></li>
+        <li>Response Body: <code>JSON</code></li>
+        <li>
+          <ul>
+            <li><code>bridge-version</code>: The current version of the Bridge application</li>
+            <li><code>supported-checksum-types</code>: The checksum types that are supported in a comma-separated list. Allowed values: MD5, SHA-1, SHA-256, SHA-512</li>
+          </ul>
+        </li>
+        <pre class="example">
+          {
+            "bridge-version" : "1.0.0",
+            "supported-checksum-types" : "MD5,SHA-256"
+          }
+        </pre>
+        <li>Response Code: <code>200</code> (on success)</li>
+      </ul>
+    </section>
+  </body>
+</html>
