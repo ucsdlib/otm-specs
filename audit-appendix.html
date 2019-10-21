@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <title>OTM Appendix</title>
+    <script
+     src='https://www.w3.org/Tools/respec/respec-w3c'
+     class='remove'></script>
+    <script class='remove'>
+      var respecConfig = {
+        specStatus: "unofficial",
+        editors: [{
+          name: "Mike Ritter",
+          company: "Headbanger Face Rip"
+        }],
+        gitHub: "ucsdlib/otm-specs",
+        shortName: "audit-appendix",
+        wg: "One to Many Working Group",
+        wgURI: "https://wiki.duraspace.org/display/OTM",
+        edDraftURI: "https://github.com/ucsdlib/otm-specs/blob/master/audit-appendix.html",
+        overrideCopyright: "<p class='copyright'>This document is licensed under a <a class='subfoot' href='https://creativecommons.org/licenses/by/4.0/' rel='license'>Creative Commons Attribution 4.0 License</a>.</p>",
+        maxTocLevel: 3
+      };
+    </script>
+  </head>
+  <body>
+    <section id='abstract'>
+      <p>
+        This document provides a base set of events for implementors to build off of in order to provide
+        status updates from the DDP and OTM Bridge to the OTM Gateway and Repository.
+      </p>
+    </section>
+    <section id='sotd'>
+    </section>
+    <section class="informative">
+    </section>
+    <section>
+        <h2>Audit Log Events</h2>
+          <p class="note" title="">
+            The audit log events are still in the early phases of being fleshed out and understood. The
+            current iteration of events and fields were created in a small break out group during an in
+            person meeting.
+          </p>
+          <section>
+          <h3>Ingest</h3>
+            The Ingest event represents the Ingestion of content from a OTM Gateway by a DDP.
+            This event can represent either an Object being Ingested or a File being ingested.
+
+          <table id="ingest-fields" class="simple">
+            <thead>
+              <tr>
+                <th>Field Name</th>
+                <th>Note</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Identifier</td>
+                <td>Identifier associated with the Object or File</td>
+              </tr>
+              <tr>
+                <td>Version</td>
+                <td>The version identifier of the object/file which was ingested</td>
+              </tr>
+              <tr>
+                <td>Timestamp</td>
+                <td>The timestamp (ISO-8601?) of when the Ingest event completed</td>
+              </tr>
+              <tr>
+                <td>Checksum</td>
+                <td>The checksum recorded by the DDP at Ingest</td>
+              </tr>
+              <tr>
+                <td>Bytes Ingested</td>
+                <td>The number of bytes ingestd for the Object or the File</td>
+              </tr>
+              <tr>
+                <td>Files ingested</td>
+                <td>The number of files ingested</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p class="note" title="Question">
+            Should this be split into two discrete events? One for the object ingestion and one for the file.
+          </p>
+          </section>
+
+          <section>
+          <h3>Replication</h3>
+            The Replication event represents the distribution of an Object or a File to a single 
+            location within a DDP.
+            
+          <table id="replication-fields" class="simple">
+            <thead>
+              <tr>
+                <th>Field</th>
+                <th>Note</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Identifier</td>
+                <td>Identifier associated with the Object or File</td>
+              </tr>
+              <tr>
+                <td>Version</td>
+                <td>The version identifier of the Object or File which was replicated</td>
+              </tr>
+              <tr>
+                <td>Timestamp</td>
+                <td>The timestamp (ISO-8601?) of when the Replication event completed</td>
+              </tr>
+              <tr>
+                <td>Replicated To</td>
+                <td>The the Object or File was replicated to (URI?)</td>
+              </tr>
+            </tbody>
+          </table>
+          </section>
+
+          <section>
+          <h3>Fixity</h3>
+            The Fixity event represents an action taken by a DDP in order to validate that the
+            File they have received in an Object has not been changed. This can occur at any
+            point in the lifecycle of the File.
+
+          <table id="fixity-fields" class="simple">
+            <thead>
+              <tr>
+                <th>Field</th>
+                <th>Note</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Identifier</td>
+                <td>Identifier associated with the File</td>
+              </tr>
+              <tr>
+                <td>Version</td>
+                <td>The version identifier of the Object or File which was checked</td>
+              </tr>
+              <tr>
+                <td>Timestamp</td>
+                <td>The timestamp (ISO-8601?) of when the Fixity event occured</td>
+              </tr>
+              <tr>
+                <td>Calculated Fixity</td>
+                <td>The Fixity value calculated according to the algorithm used</td>
+              </tr>
+              <tr>
+                <td>Algorithm</td>
+                <td>The algorithm used to validate the File</td>
+              </tr>
+              <tr>
+                <td>Fixity Result</td>
+                <td>Boolean value indicating success or failure of the event</td>
+              </tr>
+            </tbody>
+          </table>
+
+
+          <p class="note" title="Question">
+            Should have a discussion on the usage of the word 'fixity'. It seems to imply both
+            the check for a File being what is expected as well as the generated message digest.
+            The field `Calculated Fixity` could be changed to `Calculated Digest`, with a `Digest
+            Algorithm`. We already use `Checksum` in other events, so maybe that would fit better.
+          </p>
+          </section>
+
+          <section>
+          <h3>Deletion</h3>
+
+            Fill out with description of what deletion means.
+
+          <table id="delete-fields" class="simple">
+            <thead>
+              <tr>
+                <th>Field</th>
+                <th>Note</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Identifier</td>
+                <td>Identifier associated with the Object or File</td>
+              </tr>
+              <tr>
+                <td>Version</td>
+                <td>The version identifier of the Object or File which was deleted</td>
+              </tr>
+              <tr>
+                <td>Timestamp</td>
+                <td>The timestamp (ISO-8601?) of when the Delete event occured</td>
+              </tr>
+              <tr>
+                <td>Checksum</td>
+                <td>The checksum value of the File which was deleted</td>
+              </tr>
+            </tbody>
+          </table>
+          </section>
+
+          <section>
+          <h3>Repair</h3>
+            The Repair event is a process which the DDP resolves any File corruption internally. 
+            Although this is internal to the DDP, it is something a Repository might be interested
+            in knowing about.
+
+          <table id="repair-fields" class="simple">
+            <thead>
+              <tr>
+                <th>Field</th>
+                <th>Note</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Identifier</td>
+                <td>Identifier associated with the Object or File</td>
+              </tr>
+              <tr>
+                <td>Version</td>
+                <td>The version identifier of the Object or File which was repaired</td>
+              </tr>
+              <tr>
+                <td>Timestamp</td>
+                <td>The timestamp (ISO-8601?) of when the Delete event occured</td>
+              </tr>
+              <tr>
+                <td>Repair Outcome</td>
+                <td>The result of the Repair</td>
+              </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section>
+          <h3>Restoration</h3>
+            Restoration is an event which occurs when the Repsitory requests an Object be retrieved
+            from a DDP in order to idk.
+
+          <table id="restore-fields" class="simple">
+            <thead>
+              <tr>
+                <th>Field</th>
+                <th>Note</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Identifier</td>
+                <td>Identifier associated with the Object or File</td>
+              </tr>
+              <tr>
+                <td>Version</td>
+                <td>The version identifier of the Object or File which was restored</td>
+              </tr>
+              <tr>
+                <td>Timestamp</td>
+                <td>The timestamp (ISO-8601?) of when the Delete event occured</td>
+              </tr>
+              <tr>
+                <td>Success</td>
+                <td>The result of the Restoration</td>
+              </tr>
+              <tr>
+                <td>From</td>
+                <td>The location in the DDP where the Object or File came from</td>
+              </tr>
+            </tbody>
+          </table>
+          </section>
+
+    </section>
+  </body>
+</html>
