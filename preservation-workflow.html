@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <title>OTM Appendix - Preservation Workflow</title>
+  <script
+  src='https://www.w3.org/Tools/respec/respec-w3c'
+  class='remove'></script>
+  <script class='remove'>
+  var respecConfig = {
+    specStatus: "unofficial",
+    editors: [{
+      name: "Mike Ritter",
+      company: "Chronopolis"
+    }],
+    gitHub: "ucsdlib/otm-specs",
+    shortName: "preservation-workflow-appendix",
+    wg: "One to Many Working Group",
+    wgURI: "https://wiki.duraspace.org/display/OTM",
+    edDraftURI: "https://github.com/ucsdlib/otm-specs/blob/master/audit-appendix.html",
+    overrideCopyright: "<p class='copyright'>This document is licensed under a <a class='subfoot' href='https://creativecommons.org/licenses/by/4.0/' rel='license'>Creative Commons Attribution 4.0 License</a>.</p>",
+    maxTocLevel: 3,
+    localBiblio: {
+      "APTrust-Volume-Service": {
+        title: "APTrust Volume Service"   ,
+        href: "https://github.com/APTrust/exchange/blob/master/service/volume_service.go"
+      }
+    }
+  };
+  </script>
+</head>
+<body>
+  <section id='abstract'>
+    <p>
+      The preservation workflow outlines the expected behavior from a DDP and how it will interact with
+      the OTM Bridge.
+    </p>
+  </section>
+  <section id='sotd'>
+  </section>
+  <section class="introductory">
+    <h2>Terminology</h2>
+    This section is non-normative
+    <table id="preservation-terms" class="simple">
+    </table>
+  </section>
+  <section>
+    <h2>Ingest Object Workflow</h2>
+    The Ingest Object Workflow is for when a OTM Gateway requests an Object to be preserved. It
+    assumes the OTM Bridge has already done a certain amount of work in order to get an Object ready
+    for ingestion into a DDP.
+
+    <img src="images/send_content.mmd.svg"/>
+
+    <section>
+      <h3>Chronopolis Implementation Notes</h3>
+
+      <p>New Deposit</p>
+      <ol>
+        <li>
+          Query the OTM Bridge for incoming deposits
+          <ul>
+            <li>`GET /deposit`</li>
+          </ul>
+        </li>
+        <li>
+          Look for the Deposit based on the `filegroup-id` in Chronopolis
+          <ul>
+            <li>Expected to find nothing based on this flow</li>
+          </ul>
+        </li>
+        <li>
+          Ensure space exists in Chronopolis for this Deposit
+          <ul>
+            <li>If reserving space, an API needs to be built similar to the [[APTrust-Volume-Service]]</li>
+            <li>Otherwise wait for staging filesystem to have available space</li>
+          </ul>
+        </li>
+        <li>
+          Package the Deposit for Chronopolis
+          <ul>
+            <li>Create an OCFL Object</li>
+            <li>Create ACE Tokens</li>
+          </ul>
+        </li>
+        <li>Use Chronopolis Ingest API to distribute the Deposit</li>
+        <li>
+          Query Chronopoils Ingest API for Deposit status
+          <ul>
+            <li>
+              Inform the OTM Bridge using `PUT /deposit/{filegroup-id}` when the Deposit has
+              fully distrubted throughout Chronopolis
+            </li>
+            <li>Create an `Ingest` audit event for the deposit</li>
+          </ul>
+        </li>
+      </ol>
+
+      <p>Updated Deposit</p>
+      <ol>
+        <li>
+          Query the OTM Bridge for incoming deposits
+          <ul>
+            <li>`GET /deposit`</li>
+          </ul>
+        </li>
+        <li>
+          Look for the Deposit based on the `filegroup-id` in Chronopolis
+          <ul>
+            <li>Expected to find nothing based on this flow</li>
+          </ul>
+        </li>
+        <li>
+          Request to have the Deposit re-staged
+          <ul>
+            <li>Should only need OCFL metadata (inventory.json)</li>
+            <li>This could also handle storage reservation</li>
+          </ul>
+        </li>
+        <li>
+          Using the json response from the OTM Bridge:
+          <ul>
+            <li>
+              Mint a new version using the `version-id` from the OTM Bridge
+              <ul>
+                <li>The OCFL Object version will increment as usual</li>
+                <li>An extra json field will be included to encapsulate the OTM Repository version</li>
+              </ul>
+            </li>
+            <li>New files will be added to the OCFL inventory and distributed in full</li>
+            <li>Existing files referenced in the OCFL inventory that have not been modified will not be redistributed</li>
+            <li>Files omitted from the json response will not be included in the current version</li>
+            <li>Create additional ACE Tokens for OCFL payload files</li>
+          </ul>
+        </li>
+        <li>Use Chronopolis Ingest API to distribute the updated Deposit</li>
+        <li>
+          Query Chronopoils Ingest API for Deposit status
+          <ul>
+            <li>
+              Inform the OTM Bridge using `PUT /deposit/{filegroup-id}` when the Deposit has
+              fully distrubted throughout Chronopolis
+            </li>
+            <li>Create an `Ingest` audit event for the deposit</li>
+          </ul>
+        </li>
+      </ol>
+
+      <p class="note" title="notes">
+        Need to double check what we expect the json response to contain (full vs partial manifest).
+        <br/>
+        Determine json field name for OTM version
+      </p>
+
+
+    </section>
+
+  </section>
+  <section>
+    <h2>Delete Object Workflow</h2>
+    The Delete Workflow handles removing data from a DDP. It is assumed that this will be an operation
+    which is non-recoverable and permanently removes data from a DDP.
+
+    <!-- note to self: delete object and delete file are different workflows -->
+
+    <img src="images/delete_object.mmd.svg"/>
+
+    <!--
+    <ol>
+      <li>
+        Query the OTM Bridge for deletions
+        <ul>
+          <li>`GET /delete`</li>
+        </ul>
+      </li>
+      <li>
+        For each delete
+        <ul>
+          <li>Identify the preservation package associated with the `filegroup-id`</li>
+          <li>Identify the files within the package to remove</li>
+        </ul>
+      </li>
+      <li>
+        Removing data from packages:
+        <ul>
+          Removing files/versions
+          <li>Follow package format recommendations</li>
+          <li>For OCFL, recreating the package without the given information may be necessary</li>
+        </ul>
+        <ul>
+          Removing package
+          <li>Follow internal recommendations</li>
+          <li>e.g. in Chronopolis, follow the deprecation workflow</li>
+        </ul>
+      </li>
+      <li>
+        Update the status of the OTM Bridge
+        <ul>
+          <li>`POST /delete/{deleteId}`</li>
+        </ul>
+      </li>
+      <li></li>
+    </ol>
+  -->
+  </section>
+  <section>
+    <h2>Retrieve Object Workflow</h2>
+    The Retrieve Workflow handles returning data back to a Repository which had been previously
+    deposited.
+
+    <img src="images/retrieve_object.mmd.svg"/>
+
+    <ol>
+      <li>
+        Query the OTM Bridge for Restores
+        <ul>
+          <li>`GET /restores`</li>
+          <li>Validate restores exist in the DDP</li>
+        </ul>
+      </li>
+      <li>
+        Identify space for the restore to be staged on
+        <ul>
+          <li>Needs to be accessible by the OTM Gateway</li>
+          <li>On insufficient space await or reject</li>
+          <li>Need guarantees about available space while re-staging data</li>
+        </ul>
+      </li>
+      <li>
+        Restage data
+        <ul>
+          <li>Currently: Create symbolic links from a read-only mount to DCV Restore</li>
+          <li>OTM With RO Mount: Create symbolic links which can be pulled from</li>
+          <li>OTM Without RO Mount: Need internal process for retrieving data from DDP location</li>
+        </ul>
+      </li>
+      <li>Notify the OTM Bridge that athe Restore is staged an accessible with a given TTL</li>
+      <li>
+        Upon expiration of the TTL remove the staged content
+        <ul>
+          <li>Call OTM Bridge indicating the restore is done: `POST /restore/{restoreId}`</li>
+          <li>Clean up staged content</li>
+        </ul>
+      </li>
+    </ol>
+
+  </section>
+</body>
+</html>
