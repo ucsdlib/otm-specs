@@ -27,16 +27,15 @@
   <body>
     <section id='abstract'>
       <p>
-        The One To Many (OTM) Bridge API Specification is one of two APIs used to support communication between
-        digital content repository systems (Repository) and distributed digital preservation systems (DDP) in
-        order to facilitate depositing, deletion, restoration, and auditing of digital content managed by one
-        or both systems. The APIs defined are the OTM Repository Gateway API (Gateway) for the Repository and
-        the OTM Bridge API (Bridge) for the DDP. The Gateway and the Bridge APIs handle intermediary
-        communication between the Repository and DDP and allow each system to operate without any knowledge
-        of the internals of the other system. Each API is designed to facilitate deployment either as part of
-        or extension to the Repository (in the case of the Gateway) or the DDP (in the case of the Bridge) or
-        as a stand-alone application. They each provide an HTTP-based approach for authentication,
-        communication, and data transfer.
+        The One To Many (OTM) Bridge API Specification is one of two APIs used to support communication between digital
+        content repository systems (Repository) and distributed digital preservation systems (DDP) in order to facilitate
+        depositing, deletion, restoration, and auditing of digital content managed by one or both systems. The APIs defined
+        are the OTM Repository Gateway API (Gateway) for the Repository and the OTM Bridge API (Bridge) for the DDP. The
+        Gateway and the Bridge APIs handle intermediary communication between the Repository and DDP and allow each system to
+        operate without any knowledge of the internals of the other system. Each API is designed to facilitate deployment
+        either as part of or extension to the Repository (in the case of the Gateway) or the DDP (in the case of the Bridge)
+        or as a stand-alone application. They each provide an HTTP-based approach for authentication, communication, and data
+        transfer.
       </p>
     </section>
     <section id='sotd'>
@@ -50,28 +49,139 @@
       </ul>
     </section>
     <section>
-      <h2>General Endpoints</h2>
-      <p>API endpoints used by all clients</p>
-      <h3><dfn>Bridge Details</dfn></h3>
-      <p>Provides information about the bridge application. Can also be used to verify that the bridge application is available at the expected URL.</p>
-      <ul>
-        <li>Request Type: <code>GET</code></li>
-        <li>Request Path: <code>/</code></li>
-        <li>Response Body: <code>JSON</code></li>
-        <li>
-          <ul>
-            <li><code>bridge-version</code>: The current version of the Bridge application</li>
-            <li><code>supported-checksum-types</code>: The checksum types that are supported in a comma-separated list. Allowed values: MD5, SHA-1, SHA-256, SHA-512</li>
-          </ul>
-        </li>
-        <pre class="example">
-          {
-            "bridge-version" : "1.0.0",
-            "supported-checksum-types" : "MD5,SHA-256"
-          }
-        </pre>
-        <li>Response Code: <code>200</code> (on success)</li>
-      </ul>
+      <h2>API Endpoints</h2>
+
+      <section>
+        <h3><dfn>Bridge Details</dfn></h3>
+        <p>Provides information about the Bridge application. Can also be used to verify that the Bridge application is
+        available at the expected URL.</p>
+        <ul>
+          <li>Request Type: <code>GET</code></li>
+          <li>Request Path: <code>/</code></li>
+          <li>Response Body: <code>JSON</code></li>
+          <li>
+            <ul>
+              <li><code>bridge-version</code>: The current version of the Bridge application</li>
+              <li><code>supported-checksum-types</code>: The checksum types that are supported in a comma-separated list.
+              Allowed values: MD5, SHA-1, SHA-256, SHA-512</li>
+            </ul>
+          </li>
+          <pre class="example">
+            {
+              "bridge-version" : "1.0.0",
+              "supported-checksum-types" : "MD5,SHA-256"
+            }
+          </pre>
+          <li>Response Code: <code>200</code> (on success)</li>
+        </ul>
+      </section>
+
+      <section>
+        <h3><dfn>Register</dfn></h3>
+        <p>Allows a repository with a Gateway deployment to register itself with the Bridge. The information provided in this
+        registration will allow the Bridge to make calls back to the Gateway, such as to pull content listed in a deposit
+        request. This call must be made prior to calls to deposit content. This call may also be made to update the Gateway
+        registration information.</p>
+        <ul>
+          <li>Request Type: <code>POST</code></li>
+          <li>Request Path: <code>/register</code></li>
+          <li>Request Body: <code>JSON</code></li>
+          <li>
+            <ul>
+              <li><code>gateway-url</code>:
+                Base endpoint URL where the Bridge can call back to this Gateway API</li>
+              <li><code>gateway-username</code>:
+                Credentials to allow the Bridge to make calls back to the Gateway API</li>
+              <li><code>gateway-password</code>:
+                Credentials to allow the Bridge to make calls back to the Gateway API</li>
+            </ul>
+          </li>
+          <pre class="example">
+            {
+              "gateway-url" : "https://example.com/gateway",
+              "gateway-username" : "example-username",
+              "gateway-password" : "5ecret!"
+            }
+          </pre>
+          <li>Response Code: <code>200</code> (on success)</li>
+        </ul>
+        <ul class="note">
+          <li>In order for a call to this endpoint to be successful an account with associated credentials will already need
+          to exist in the Bridge. This must have been created in advance by the DDP  (see <a>Add Account</a>).</li>
+          <li>This endpoint may be called both to perform an initial registration and to provide updates to registration
+          information. Calls made by the Bridge after a registration update will use the updated details.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h3><dfn>Deposit Content</dfn></h3>
+        <p>Allows the Gateway to send content to the Bridge for deposit into the DDP.</p>
+        <ul>
+          <li>Request Type: <code>POST</code></li>
+          <li>Request Path: <code>/deposit ? checksum-type & deposit-format</code></li>
+          <li>Request Query Parameters:</li>
+            <ul>
+              <li><code>checksum-type</code>: (Optional) Applies to all file checksums (can be one of: MD5, SHA-1, SHA-256,
+              SHA-512). Default is MD5.</li>
+              <li><code>deposit-format</code>: (Optional) Format of content being deposited</li>
+            </ul>
+          <li>Request Body: <code>JSON</code></li>
+          <li>
+            <ul>
+              <li>Filegroup ID: Identifies a filegroup. Filegroups are generic groupings of files that can be used to
+              capture structure such as in a digital object or work</li>
+              <li><code>version</code>: The version of a filegroup</li>
+              <li><code>files</code>: List of files included in the filegroup</li>
+              <li>File ID: Identifies a file within a filegroup</li>
+              <li>File Checksum: The checksum of a file; the type of checksum is defined by the
+                <code>checksum-type</code> query parameter</li>
+            </ul>
+          </li>
+          <pre class="example">
+            {
+              "filegroup-1-id" : {
+                "version" : "",
+                "files" : {
+                  "file-1-id" : "file-1-checksum",
+                  "file-2-id" : "file-2-checksum"
+                }
+              },
+              "filegroup-2-id" : {
+                "version" : "",
+                "files" : {
+                  "file-3-id" : "file-3-checksum",
+                  "file-4-id" : "file-4-checksum"
+                }
+              }
+            }
+          </pre>
+          <li>Response Code: <code>200</code> (on success)</li>
+        </ul>
+        <ul class="note">
+          <li>Each filegroup in the request body is considered an independent deposit which can be referred to in subsequent
+          requests by the filegroup identifier.</li>
+          <li>There is an explicit expectation that the content to be deposited will be available from the Gateway at the
+          path: <code>gateway-url / filegroup-id / file-id</code>. How the Gateway resolves the file streams based on a
+          request to this URL is irrelevant to the Bridge.</li>
+          <li>Provided filegroup IDs and file IDs must be URL-safe to support the Bridge requesting those files from the
+          Gateway and the reverse in the restore context</li>
+          <li>There is no guarantee that all filegroups in a single deposit request will be deposited into the DDP at the
+          same time. This allows the Bridge to manage transfers based on available resources (so as to not over-run local
+          disk, for example).</li>
+          <li>The Bridge and DDP will consider the version value as opaque and not attempt to assign any meaning to the
+          value.</li>
+          <li>Not including "version" in the JSON is acceptable and is functionally the same as "version" : "". This "empty"
+          version is equivalent to any other version.</li>
+          <li>Attempting to deposit a filegroup with a filegroup ID and version that both match a previous deposit will be
+          considered an error and rejected.</li>
+          <li>When new filegroup versions are deposited, the Bridge may choose to retrieve and submit to the DDP only those
+          files which have changed between versions (based on file ID and checksum).</li>
+          <li>The deposit-format parameter allows the depositor to specify the format of the content being deposited. The
+          Bridge implementation may choose to only support deposits of certain types. Agreements between the depositor and
+          the DDP should specify which types are to be used for deposit.</li>
+        </ul>
+      </section>
+
     </section>
   </body>
 </html>
