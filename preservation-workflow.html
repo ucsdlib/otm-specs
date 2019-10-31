@@ -33,139 +33,160 @@
   <section id='abstract'>
     <p>
       The preservation workflow outlines the expected behavior from a DDP and how it will interact with
-      the OTM Bridge.
+      the OTM Bridge. It then does a brief dive into what the Chronopolis workflow will look like.
     </p>
   </section>
-  <section id='sotd'>
-  </section>
+  <!--
   <section class="introductory">
-    <h2>Terminology</h2>
-    This section is non-normative
-    <table id="preservation-terms" class="simple">
-    </table>
-  </section>
+  <h2>Terminology</h2>
+  This section is non-normative
+  <table id="preservation-terms" class="simple">
+</table>
+</section>
+-->
+<section>
+  <h2>Ingest Object Workflow</h2>
+  The Ingest Object Workflow is for when a OTM Gateway requests an Object to be preserved. It
+  assumes the OTM Bridge has already done a certain amount of work in order to get an Object ready
+  for ingestion into a DDP.
+
+  <img src="images/send_content.mmd.svg"/>
+
   <section>
-    <h2>Ingest Object Workflow</h2>
-    The Ingest Object Workflow is for when a OTM Gateway requests an Object to be preserved. It
-    assumes the OTM Bridge has already done a certain amount of work in order to get an Object ready
-    for ingestion into a DDP.
+    <h3>Chronopolis Implementation Notes</h3>
 
-    <img src="images/send_content.mmd.svg"/>
+    <p>New Deposit</p>
+    <ol>
+      <li>
+        Query the OTM Bridge for incoming deposits
+        <ul>
+          <li>`GET /deposit`</li>
+        </ul>
+      </li>
+      <li>
+        Look for the Deposit based on the `filegroup-id` in Chronopolis
+        <ul>
+          <li>Expected to find nothing based on this flow</li>
+        </ul>
+      </li>
+      <li>
+        Ensure space exists in Chronopolis for this Deposit
+        <ul>
+          <li>If reserving space, an API needs to be built similar to the [[APTrust-Volume-Service]]</li>
+          <li>Otherwise wait for staging filesystem to have available space</li>
+        </ul>
+      </li>
+      <li>
+        Package the Deposit for Chronopolis
+        <ul>
+          <li>Create an OCFL Object</li>
+          <li>Create ACE Tokens</li>
+        </ul>
+      </li>
+      <li>Use Chronopolis Ingest API to distribute the Deposit</li>
+      <li>
+        Query Chronopoils Ingest API for Deposit status
+        <ul>
+          <li>
+            Inform the OTM Bridge using `PUT /deposit/{filegroup-id}` when the Deposit has
+            fully distrubted throughout Chronopolis
+          </li>
+          <li>Create an `Ingest` audit event for the deposit</li>
+        </ul>
+      </li>
+    </ol>
 
-    <section>
-      <h3>Chronopolis Implementation Notes</h3>
+    <p>Updated Deposit</p>
+    <ol>
+      <li>
+        Query the OTM Bridge for incoming deposits
+        <ul>
+          <li>`GET /deposit`</li>
+        </ul>
+      </li>
+      <li>
+        Look for the Deposit based on the `filegroup-id` in Chronopolis
+        <ul>
+          <li>Expected to find nothing based on this flow</li>
+        </ul>
+      </li>
+      <li>
+        Request to have the Deposit re-staged
+        <ul>
+          <li>Should only need OCFL metadata (inventory.json)</li>
+          <li>This could also handle storage reservation</li>
+        </ul>
+      </li>
+      <li>
+        Using the json response from the OTM Bridge:
+        <ul>
+          <li>
+            Mint a new version using the `version-id` from the OTM Bridge
+            <ul>
+              <li>The OCFL Object version will increment as usual</li>
+              <li>An extra json field will be included to encapsulate the OTM Repository version (e.g. `otm-version`)</li>
+            </ul>
+          </li>
+          <li>New files will be added to the OCFL inventory and distributed in full</li>
+          <li>Existing files referenced in the OCFL inventory that have not been modified will not be redistributed</li>
+          <li>Files omitted from the json response will not be included in the current version</li>
+          <li>Create additional ACE Tokens for OCFL payload files</li>
+        </ul>
+      </li>
+      <li>Use Chronopolis Ingest API to distribute the updated Deposit</li>
+      <li>
+        Query Chronopoils Ingest API for Deposit status
+        <ul>
+          <li>
+            Inform the OTM Bridge using `PUT /deposit/{filegroup-id}` when the Deposit has
+            fully distrubted throughout Chronopolis
+          </li>
+          <li>Create an `Ingest` audit event for the deposit</li>
+        </ul>
+      </li>
+    </ol>
 
-      <p>New Deposit</p>
-      <ol>
-        <li>
-          Query the OTM Bridge for incoming deposits
-          <ul>
-            <li>`GET /deposit`</li>
-          </ul>
-        </li>
-        <li>
-          Look for the Deposit based on the `filegroup-id` in Chronopolis
-          <ul>
-            <li>Expected to find nothing based on this flow</li>
-          </ul>
-        </li>
-        <li>
-          Ensure space exists in Chronopolis for this Deposit
-          <ul>
-            <li>If reserving space, an API needs to be built similar to the [[APTrust-Volume-Service]]</li>
-            <li>Otherwise wait for staging filesystem to have available space</li>
-          </ul>
-        </li>
-        <li>
-          Package the Deposit for Chronopolis
-          <ul>
-            <li>Create an OCFL Object</li>
-            <li>Create ACE Tokens</li>
-          </ul>
-        </li>
-        <li>Use Chronopolis Ingest API to distribute the Deposit</li>
-        <li>
-          Query Chronopoils Ingest API for Deposit status
-          <ul>
-            <li>
-              Inform the OTM Bridge using `PUT /deposit/{filegroup-id}` when the Deposit has
-              fully distrubted throughout Chronopolis
-            </li>
-            <li>Create an `Ingest` audit event for the deposit</li>
-          </ul>
-        </li>
-      </ol>
-
-      <p>Updated Deposit</p>
-      <ol>
-        <li>
-          Query the OTM Bridge for incoming deposits
-          <ul>
-            <li>`GET /deposit`</li>
-          </ul>
-        </li>
-        <li>
-          Look for the Deposit based on the `filegroup-id` in Chronopolis
-          <ul>
-            <li>Expected to find nothing based on this flow</li>
-          </ul>
-        </li>
-        <li>
-          Request to have the Deposit re-staged
-          <ul>
-            <li>Should only need OCFL metadata (inventory.json)</li>
-            <li>This could also handle storage reservation</li>
-          </ul>
-        </li>
-        <li>
-          Using the json response from the OTM Bridge:
-          <ul>
-            <li>
-              Mint a new version using the `version-id` from the OTM Bridge
-              <ul>
-                <li>The OCFL Object version will increment as usual</li>
-                <li>An extra json field will be included to encapsulate the OTM Repository version</li>
-              </ul>
-            </li>
-            <li>New files will be added to the OCFL inventory and distributed in full</li>
-            <li>Existing files referenced in the OCFL inventory that have not been modified will not be redistributed</li>
-            <li>Files omitted from the json response will not be included in the current version</li>
-            <li>Create additional ACE Tokens for OCFL payload files</li>
-          </ul>
-        </li>
-        <li>Use Chronopolis Ingest API to distribute the updated Deposit</li>
-        <li>
-          Query Chronopoils Ingest API for Deposit status
-          <ul>
-            <li>
-              Inform the OTM Bridge using `PUT /deposit/{filegroup-id}` when the Deposit has
-              fully distrubted throughout Chronopolis
-            </li>
-            <li>Create an `Ingest` audit event for the deposit</li>
-          </ul>
-        </li>
-      </ol>
-
-      <p class="note" title="notes">
-        Need to double check what we expect the json response to contain (full vs partial manifest).
-        <br/>
-        Determine json field name for OTM version
-      </p>
-
-
-    </section>
-
+    <p class="note">
+      Json field name for OTM version is not set in stone
+    </p>
   </section>
+
+</section>
+<section>
+  <h2>Delete Object Workflow</h2>
+  The Delete Workflow handles removing data from a DDP. It is assumed that this will be an operation
+  which is non-recoverable and permanently removes data from a DDP.
+
+  <img src="images/delete_object.mmd.svg"/>
+
   <section>
-    <h2>Delete Object Workflow</h2>
-    The Delete Workflow handles removing data from a DDP. It is assumed that this will be an operation
-    which is non-recoverable and permanently removes data from a DDP.
+    <h3>Chronopolis Implementation Notes</h3>
 
-    <!-- note to self: delete object and delete file are different workflows -->
+    <p>Delete Object</p>
+    <ol>
+      <li>
+        Query the OTM Bridge for deletions
+        <ul>
+          <li>`GET /delete`</li>
+        </ul>
+      </li>
+      <li>Identify the Chronpolis package associated with the `filegroup-id`</li>
+      <li>
+        Removing package
+        <ul>
+          <li>Start the Chronopolis deprecation workflow</li>
+        </ul>
+      </li>
+      <li>
+        When Chronopolis package is deprecated, update the status of the OTM Bridge
+        <ul>
+          <li>`POST /delete/{deleteId}`</li>
+          <li>Send `Deletion` audit event to OTM Bridge</li>
+        </ul>
+      </li>
+    </ol>
 
-    <img src="images/delete_object.mmd.svg"/>
-
-    <!--
+    <p>Delete Files</p>
     <ol>
       <li>
         Query the OTM Bridge for deletions
@@ -174,48 +195,51 @@
         </ul>
       </li>
       <li>
-        For each delete
+        Query Chronopolis for the `filegroup-id`
         <ul>
-          <li>Identify the preservation package associated with the `filegroup-id`</li>
+          <li>Identify the Chronpolis package associated with the `filegroup-id`</li>
           <li>Identify the files within the package to remove</li>
         </ul>
       </li>
       <li>
-        Removing data from packages:
+        Removing files/version
         <ul>
-          Removing files/versions
-          <li>Follow package format recommendations</li>
-          <li>For OCFL, recreating the package without the given information may be necessary</li>
-        </ul>
-        <ul>
-          Removing package
-          <li>Follow internal recommendations</li>
-          <li>e.g. in Chronopolis, follow the deprecation workflow</li>
+          <li>Follow OCFL recommendations for deletion</li>
+          <li>Tombstoning may be necessary</li>
         </ul>
       </li>
       <li>
-        Update the status of the OTM Bridge
+        Push package changes throughout Chronopolis
         <ul>
-          <li>`POST /delete/{deleteId}`</li>
+          <li>If this is considered a new package, ok treat it like a new deposit</li>
+          <li>Otherwise need workflow to cover overwriting files in a package</li>
         </ul>
       </li>
-      <li></li>
+      <li>
+        When propogation of deletes is complete, update the status of the OTM Bridge
+        <ul>
+          <li>`POST /delete/{deleteId}`</li>
+          <li>Send `Deletion` audit event to OTM Bridge</li>
+        </ul>
+      </li>
     </ol>
-  -->
   </section>
+</section>
+<section>
+  <h2>Retrieve Object Workflow</h2>
+  The Retrieve Workflow handles returning data back to a Repository which had been previously
+  deposited.
+
+  <img src="images/retrieve_object.mmd.svg"/>
+
   <section>
-    <h2>Retrieve Object Workflow</h2>
-    The Retrieve Workflow handles returning data back to a Repository which had been previously
-    deposited.
-
-    <img src="images/retrieve_object.mmd.svg"/>
-
+    <h3>Chronopolis Implementation Notes</h3>
     <ol>
       <li>
         Query the OTM Bridge for Restores
         <ul>
           <li>`GET /restores`</li>
-          <li>Validate restores exist in the DDP</li>
+          <li>Validate data to restore exists in Chronopolis</li>
         </ul>
       </li>
       <li>
@@ -229,21 +253,25 @@
       <li>
         Restage data
         <ul>
-          <li>Currently: Create symbolic links from a read-only mount to DCV Restore</li>
           <li>OTM With RO Mount: Create symbolic links which can be pulled from</li>
-          <li>OTM Without RO Mount: Need internal process for retrieving data from DDP location</li>
+          <li>OTM Without RO Mount: Need process for retrieving data from Chronopoils nodes</li>
         </ul>
       </li>
-      <li>Notify the OTM Bridge that athe Restore is staged an accessible with a given TTL</li>
       <li>
-        Upon expiration of the TTL remove the staged content
+        Notify the OTM Bridge that the Restore is staged an accessible with a given TTL
         <ul>
-          <li>Call OTM Bridge indicating the restore is done: `POST /restore/{restoreId}`</li>
-          <li>Clean up staged content</li>
+          <li>Call OTM Bridge indicating the restore is ready: `POST /restore/{restoreId}`</li>
+        </ul>
+      </li>
+      <li>
+        Upon expiration of the TTL
+        <ul>
+          <li>Remove staged content</li>
+          <li>Send `Restoration` audit event to OTM Bridge</li>
         </ul>
       </li>
     </ol>
-
   </section>
+</section>
 </body>
 </html>
