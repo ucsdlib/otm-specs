@@ -45,6 +45,10 @@
     <section class="informative">
       <h2>Notes</h2>
       <ul>
+        <li>In order for a Gateway to communicate with a Bridge an account with associated access credentials must first be
+        created in the Bridge by the Bridge administrator and those credentials communicated to the Gateway administrator.
+        Creating accounts is accomplished via the <a>Add Account</a> endpoint.</li>
+        <li>There will be a one-to-one relationship between a Bridge account and a single Gateway application</li>
         <li>The method of application authentication and authorization may vary by API implementation</li>
       </ul>
     </section>
@@ -58,18 +62,73 @@
         <ul>
           <li>Request Type: <code>GET</code></li>
           <li>Request Path: <code>/</code></li>
-          <li>Response Body: <code>JSON</code></li>
-          <li>
+          <li>Response Body: <code>JSON</code>
             <ul>
               <li><code>bridge-version</code>: The current version of the Bridge application</li>
-              <li><code>supported-checksum-types</code>: The checksum types that are supported in a comma-separated list.
-              Allowed values: MD5, SHA-1, SHA-256, SHA-512</li>
+              <li><code>checksum-types-supported</code>: The checksum types that are supported by the Bridge in a
+              comma-separated list. Allowed values: MD5, SHA-1, SHA-256, SHA-512</li>
             </ul>
           </li>
           <pre class="example">
             {
               "bridge-version" : "1.0.0",
-              "supported-checksum-types" : "MD5,SHA-256"
+              "checksum-types-supported" : "MD5,SHA-256"
+            }
+          </pre>
+          <li>Response Code: <code>200</code> (on success)</li>
+        </ul>
+      </section>
+
+    </section>
+    <section>
+      <h2>Account Management Endpoints</h2>
+
+      <section>
+        <h3><dfn>Add Account</dfn></h3>
+        <p>Allows the DDP to create a new depositing user account in the Bridge. After this call it will be possible for the
+        OTM Gateway to register with the Bridge. This call can also be used to reset the access credentials for an
+        account.</p>
+        <ul>
+          <li>Request Type: <code>POST</code></li>
+          <li>Request Path: <code>/account/{account-id}</code></li>
+          <li>Request Path Parameters:
+            <ul>
+              <li><code>account-id</code>: Account identifier</li>
+            </ul>
+          </li>
+          <li>Response Body: <code>JSON</code>
+            <ul>
+              <li><code>account-id</code>: Account identifier</li>
+              <li><code>account-username</code>: Credentials to allow calls to the Bridge for this account</li>
+              <li><code>account-password</code>: Credentials to allow calls to the Bridge for this account</li>
+            </ul>
+          </li>
+          <pre class="example">
+            {
+              "account-id" : "university-of-example",
+              "account-username" : "example-username",
+              "account-password" : "5ecret!"
+            }
+          </pre>
+          <li>Response Code: <code>201</code> (on success)</li>
+        </ul>
+      </section>
+
+      <section>
+        <h3><dfn>List Accounts</dfn></h3>
+        <p>Allows the DDP to list all accounts known by the Bridge</p>
+        <ul>
+          <li>Request Type: <code>GET</code></li>
+          <li>Request Path: <code>/account</code></li>
+          <li>Response Body: <code>JSON</code>
+            <ul>
+              <li>Account ID: Account identifier</li>
+            </ul>
+          </li>
+          <pre class="example">
+            {
+              "university-of-example",    # Account ID
+              "example-state-university"  # Account ID
             }
           </pre>
           <li>Response Code: <code>200</code> (on success)</li>
@@ -78,15 +137,13 @@
 
       <section>
         <h3><dfn>Register</dfn></h3>
-        <p>Allows a repository with a Gateway deployment to register itself with the Bridge. The information provided in this
-        registration will allow the Bridge to make calls back to the Gateway, such as to pull content listed in a deposit
-        request. This call must be made prior to calls to deposit content. This call may also be made to update the Gateway
-        registration information.</p>
+        <p>Allows a Gateway to register itself with the Bridge. The information provided in this registration will allow the
+        Bridge to make calls back to the Gateway, such as to pull content listed in a deposit request. This call must be made
+        prior to calls to deposit content. This call may also be made to update the Gateway registration information.</p>
         <ul>
           <li>Request Type: <code>POST</code></li>
           <li>Request Path: <code>/register</code></li>
-          <li>Request Body: <code>JSON</code></li>
-          <li>
+          <li>Request Body: <code>JSON</code>
             <ul>
               <li><code>gateway-url</code>:
                 Base endpoint URL where the Bridge can call back to this Gateway API</li>
@@ -106,8 +163,8 @@
           <li>Response Code: <code>200</code> (on success)</li>
         </ul>
         <ul class="note">
-          <li>In order for a call to this endpoint to be successful an account with associated credentials will already need
-          to exist in the Bridge. This must have been created in advance by the DDP  (see <a>Add Account</a>).</li>
+          <li>In order for a call to this endpoint to be successful an account with associated credentials must already exist
+          in the Bridge. This must have been created in advance by a Bridge administrator (see <a>Add Account</a>).</li>
           <li>This endpoint may be called both to perform an initial registration and to provide updates to registration
           information. Calls made by the Bridge after a registration update will use the updated details.</li>
         </ul>
@@ -125,13 +182,13 @@
           <li>Request Path: <code>/deposit ? checksum-type & deposit-format</code></li>
           <li>Request Query Parameters:
             <ul>
-              <li><code>checksum-type</code>: (Optional) Indicates the type of checksum used. Applies to all file checksums
-              (can be one of: MD5, SHA-1, SHA-256, SHA-512). Default is MD5.</li>
-              <li><code>deposit-format</code>: (Optional) Format of content being deposited</li>
+              <li><code>checksum-type</code>: (Optional) Indicates the type of checksum used. Applies to all file checksums.
+              Must be one of the supported checksum types specified in the <a>Bridge Details</a> response. Default is
+              MD5.</li>
+              <li><code>deposit-format</code>: (Optional) Format of content being deposited (e.g. "bagit-profile-v1.2")</li>
             </ul>
           </li>
-          <li>Request Body: <code>JSON</code></li>
-          <li>
+          <li>Request Body: <code>JSON</code>
             <ul>
               <li>Filegroup ID: Identifies a filegroup. Filegroups are generic groupings of files that can be used to
               capture structure such as in a digital object or work</li>
@@ -175,8 +232,8 @@
           disk, for example).</li>
           <li>The Bridge and DDP will consider the version value as opaque and not attempt to assign any meaning to the
           value.</li>
-          <li>Not including "version" in the JSON is acceptable and is functionally the same as "version" : "". This "empty"
-          version is equivalent to any other version.</li>
+          <li>Not including "version" in the JSON is acceptable and is functionally the same as <code>"version" : ""</code>.
+          This "empty" version is equivalent to any other version.</li>
           <li>Attempting to deposit a filegroup with a filegroup ID and version that both match a previous deposit will be
           considered an error and rejected.</li>
           <li>When new filegroup versions are deposited, the Bridge may choose to retrieve and submit to the DDP only those
@@ -198,8 +255,7 @@
               <li><code>status</code>: (Optional) Limit list to deposits with a specific deposit status</li>
             </ul>
           </li>
-          <li>Response Body: <code>JSON</code></li>
-          <li>
+          <li>Response Body: <code>JSON</code>
             <ul>
               <li>Filegroup ID: Identifies the filegroup being deposited</li>
               <li><code>version</code>: The version of a filegroup</li>
@@ -243,8 +299,7 @@
               <li><code>filegroup-id</code>: The ID of the filegroup being deposited</li>
             </ul>
           </li>
-          <li>Response Body: <code>JSON</code></li>
-          <li>
+          <li>Response Body: <code>JSON</code>
             <ul>
               <li>Filegroup ID: Identifies the filegroup being deposited</li>
               <li><code>version</code>: The version of a filegroup</li>
@@ -277,6 +332,21 @@
         </ul>
       </section>
 
+      <section>
+        <h3><dfn>Complete Deposit</dfn></h3>
+        <p>Allows the DDP to inform the Bridge that a deposit has completed</p>
+        <ul>
+          <li>Request Type: <code>POST</code></li>
+          <li>Request Path: <code>/deposit/{filegroup-id}</code></li>
+          <li>Request Path Parameters:
+            <ul>
+              <li><code>filegroup-id</code>: Identifier of the filegroup for which deposit has completed</li>
+            </ul>
+          </li>
+          <li>Response Code: <code>200</code> (on success)</li>
+        </ul>
+      </section>
+
     </section>
     <section>
       <h2>Discovery Endpoints</h2>
@@ -287,17 +357,16 @@
         <ul>
           <li>Request Type: <code>GET</code></li>
           <li>Request Path: <code>/list</code></li>
-          <li>Response Body: <code>JSON</code></li>
-          <li>
+          <li>Response Body: <code>JSON</code>
             <ul>
               <li><code>Filegroup ID</code>: Identifier of deposited filegroup</li>
             </ul>
           </li>
           <pre class="example">
             {
-              "filegroup-1-id",  # Filegroup ID
-              "filegroup-2-id",  # Filegroup ID
-                                 # Additional filegroups listed here
+              "filegroup-1",  # Filegroup ID
+              "filegroup-2",  # Filegroup ID
+                              # Additional filegroups listed here
             }
           </pre>
           <li>Response Code: <code>200</code> (on success)</li>
@@ -316,8 +385,7 @@
               <li><code>file-id</code>: (Optional) The identifier of the file for which information is requested</li>
             </ul>
           </li>
-          <li>Response Body: <code>JSON</code></li>
-          <li>
+          <li>Response Body: <code>JSON</code>
             <ul>
               <li><code>checksum-type</code>: Type of checksum used for files, can be one of: MD5, SHA-1, SHA-256,
               SHA-512</li>
@@ -355,134 +423,6 @@
 
     </section>
     <section>
-      <h2>Delete Endpoints</h2>
-
-      <section>
-        <h3><dfn>Delete Content</dfn></h3>
-        <p>Removes one or more files from DDP storage</p>
-        <ul>
-          <li>Request Type: <code>POST</code></li>
-          <li>Request Path: <code>/delete</code></li>
-          <li>Request Body: <code>JSON</code></li>
-          <li>
-            <ul>
-              <li>Filegroup ID: Identifies the filegroup from which the file should be deleted</li>
-              <li><code>version</code>: The version of a filegroup from which the file should be deleted</li>
-              <li><code>files</code>: List of files to be deleted</li>
-              <li>File ID: Identifies a file to be deleted</li>
-              <li>File Checksum: The checksum of a file of the file to be deleted. The checksum type must match the type
-              returned in <a>Get Deposited Details</a>. Including the checksum is optional and is used only to verify that
-              the correct file is being deleted</li>
-            </ul>
-          </li>
-          <pre class="example">
-            {
-              "filegroup-1" : {                                   # Filegroup ID
-                "version" : "2019-12-31T23:59:60Z",
-                "files" : {
-                  "file-1" : "d41d8cd98f00b204e9800998ecf8427e",  # File ID and File Checksum
-                  "file-2" : "d41d8cd98f00b204e9800998ecf8427e"   # File ID and File Checksum
-                }
-              },                                                  # Additional filegroups listed here
-            }
-          </pre>
-          <li>Response Code: <code>202</code> (on success)</li>
-          <li>Response Body: <code>JSON</code></li>
-          <li>
-            <ul>
-              <li><code>delete-id</code>: The identifier for this delete action</li>
-            </ul>
-          </li>
-          <pre class="example">
-            {
-              "delete-id" : "54321"
-            }
-          </pre>
-        </ul>
-        <ul class="note">
-          <li>It would be possible to retain enough information to be able to provide a tombstone-type response for File IDs
-          which were at some point in the system but have been removed.</li>
-          <li>It would be possible to allow the "files" section to be omitted if all files in a given filegroup version are
-          to be deleted.</li>
-          <li>It would be possible to allow the value associated with a filegroup ID to be omitted if all files in all
-          versions of a filegroup are to be deleted.</li>
-        </ul>
-      </section>
-
-      <section>
-        <h3><dfn>List Deletes</dfn></h3>
-        <p>Retrieves a listing of all in-process deletes</p>
-        <ul>
-          <li>Request Type: <code>GET</code></li>
-          <li>Request Path: <code>/delete ? status</code></li>
-          <li>Request Query Parameters:
-            <ul>
-              <li><code>status</code>: (Optional) Limit list to delete actions with a specific status</li>
-            </ul>
-          </li>
-          <li>Response Body: <code>JSON</code></li>
-          <li>
-            <ul>
-              <li><code>Delete ID</code>: Identifier for delete action</li>
-              <li><code>file-count</code>: The number of files to be deleted</li>
-              <li><code>status</code>: The current state of the delete action</li>
-            </ul>
-          </li>
-          <pre class="example">
-            {
-              "delete-1" : {           # Delete ID
-                "file-count" : "7",
-                "status" : "DELETING"
-              },                       # Additional delete actions listed here
-            }
-          </pre>
-          <li>Response Code: <code>200</code> (on success)</li>
-        </ul>
-        <ul class="note">
-          <li>Use is anticipated by both the Gateway (to check on delete requests) and the DDP (to determine if there are
-          delete requests which are ready for processing)</li>
-          <li>Delete IDs returned by this method are only those that are in-process</li>
-        </ul>
-      </section>
-
-      <section>
-        <h3><dfn>Get Delete Status</dfn></h3>
-        <p>Allows the repository to ask for status of a content delete action</p>
-        <ul>
-          <li>Request Type: <code>GET</code></li>
-          <li>Request Path: <code>/delete/{delete-id}</code></li>
-          <li>Request Query Parameters:
-            <ul>
-              <li><code>delete-id</code>: The identifier of the delete action</li>
-            </ul>
-          </li>
-          <li>Response Body: <code>JSON</code></li>
-          <li>
-            <ul>
-              <li><code>Delete ID</code>: Identifier for delete action</li>
-              <li><code>file-count</code>: The number of files to be deleted</li>
-              <li><code>status</code>: The current state of the delete action</li>
-            </ul>
-          </li>
-          <pre class="example">
-            {
-              "delete-1" : {
-                "file-count" : "7",
-                "status" : "DELETING"
-              }
-            }
-          </pre>
-          <li>Response Code:
-             <ul>
-               <li><code>200</code> (on success)</li>
-               <li><code>404</code> (if the provided Delete ID does not exist in the system)</li>
-             </ul>
-          </li>
-        </ul>
-      </section>
-
-    </section>
-    <section>
       <h2>Restore Endpoints</h2>
 
       <section>
@@ -491,8 +431,7 @@
         <ul>
           <li>Request Type: <code>POST</code></li>
           <li>Request Path: <code>/restore</code></li>
-          <li>Request Body: <code>JSON</code></li>
-          <li>
+          <li>Request Body: <code>JSON</code>
             <ul>
               <li>Filegroup ID: Identifies the filegroup from which the file should be restored</li>
               <li><code>version</code>: The version of a filegroup from which the file should be restored</li>
@@ -515,8 +454,7 @@
             }
           </pre>
           <li>Response Code: <code>202</code> (on success)</li>
-          <li>Response Body: <code>JSON</code></li>
-          <li>
+          <li>Response Body: <code>JSON</code>
             <ul>
               <li><code>restore-id</code>: The identifier for this restore action</li>
             </ul>
@@ -548,17 +486,18 @@
               <li><code>status</code>: (Optional) Limit list to restore actions with a specific status</li>
             </ul>
           </li>
-          <li>Response Body: <code>JSON</code></li>
-          <li>
+          <li>Response Body: <code>JSON</code>
             <ul>
-              <li><code>Restore ID</code>: Identifier for restore action</li>
+              <li>Restore ID: Identifier for restore action</li>
               <li><code>file-count</code>: The number of files to be restored</li>
               <li><code>status</code>: The current state of the restore action</li>
+              <li><code>expiration</code>: The date on which the restored content will expire (and no longer be available for
+              retrieval). This value may be empty until a restore action completes.</li>
             </ul>
           </li>
           <pre class="example">
             {
-              "restore-1" : {
+              "restore-1" : {                          # Restore ID
                 "file-count" : "12",
                 "status" : "STAGING",
                 "expiration" : "2020-12-31T23:59:60Z"
@@ -582,16 +521,17 @@
         <ul>
           <li>Request Type: <code>GET</code></li>
           <li>Request Path: <code>/restore/{restore-id}</code></li>
-          <li>Request Query Parameters:
+          <li>Request Path Parameters:
             <ul>
               <li><code>restore-id</code>: The identifier of the restore action</li>
             </ul>
           </li>
-          <li>Response Body: <code>JSON</code></li>
-          <li>
+          <li>Response Body: <code>JSON</code>
             <ul>
               <li><code>file-count</code>: The number of files to be restored</li>
               <li><code>status</code>: The current state of the restore action</li>
+              <li><code>expiration</code>: The date on which the restored content will expire (and no longer be available for
+              retrieval). This value may be empty until a restore action completes.</li>
             </ul>
           </li>
           <pre class="example">
@@ -616,11 +556,11 @@
 
       <section>
         <h3><dfn>Get Restored Content</dfn></h3>
-        <p>Allows the repository to retrieve restored content from the Bridge</p>
+        <p>Allows for the retrieval of restored content from the Bridge</p>
         <ul>
           <li>Request Type: <code>GET</code></li>
           <li>Request Path: <code>/restore/{restore-id}/{filegroup-id}/{file-id}</code></li>
-          <li>Request Query Parameters:
+          <li>Request Path Parameters:
             <ul>
               <li><code>restore-id</code>: The identifier of the restore action</li>
               <li><code>filegroup-id</code>: The identifier of the filegroup</li>
@@ -638,9 +578,163 @@
           <li>Response Code:
              <ul>
                <li><code>200</code> (on success)</li>
-               <li><code>404</code> (if the provided Restore ID does not exist in the system)</li>
+               <li><code>404</code> (if the provided Restore ID, Filegroup ID, or File ID does not exist in the system)</li>
              </ul>
           </li>
+        </ul>
+      </section>
+
+      <section>
+        <h3><dfn>Complete Restore</dfn></h3>
+        <p>Allows the DDP to inform the Bridge that a restore has completed</p>
+        <ul>
+          <li>Request Type: <code>POST</code></li>
+          <li>Request Path: <code>/restore/{restore-id}</code></li>
+          <li>Request Path Parameters:
+            <ul>
+              <li><code>restore-id</code>: Identifier of the completed restore action</li>
+            </ul>
+          </li>
+          <li>Response Code: <code>200</code> (on success)</li>
+        </ul>
+      </section>
+
+    </section>
+    <section>
+      <h2>Delete Endpoints</h2>
+
+      <section>
+        <h3><dfn>Delete Content</dfn></h3>
+        <p>Removes one or more files from DDP storage</p>
+        <ul>
+          <li>Request Type: <code>POST</code></li>
+          <li>Request Path: <code>/delete</code></li>
+          <li>Request Body: <code>JSON</code>
+            <ul>
+              <li>Filegroup ID: Identifies the filegroup from which the file should be deleted</li>
+              <li><code>version</code>: The version of a filegroup from which the file should be deleted</li>
+              <li><code>files</code>: List of files to be deleted</li>
+              <li>File ID: Identifies a file to be deleted</li>
+              <li>File Checksum: The checksum of a file of the file to be deleted. The checksum type must match the type
+              returned in <a>Get Deposited Details</a>. Including the checksum is optional and is used only to verify that
+              the correct file is being deleted</li>
+            </ul>
+          </li>
+          <pre class="example">
+            {
+              "filegroup-1" : {                                   # Filegroup ID
+                "version" : "2019-12-31T23:59:60Z",
+                "files" : {
+                  "file-1" : "d41d8cd98f00b204e9800998ecf8427e",  # File ID and File Checksum
+                  "file-2" : "d41d8cd98f00b204e9800998ecf8427e"   # File ID and File Checksum
+                }
+              },                                                  # Additional filegroups listed here
+            }
+          </pre>
+          <li>Response Code: <code>202</code> (on success)</li>
+          <li>Response Body: <code>JSON</code>
+            <ul>
+              <li><code>delete-id</code>: The identifier for this delete action</li>
+            </ul>
+          </li>
+          <pre class="example">
+            {
+              "delete-id" : "54321"
+            }
+          </pre>
+        </ul>
+        <ul class="note">
+          <li>It would be possible to retain enough information to be able to provide a tombstone-type response for File IDs
+          which were at some point in the system but have been removed.</li>
+          <li>It would be possible to allow the "files" section to be omitted if all files in a given filegroup version are
+          to be deleted.</li>
+          <li>It would be possible to allow the value associated with a filegroup ID to be omitted if all files in all
+          versions of a filegroup are to be deleted.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h3><dfn>List Deletes</dfn></h3>
+        <p>Retrieves a listing of all in-process deletes</p>
+        <ul>
+          <li>Request Type: <code>GET</code></li>
+          <li>Request Path: <code>/delete ? status</code></li>
+          <li>Request Query Parameters:
+            <ul>
+              <li><code>status</code>: (Optional) Limit list to delete actions with a specific status</li>
+            </ul>
+          </li>
+          <li>Response Body: <code>JSON</code>
+            <ul>
+              <li>Delete ID: Identifier for delete action</li>
+              <li><code>file-count</code>: The number of files to be deleted</li>
+              <li><code>status</code>: The current state of the delete action</li>
+            </ul>
+          </li>
+          <pre class="example">
+            {
+              "delete-1" : {           # Delete ID
+                "file-count" : "7",
+                "status" : "DELETING"
+              },                       # Additional delete actions listed here
+            }
+          </pre>
+          <li>Response Code: <code>200</code> (on success)</li>
+        </ul>
+        <ul class="note">
+          <li>Use is anticipated by both the Gateway (to check on delete requests) and the DDP (to determine if there are
+          delete requests which are ready for processing)</li>
+          <li>Delete IDs returned by this method are only those that are in-process</li>
+        </ul>
+      </section>
+
+      <section>
+        <h3><dfn>Get Delete Status</dfn></h3>
+        <p>Allows the repository to ask for status of a content delete action</p>
+        <ul>
+          <li>Request Type: <code>GET</code></li>
+          <li>Request Path: <code>/delete/{delete-id}</code></li>
+          <li>Request Path Parameters:
+            <ul>
+              <li><code>delete-id</code>: The identifier of the delete action</li>
+            </ul>
+          </li>
+          <li>Response Body: <code>JSON</code>
+            <ul>
+              <li>Delete ID: Identifier for delete action</li>
+              <li><code>file-count</code>: The number of files to be deleted</li>
+              <li><code>status</code>: The current state of the delete action</li>
+            </ul>
+          </li>
+          <pre class="example">
+            {
+              "delete-1" : {
+                "file-count" : "7",
+                "status" : "DELETING"
+              }
+            }
+          </pre>
+          <li>Response Code:
+             <ul>
+               <li><code>200</code> (on success)</li>
+               <li><code>404</code> (if the provided Delete ID does not exist in the system)</li>
+             </ul>
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h3><dfn>Complete Delete</dfn></h3>
+        <p>Allows the DDP to inform the Bridge that a delete has completed</p>
+        <ul>
+          <li>Request Type: <code>POST</code></li>
+          <li>Request Path: <code>/delete/{delete-id}</code></li>
+          <li>Request Path Parameters:
+            <ul>
+              <li><code>delete-id</code>: Identifier of the completed delete action</li>
+            </ul>
+          </li>
+          <li>Response Code: <code>200</code> (on success)</li>
         </ul>
       </section>
 
@@ -649,21 +743,52 @@
       <h2>Audit Endpoints</h2>
 
       <section>
+        <h3><dfn>Add Audit Event</dfn></h3>
+        <p>Update audit index by providing additional audit details</p>
+        <ul>
+          <li>Request Type: <code>POST</code></li>
+          <li>Request Path: <code>/audit</code></li>
+          <li>Response Body: <code>JSON</code>
+            <ul>
+              <li>ID: Identifier of Filegroup or File to which this audit event it to be applied</li>
+              <li><code>event-type</code>: Type of event</li>
+              <li><code>event</code>: Event details</li>
+            </ul>
+          </li>
+          <pre class="example">
+            {
+              "filegroup-1" : {                        # ID
+                "event-type" : "replication",
+                "event" : {
+                  "version" : "2019-12-31T23:59:60Z",
+                  "timestamp" : "2020-01-01T23:59:60Z",
+                  "replicated-to" : "example-storage-node"
+                }
+              },                                       # Additional events listed here
+            }
+          </pre>
+          <li>Response Code: <code>200</code> (on success)</li>
+        </ul>
+        <ul class="note">
+          <li>The types of events and expected details of each event type are listed in the OTM Appendix</li>
+        </ul>
+      </section>
+
+      <section>
         <h3><dfn>Get Audit Log</dfn></h3>
         <p>Retrieves an audit history report. The report will list audit events associated with a single file or set of files
         in a filegroup.</p>
         <ul>
           <li>Request Type: <code>GET</code></li>
           <li>Request Path: <code>/audit/{filegroup-id}/{file-id}</code></li>
-          <li>Request Query Parameters:
+          <li>Request Path Parameters:
             <ul>
               <li><code>filegroup-id</code>: The identifier of the filegroup for which an audit report is requested</li>
               <li><code>file-id</code>: (Optional) The identifier of the file for which an audit report is requested. If this
               is not provided the audit report is requested based on the filegroup-id</li>
             </ul>
           </li>
-          <li>Response Body: <code>JSON</code></li>
-          <li>
+          <li>Response Body: <code>JSON</code>
             <ul>
               <li>Filegroup ID: Identifies the filegroup for which audit data is requested</li>
               <li>File ID: Identifies the file for which audit data is requested</li>
@@ -696,14 +821,9 @@
         </ul>
         <ul class="note">
           <li>It may be desirable to provide paged results for large result sets</li>
-          <li>Types and fields of expected history events are to be listed in the OTM Appendix</li>
+          <li>Types and fields of expected history events are listed in the OTM Appendix</li>
         </ul>
       </section>
-
-    </section>
-    <section>
-      <h2>DDP Endpoints</h2>
-      Endpoints used only by the DDP system to integrate with the Bridge.
 
     </section>
   </body>
