@@ -33,24 +33,22 @@
   <section id='abstract'>
     <p>
       The preservation workflow outlines the expected behavior from a DDP and how it will interact with
-      the OTM Bridge. It then does a brief dive into what the Chronopolis workflow will look like.
+      the OTM Bridge. It then does a brief dive into what the Chronopolis workflow will look like.     
+    </p>
+    <p>
+      This workflow uses an intermideriary service which transforms data from the OTM Bridge to something 
+      usable by the DDP and handles queries for OTM actions to perform. The implmentation of this
+      piece will be dependent on the architecture of the DDP, and is only as a separate service in order to
+      delineate the operations which are likely required by a DDP.
     </p>
   </section>
-  <!--
-  <section class="introductory">
-  <h2>Terminology</h2>
-  This section is non-normative
-  <table id="preservation-terms" class="simple">
-</table>
-</section>
--->
 <section>
   <h2>Ingest Object Workflow</h2>
   The Ingest Object Workflow is for when a OTM Gateway requests an Object to be preserved. It
   assumes the OTM Bridge has already done a certain amount of work in order to get an Object ready
   for ingestion into a DDP.
 
-  <img src="images/send_content.mmd.svg"/>
+  <img src="images/send_content.png"/>
 
   <section>
     <h3>Chronopolis Implementation Notes</h3>
@@ -157,7 +155,7 @@
   The Delete Workflow handles removing data from a DDP. It is assumed that this will be an operation
   which is non-recoverable and permanently removes data from a DDP.
 
-  <img src="images/delete_object.mmd.svg"/>
+  <img src="images/delete_object.png"/>
 
   <section>
     <h3>Chronopolis Implementation Notes</h3>
@@ -230,7 +228,7 @@
   The Retrieve Workflow handles returning data back to a Repository which had been previously
   deposited.
 
-  <img src="images/retrieve_object.mmd.svg"/>
+  <img src="images/retrieve_object.png"/>
 
   <section>
     <h3>Chronopolis Implementation Notes</h3>
