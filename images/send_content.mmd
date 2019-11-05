@@ -1,0 +1,24 @@
+sequenceDiagram
+  participant B as OTM Bridge
+  participant C as Intermediary Service
+  participant D as DDP
+
+  C ->> B: GET /deposit
+  B -->> C: json
+
+  alt is new deposit
+    C ->> D: Request storage
+    D -->> C: Reserved storage
+  else is existing deposit
+    C ->> D: Request existing package
+    D -->> C: Restage package
+  end
+
+  C ->> C: Curate Deposit for DDP
+
+  C -x D: Deposit to DDP
+  Note right of D: DDP specific flow<br/> asynchronous
+  D -->> C: Deposit is preserved
+
+  C ->> B: POST /deposit/deposit-id
+  B -->> C: Ok

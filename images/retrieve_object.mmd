@@ -1,0 +1,18 @@
+sequenceDiagram
+  participant B as OTM Bridge
+  participant C as Intermediary Service
+  participant D as DDP
+
+  C ->> B: GET /restores
+  B -->> C: json
+
+  C ->> D: Request space for restore
+  D -->> C: Reserved space
+
+  C ->> D: Request data to be restaged
+  D -->> C: Copy data
+
+  C ->> B: POST /restores/restore-id
+
+  C ->> C: TTL expired, clean up
+  C ->> D: TTL expired, reclaim space
