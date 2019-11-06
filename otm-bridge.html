@@ -28,19 +28,19 @@
     <section id='abstract'>
       <p>
         The One To Many (OTM) Bridge API Specification is one of two APIs used to support communication between digital
-        content repository systems (Repository) and distributed digital preservation systems (DDP) in order to facilitate
-        depositing, deletion, restoration, and auditing of digital content managed by one or both systems. The APIs defined
-        are the OTM Repository Gateway API (Gateway) for the Repository and the OTM Bridge API (Bridge) for the DDP. The
-        Gateway and the Bridge APIs handle intermediary communication between the Repository and DDP and allow each system to
-        operate without any knowledge of the internals of the other system. Each API is designed to facilitate deployment
-        either as part of or extension to the Repository (in the case of the Gateway) or the DDP (in the case of the Bridge)
-        or as a stand-alone application. They each provide an HTTP-based approach for authentication, communication, and data
+        content repository systems (Repository) and distributed digital preservation systems (DDP). These APIs work in tandem
+        to allow content captured in Repository systems to be transitioned to DDP systems for preservation. The two APIs are
+        the OTM Repository Gateway API (Gateway) for the Repository and the OTM Bridge API (Bridge) for the DDP. The Gateway
+        and the Bridge APIs handle intermediary communication between the Repository and DDP and allow each system to operate
+        without any knowledge of the internals of the other system. Each API is designed to facilitate deployment either as
+        part of or extension to the Repository (in the case of the Gateway) or the DDP (in the case of the Bridge) or as a
+        stand-alone application. They each provide an HTTP-based approach for authentication, communication, and data
         transfer.
       </p>
     </section>
-    <section id='sotd'>
-      <p>
-      </p>
+    <section>
+      <h2>Status of This Document</h2>
+      <p>This document is a draft of a potential specification.</p>
     </section>
     <section class="informative">
       <h2>Notes</h2>
@@ -66,13 +66,13 @@
             <ul>
               <li><code>bridge-version</code>: The current version of the Bridge application</li>
               <li><code>checksum-types-supported</code>: The checksum types that are supported by the Bridge in a
-              comma-separated list. Allowed values: MD5, SHA-1, SHA-256, SHA-512</li>
+              comma-separated list.</li>
             </ul>
           </li>
           <pre class="example">
             {
               "bridge-version" : "1.0.0",
-              "checksum-types-supported" : "MD5,SHA-256"
+              "checksum-types-supported" : "MD5,SHA-256,SHA-512"
             }
           </pre>
           <li>Response Code: <code>200</code> (on success)</li>
@@ -183,8 +183,7 @@
           <li>Request Query Parameters:
             <ul>
               <li><code>checksum-type</code>: (Optional) Indicates the type of checksum used. Applies to all file checksums.
-              Must be one of the supported checksum types specified in the <a>Bridge Details</a> response. Default is
-              MD5.</li>
+              Must be one of the supported checksum types specified in the <a>Bridge Details</a> response.</li>
               <li><code>deposit-format</code>: (Optional) Format of content being deposited (e.g. "bagit-profile-v1.2")</li>
             </ul>
           </li>
@@ -387,8 +386,7 @@
           </li>
           <li>Response Body: <code>JSON</code>
             <ul>
-              <li><code>checksum-type</code>: Type of checksum used for files, can be one of: MD5, SHA-1, SHA-256,
-              SHA-512</li>
+              <li><code>checksum-type</code>: Type of checksum used for files</li>
               <li><code>filegroup</code>: Filegroup identifier</li>
               <li>Version: The version of the filegroup</li>
               <li>File ID: Identifies a file within a filegroup</li>
@@ -418,6 +416,8 @@
           <li>When a file-id is included, the file matching that ID is the only one returned in files list</li>
           <li>This list would not include deleted versions or files. A tombstone capability is possible, but not currently
           part of this specification.</li>
+          <li>The checksum type provided is at the descretion of the DDP and may or may not match the checksum type used when
+          content was deposited</li>
         </ul>
       </section>
 
@@ -466,8 +466,6 @@
           </pre>
         </ul>
         <ul class="note">
-          <li>Checksum may be used to select which version of a file to restore. If no checksum is provided most recent
-          version is assumed.</li>
           <li>It would be possible to allow the "files" section to be omitted if all files in a given filegroup version are
           to be restored.</li>
           <li>It would be possible to allow the value associated with a filegroup ID to be omitted if all files in all
