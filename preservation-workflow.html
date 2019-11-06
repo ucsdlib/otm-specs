@@ -42,15 +42,15 @@
       delineate the operations which are likely required by a DDP.
     </p>
   </section>
-<section>
-  <h2>Ingest Object Workflow</h2>
-  The Ingest Object Workflow is for when a OTM Gateway requests an Object to be preserved. It
-  assumes the OTM Bridge has already done a certain amount of work in order to get an Object ready
+  <section>
+  <h2>Ingest Filegroup Workflow</h2>
+  The Ingest Filegroup Workflow is for when a OTM Gateway requests a filegroup to be preserved. It
+  assumes the OTM Bridge has already done a certain amount of work in order to get a filegroup ready
   for ingestion into a DDP.
 
   <img src="images/send_content.png"/>
 
-  <section>
+<section>
     <h3>Chronopolis Implementation Notes</h3>
 
     <p>New Deposit</p>
@@ -151,7 +151,7 @@
 
 </section>
 <section>
-  <h2>Delete Object Workflow</h2>
+  <h2>Delete Filegroup Workflow</h2>
   The Delete Workflow handles removing data from a DDP. It is assumed that this will be an operation
   which is non-recoverable and permanently removes data from a DDP.
 
@@ -160,7 +160,7 @@
   <section>
     <h3>Chronopolis Implementation Notes</h3>
 
-    <p>Delete Object</p>
+    <p>Delete filegroup</p>
     <ol>
       <li>
         Query the OTM Bridge for deletions
@@ -184,7 +184,7 @@
       </li>
     </ol>
 
-    <p>Delete Files</p>
+    <p>Delete files</p>
     <ol>
       <li>
         Query the OTM Bridge for deletions
@@ -224,7 +224,7 @@
   </section>
 </section>
 <section>
-  <h2>Retrieve Object Workflow</h2>
+  <h2>Retrieve Filegroup Workflow</h2>
   The Retrieve Workflow handles returning data back to a Repository which had been previously
   deposited.
 

@@ -36,15 +36,15 @@
   </section>
   <section>
     <h2>Audit Log Events</h2>
-    <p class="note" title="">
-      The audit log events are still in the early phases of being fleshed out and understood. The
-      current iteration of events and fields were created in a small break out group during an in
-      person meeting.
+    <p class="note">
+      The audit log events are based on initial discussions between representatives from Chronopolis and
+      APTrust and should be considered in draf form as additional discussions with other DDPs may uncover
+      differences in auditing practices.
     </p>
     <section>
       <h3>Ingest</h3>
-      The Ingest event represents the Ingestion of content from a OTM Gateway by a DDP.
-      This event can represent either an Filegroup being Ingested or a File being ingested.
+      The Ingest event represents the Ingestion of content from an OTM Gateway by a DDP.
+      This event can represent either a filegroup being Ingested or a file being ingested.
 
       <table id="ingest-fields" class="simple">
         <thead>
@@ -56,15 +56,15 @@
         <tbody>
           <tr>
             <td>Identifier</td>
-            <td>Identifier associated with the Filegroup or File</td>
+            <td>Identifier associated with the filegroup or file</td>
           </tr>
           <tr>
             <td>Version</td>
-            <td>The version identifier of the Filegroup or File which was ingested</td>
+            <td>The version identifier of the filegroup or file which was ingested</td>
           </tr>
           <tr>
             <td>Timestamp</td>
-            <td>The timestamp (ISO-8601?) of when the Ingest event completed</td>
+            <td>The timestamp of when the Ingest event completed</td>
           </tr>
           <tr>
             <td>Checksum</td>
@@ -72,23 +72,23 @@
           </tr>
           <tr>
             <td>Bytes Ingested</td>
-            <td>The number of bytes ingestd for the Filegroup or the File</td>
+            <td>The number of bytes ingested for the filegroup or the file</td>
           </tr>
           <tr>
-            <td>Files ingested</td>
-            <td>The number of Files ingested</td>
+            <td>files ingested</td>
+            <td>The number of files ingested</td>
           </tr>
         </tbody>
       </table>
 
-      <p class="note" title="Question">
-        Should this be split into two discrete events? One for the Filegroup ingestion and one for the File.
+      <p class="note">
+        This could be split into two discrete events, one for the filegroup and one for each file.
       </p>
     </section>
 
     <section>
       <h3>Replication</h3>
-      The Replication event represents the distribution of an Filegroup or a File to a single
+      The Replication event represents the distribution of an filegroup or a file to a single
       location within a DDP.
 
       <table id="replication-fields" class="simple">
@@ -101,19 +101,19 @@
         <tbody>
           <tr>
             <td>Identifier</td>
-            <td>Identifier associated with the Filegroup or File</td>
+            <td>Identifier associated with the filegroup or file</td>
           </tr>
           <tr>
             <td>Version</td>
-            <td>The version identifier of the Filegroup or File which was replicated</td>
+            <td>The version identifier of the filegroup or file which was replicated</td>
           </tr>
           <tr>
             <td>Timestamp</td>
-            <td>The timestamp (ISO-8601?) of when the Replication event completed</td>
+            <td>The timestamp of when the Replication event completed</td>
           </tr>
           <tr>
             <td>Replicated To</td>
-            <td>The the Filegroup or File was replicated to (URI?)</td>
+            <td>The location where filegroup or file was replicated</td>
           </tr>
         </tbody>
       </table>
@@ -122,8 +122,8 @@
     <section>
       <h3>Fixity</h3>
       The Fixity event represents an action taken by a DDP in order to validate that the
-      File they have received in an Filegroup has not been changed. This can occur at any
-      point in the lifecycle of the File.
+      file they have received in an filegroup has not been changed. This can occur at any
+      point in the lifecycle of the file.
 
       <table id="fixity-fields" class="simple">
         <thead>
@@ -135,23 +135,23 @@
         <tbody>
           <tr>
             <td>Identifier</td>
-            <td>Identifier associated with the File</td>
+            <td>Identifier associated with the file</td>
           </tr>
           <tr>
             <td>Version</td>
-            <td>The version identifier of the Filegroup or File which was checked</td>
+            <td>The version identifier of the filegroup or file which was checked</td>
           </tr>
           <tr>
             <td>Timestamp</td>
-            <td>The timestamp (ISO-8601?) of when the Fixity event occured</td>
+            <td>The timestamp of when the Fixity event occured</td>
           </tr>
           <tr>
-            <td>Calculated Fixity</td>
-            <td>The Fixity value calculated according to the algorithm used</td>
+            <td>Checksum</td>
+            <td>The checksum calculated according to the algorithm used</td>
           </tr>
           <tr>
             <td>Algorithm</td>
-            <td>The algorithm used to validate the File</td>
+            <td>The algorithm used to validate the file</td>
           </tr>
           <tr>
             <td>Fixity Result</td>
@@ -159,20 +159,12 @@
           </tr>
         </tbody>
       </table>
-
-
-      <p class="note" title="Question">
-        Should have a discussion on the usage of the word 'fixity'. It seems to imply both
-        the check for a File being what is expected as well as the generated message digest.
-        The field `Calculated Fixity` could be changed to `Calculated Digest`, with a `Digest
-        Algorithm`. We already use `Checksum` in other events, so maybe that would fit better.
-      </p>
     </section>
 
     <section>
       <h3>Deletion</h3>
-
-      Fill out with description of what deletion means.
+      A Deletion event represents the removal of one or more files from DDP storage.
+       
 
       <table id="delete-fields" class="simple">
         <thead>
@@ -184,19 +176,19 @@
         <tbody>
           <tr>
             <td>Identifier</td>
-            <td>Identifier associated with the Filegroup or File</td>
+            <td>Identifier associated with the filegroup or file</td>
           </tr>
           <tr>
             <td>Version</td>
-            <td>The version identifier of the Filegroup or File which was deleted</td>
+            <td>The version identifier of the filegroup or file which was deleted</td>
           </tr>
           <tr>
             <td>Timestamp</td>
-            <td>The timestamp (ISO-8601?) of when the Delete event occured</td>
+            <td>The timestamp of when the Delete event occured</td>
           </tr>
           <tr>
             <td>Checksum</td>
-            <td>The checksum value of the File which was deleted</td>
+            <td>The checksum value of the file which was deleted</td>
           </tr>
         </tbody>
       </table>
@@ -204,9 +196,8 @@
 
     <section>
       <h3>Repair</h3>
-      The Repair event is a process which the DDP resolves any File corruption internally.
-      Although this is internal to the DDP, it is something a Repository might be interested
-      in knowing about.
+      A Repair event occurs when a DDP resolves any file corruption. Although this is internal to 
+      the DDP, it is considered to be an event that may be auditable.
 
       <table id="repair-fields" class="simple">
         <thead>
@@ -218,15 +209,15 @@
         <tbody>
           <tr>
             <td>Identifier</td>
-            <td>Identifier associated with the Filegroup or File</td>
+            <td>Identifier associated with the filegroup or file</td>
           </tr>
           <tr>
             <td>Version</td>
-            <td>The version identifier of the Filegroup or File which was repaired</td>
+            <td>The version identifier of the filegroup or file which was repaired</td>
           </tr>
           <tr>
             <td>Timestamp</td>
-            <td>The timestamp (ISO-8601?) of when the Delete event occured</td>
+            <td>The timestamp of when the Delete event occured</td>
           </tr>
           <tr>
             <td>Repair Outcome</td>
@@ -238,8 +229,8 @@
 
     <section>
       <h3>Restoration</h3>
-      Restoration is an event which occurs when the Repsitory requests an Filegroup be retrieved
-      from a DDP in order to idk.
+      Restoration is an event which occurs when the Repository requests an filegroup be retrieved
+      from a DDP.
 
       <table id="restore-fields" class="simple">
         <thead>
@@ -251,15 +242,15 @@
         <tbody>
           <tr>
             <td>Identifier</td>
-            <td>Identifier associated with the Filegroup or File</td>
+            <td>Identifier associated with the filegroup or file</td>
           </tr>
           <tr>
             <td>Version</td>
-            <td>The version identifier of the Filegroup or File which was restored</td>
+            <td>The version identifier of the filegroup or file which was restored</td>
           </tr>
           <tr>
             <td>Timestamp</td>
-            <td>The timestamp (ISO-8601?) of when the Delete event occured</td>
+            <td>The timestamp of when the Delete event occured</td>
           </tr>
           <tr>
             <td>Success</td>
@@ -267,7 +258,7 @@
           </tr>
           <tr>
             <td>From</td>
-            <td>The location in the DDP where the Filegroup or File came from</td>
+            <td>The location in the DDP where the filegroup or file came from</td>
           </tr>
         </tbody>
       </table>
