@@ -33,20 +33,27 @@
   <section id='abstract'>
     <p>
       The preservation workflow outlines the expected behavior from a DDP and how it will interact with
-      the OTM Bridge. It then does a brief dive into what the Chronopolis workflow will look like.     
+      the OTM Bridge. It then does a brief dive into what the Chronopolis workflow will look like.
     </p>
     <p>
-      This workflow uses an intermideriary service which transforms data from the OTM Bridge to something 
+      This workflow assumes an intermideriary service which transforms data from the OTM Bridge to something
       usable by the DDP and handles queries for OTM actions to perform. The implmentation of this
-      piece will be dependent on the architecture of the DDP, and is only as a separate service in order to
+      piece will be dependent on the architecture of the DDP, and is only a separate service in order to
       delineate the operations which are likely required by a DDP.
     </p>
   </section>
+
+  <section>
+    <h2>Status of This Document</h2>
+    <p>This document is an appendix to a specification, created as part of the One-to-Many grant, funded by the Andrew W.
+    Mellon Foundation.</p>
+  </section>
+
   <section>
   <h2>Ingest Filegroup Workflow</h2>
-  The Ingest Filegroup Workflow is for when a OTM Gateway requests a filegroup to be preserved. It
-  assumes the OTM Bridge has already done a certain amount of work in order to get a filegroup ready
-  for ingestion into a DDP.
+  <p>The Ingest Filegroup Workflow describes the process when an OTM Gateway requests that a filegroup be preserved. It
+  assumes that the OTM Bridge has already performed initial processing in order to prepare the filegroup for ingestion into
+  a DDP.</p>
 
   <img src="images/send_content.png"/>
 
@@ -152,8 +159,8 @@
 </section>
 <section>
   <h2>Delete Filegroup Workflow</h2>
-  The Delete Workflow handles removing data from a DDP. It is assumed that this will be an operation
-  which is non-recoverable and permanently removes data from a DDP.
+  <p>The Delete Workflow handles removing data from a DDP. It is assumed that this will be an operation
+  which is non-recoverable and permanently removes data from a DDP.</p>
 
   <img src="images/delete_object.png"/>
 
@@ -209,7 +216,7 @@
       <li>
         Push package changes throughout Chronopolis
         <ul>
-          <li>If this is considered a new package, ok treat it like a new deposit</li>
+          <li>If this is considered a new package, treat it like a new deposit</li>
           <li>Otherwise need workflow to cover overwriting files in a package</li>
         </ul>
       </li>
@@ -225,8 +232,7 @@
 </section>
 <section>
   <h2>Retrieve Filegroup Workflow</h2>
-  The Retrieve Workflow handles returning data back to a Repository which had been previously
-  deposited.
+  <p>The Retrieve Workflow handles returning data back to a Repository which had been previously deposited.<p>
 
   <img src="images/retrieve_object.png"/>
 
