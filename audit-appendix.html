@@ -31,25 +31,31 @@
 <body>
   <section id='abstract'>
     <p>
-      This document provides a base set of events for implementors to build off of in order to provide
-      status updates from the DDP and OTM Bridge to the OTM Gateway and Repository.
+      This document defines a set of events that can be used and extended to communicate status about content that has been
+      deposited into a DDP through the OTM Bridge. Each event describes an action which has occurred within the DDP and is
+      associated with content that has been deposited through the OTM Bridge. The set of all events associated with one
+      deposited entity (filegroup or file) is considered to be that entity's audit log. This audit log is available for each
+      deposit via the OTM Bridge <a href="otm-bridge.html#get-audit-log">Get Audit Log</a> endpoint.
     </p>
   </section>
-  <section id='sotd'>
+
+  <section>
+    <h2>Status of This Document</h2>
+    <p>This document is an appendix to a specification, created as part of the One-to-Many grant, funded by the Andrew W.
+    Mellon Foundation.</p>
   </section>
-  <section class="informative">
-  </section>
+
   <section>
     <h2>Audit Log Events</h2>
     <p class="note">
-      The audit log events are based on initial discussions between representatives from Chronopolis and
-      APTrust and should be considered in draf form as additional discussions with other DDPs may uncover
-      differences in auditing practices.
+      The audit log events listed in this document are based on initial discussions between representatives from Chronopolis
+      and APTrust and should be considered in draft form as additional discussions with other DDPs may uncover differences in
+      auditing practices.
     </p>
     <section>
       <h3>Ingest</h3>
-      The Ingest event represents the Ingestion of content from an OTM Gateway by a DDP.
-      This event can represent either a filegroup being Ingested or a file being ingested.
+      <p>The Ingest event represents the Ingestion of content from an OTM Gateway by a DDP. This event can represent either a
+      filegroup being Ingested or a file being ingested.<p>
 
       <table id="ingest-fields" class="simple">
         <thead>
@@ -80,21 +86,20 @@
             <td>The number of bytes ingested for the filegroup or the file</td>
           </tr>
           <tr>
-            <td>files ingested</td>
+            <td>Files Ingested</td>
             <td>The number of files ingested</td>
           </tr>
         </tbody>
       </table>
 
       <p class="note">
-        This could be split into two discrete events, one for the filegroup and one for each file.
+        This could be split into multiple discrete events, one for the filegroup and one for each file in the filegroup.
       </p>
     </section>
 
     <section>
       <h3>Replication</h3>
-      The Replication event represents the distribution of an filegroup or a file to a single
-      location within a DDP.
+      <p>The Replication event represents the distribution of a filegroup or a file to a single location within a DDP.</p>
 
       <table id="replication-fields" class="simple">
         <thead>
@@ -126,9 +131,8 @@
 
     <section>
       <h3>Fixity</h3>
-      The Fixity event represents an action taken by a DDP in order to validate that the
-      file they have received in an filegroup has not been changed. This can occur at any
-      point in the lifecycle of the file.
+      <p>The Fixity event represents an action taken by a DDP to validate that a deposited file received as part of a
+      filegroup has not been changed. This can occur at any point in the lifecycle of the file.</p>
 
       <table id="fixity-fields" class="simple">
         <thead>
@@ -168,7 +172,7 @@
 
     <section>
       <h3>Deletion</h3>
-      A Deletion event represents the removal of one or more files from DDP storage.
+      <p>A Deletion event represents the removal of one or more files from DDP storage.</p>
 
 
       <table id="delete-fields" class="simple">
@@ -201,8 +205,8 @@
 
     <section>
       <h3>Repair</h3>
-      A Repair event occurs when a DDP resolves any file corruption. Although this is internal to
-      the DDP, it is considered to be an event that may be auditable.
+      <p>A Repair event occurs when a DDP resolves any file corruption. Although this is internal to the DDP, it is
+      considered to be an event that may be auditable.</p>
 
       <table id="repair-fields" class="simple">
         <thead>
@@ -234,8 +238,7 @@
 
     <section>
       <h3>Restoration</h3>
-      Restoration is an event which occurs when the Repository requests an filegroup be retrieved
-      from a DDP.
+      <p>Restoration is an event which occurs when the Repository requests a filegroup be retrieved from a DDP.</p>
 
       <table id="restore-fields" class="simple">
         <thead>
