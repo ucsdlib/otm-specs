@@ -29,6 +29,10 @@
       "APTrust-Volume-Service": {
         title: "APTrust Volume Service"   ,
         href: "https://github.com/APTrust/exchange/blob/master/service/volume_service.go"
+      },
+      "OCFL-Evaluation": {
+        title: "Chronopolis OCFL Evaluation"   ,
+        href: "https://wiki.duraspace.org/display/OTM/Chronopolis+OCFL+Evaluation"
       }
     }
   };
@@ -37,133 +41,262 @@
 <body>
   <section id='abstract'>
     <p>
-      The preservation workflow outlines the expected behavior from a DDP and how it will interact with
-      the OTM Bridge. It then does a brief dive into what the Chronopolis workflow will look like.
+      The One To Many (OTM) Specification defines two APIs to support communication between digital content
+      repository systems (Repository) and distributed digital preservation systems (DDP) in order to facilitate
+      depositing, deletion, restoration, and auditing of digital content managed by one or both systems. The
+      APIs defined are the OTM Repository Gateway API (Gateway) for the Repository and the OTM Bridge API
+      (Bridge) for the DDP. The Gateway and the Bridge APIs handle intermediary communication between the Repository
+      and DDP and allow each system to operate without any knowledge of the internals of the other system. Each
+      API is designed to facilitate deployment either as part of or extension to the Repository (in the case
+      of the Gateway) or the DDP (in the case of the Bridge) or as a stand-alone application. They each provide an
+      HTTP-based approach for authentication, communication, and data transfer.
     </p>
     <p>
-      This workflow uses an intermideriary service which transforms data from the OTM Bridge to something
+      The descriptions and diagrams below reference the OTM Bridge API Specification and OTM Repository Gateway
+      Specification and are intended to capture the context in which the API calls are expected to be used.
+    </p>
+    <p>
+      The DDP workflow uses an intermideriary service which transforms data from the OTM Bridge to something
       usable by the DDP and handles queries for OTM actions to perform. The implmentation of this
       piece will be dependent on the architecture of the DDP, and is only as a separate service in order to
-      delineate the operations which are likely required by a DDP.
+      delineate the operations which are likely required by a DDP. Additional notes are provided for the minimum
+      required steps for implementation in Chronopolis.
     </p>
   </section>
+
   <section>
-  <h2>Ingest Filegroup Workflow</h2>
-  The Ingest Filegroup Workflow is for when a OTM Gateway requests a filegroup to be preserved. It
-  assumes the OTM Bridge has already done a certain amount of work in order to get a filegroup ready
-  for ingestion into a DDP.
+    <h2>Initialize</h2>
+    The intialization operation allows a DDP and Repository to connect their respective OTM Bridge and OTM Gateway applications
+    so that data can be transferred between the two systems.
 
-  <img src="images/send_content.png"/>
-
-<section>
-    <h3>Chronopolis Implementation Notes</h3>
-
-    <p>New Deposit</p>
+    <section>
+    <h3>Flow</h3>
     <ol>
       <li>
-        Query the OTM Bridge for incoming deposits
-        <ul>
-          <li>`GET /deposit`</li>
-        </ul>
+        An agreement is reached between a repository owner and DDP system that will allow repository content to be deposited
+        into the DDP; appropriate SLA/MOU and other legal documentation is signed and arrangements for billing/invoicing are made
       </li>
       <li>
-        Look for the Deposit based on the `filegroup-id` in Chronopolis
-        <ul>
-          <li>Expected to find nothing based on this flow</li>
-        </ul>
+        The DDP administrator calls the Bridge `Add Account` endpoint to add the repository to the Bridge system and generate the
+        credentials needed for the repository's Gateway to connect to the Bridge
       </li>
+      <li>The DDP administrator provides the Bridge credentials to the Gateway administrator</li>
       <li>
-        Ensure space exists in Chronopolis for this Deposit
-        <ul>
-          <li>If reserving space, an API needs to be built similar to the [[APTrust-Volume-Service]]</li>
-          <li>Otherwise wait for staging filesystem to have available space</li>
-        </ul>
-      </li>
-      <li>
-        Package the Deposit for Chronopolis
-        <ul>
-          <li>Create an OCFL Object</li>
-          <li>Create ACE Tokens</li>
-        </ul>
-      </li>
-      <li>Use Chronopolis Ingest API to distribute the Deposit</li>
-      <li>
-        Query Chronopoils Ingest API for Deposit status
-        <ul>
-          <li>
-            Inform the OTM Bridge using `PUT /deposit/{filegroup-id}` when the Deposit has
-            fully distrubted throughout Chronopolis
-          </li>
-          <li>Create an `Ingest` audit event for the deposit</li>
-        </ul>
+        The Gateway administrator enters the Bridge credentials into the Gateway and the Gateway calls the Bridge `Register`
+        endpoint to provide the Bridge with the details necessary to make calls back to the Gateway
       </li>
     </ol>
+    </section>
+  </section>
 
-    <p>Updated Deposit</p>
-    <ol>
-      <li>
-        Query the OTM Bridge for incoming deposits
-        <ul>
-          <li>`GET /deposit`</li>
-        </ul>
-      </li>
-      <li>
-        Look for the Deposit based on the `filegroup-id` in Chronopolis
-        <ul>
-          <li>Expected to find nothing based on this flow</li>
-        </ul>
-      </li>
-      <li>
-        Request to have the Deposit re-staged
-        <ul>
-          <li>Should only need OCFL metadata (inventory.json)</li>
-          <li>This could also handle storage reservation</li>
-        </ul>
-      </li>
-      <li>
-        Using the json response from the OTM Bridge:
-        <ul>
-          <li>
-            Mint a new version using the `version-id` from the OTM Bridge
-            <ul>
-              <li>The OCFL Object version will increment as usual</li>
-              <li>An extra json field will be included to encapsulate the OTM Repository version (e.g. `otm-version`)</li>
-            </ul>
-          </li>
-          <li>New files will be added to the OCFL inventory and distributed in full</li>
-          <li>Existing files referenced in the OCFL inventory that have not been modified will not be redistributed</li>
-          <li>Files omitted from the json response will not be included in the current version</li>
-          <li>Create additional ACE Tokens for OCFL payload files</li>
-        </ul>
-      </li>
-      <li>Use Chronopolis Ingest API to distribute the updated Deposit</li>
-      <li>
-        Query Chronopoils Ingest API for Deposit status
-        <ul>
-          <li>
-            Inform the OTM Bridge using `PUT /deposit/{filegroup-id}` when the Deposit has
-            fully distrubted throughout Chronopolis
-          </li>
-          <li>Create an `Ingest` audit event for the deposit</li>
-        </ul>
-      </li>
-    </ol>
+  <section>
+    <h2>Deposit</h2>
+    The Deposit workflow allows a Repository to specify content to be preserved within a DDP.
 
-    <p class="note">
-      Json field name for OTM version is not set in stone
+    <section>
+      <h3>System to System Flow</h3>
+      <ol>
+        <li>The Repository administrator selects a set of objects to be deposited</li>
+        <li>
+          The Repository calls the Gateway `PUT Object` endpoint once for each object to be deposited; this starts the deposit 
+          process
+        </li>
+        <li>
+          The Gateway resolves each object into a set of files to be deposited; each file is either copied to the Gateway staging
+          storage area or a link to the file is captured to allow transfer to the Bridge
+        </li>
+        <li>
+          The Gateway calls the Bridge `Deposit Content` endpoint using the object ID as the filegroup identifier and providing an
+          identifier for each file to be deposited
+        </li>
+        <li>The Bridge initiates a deposit action for each filegroup in the deposit request</li>
+        <li>
+          For each file in each filegroup the Bridge calls the Gateway `GET File` endpoint to transfer the file to the Bridge 
+          staging storage location
+        </li>
+
+        <li>
+          As each file transfer into the Bridge staging storage completes, the Bridge compares the checksum of the transferred 
+          file to the checksum provided in the deposit request; any mismatches trigger a re-transfer
+        </li>
+
+        <li>
+          Once all files in a filegroup are in Bridge staging storage and all checksums are validated, the status of the deposit 
+          is updated to `STAGED_FOR_DEPOSIT`
+        </li>
+        <li>
+          The DDP calls the Bridge `List Deposits` endpoint on a regular schedule to check for new deposits in the
+          `STAGED_FOR_DEPOSIT` state
+        </li>
+
+        <li>
+          For each staged deposit in the Bridge the DDP copies the files from Bridge staging storage into the DDP ingest pipeline
+          and performs a deposit (and replication)
+        </li>
+        <li>
+          When the deposit into the DDP is finished, the DDP calls the Bridge `Complete Deposit` endpoint to inform the Bridge 
+          that the deposit is complete
+        </li>
+        <li>The Bridge clears the files associated with the completed deposit from Bridge staging storage</li>
+        <li>
+          The Repository administrator checks the object status in the Repository; the Repository requests information about the
+          object from the Gateway to provide information.
+        </li>
+      </ol>
+
+      <figure id="system-deposit">
+        <figcaption>Deposit Workflow</figcaption>
+        <img src="images/deposit_content.png"/>
+      </figure>
+    </section>
+
+    <section>
+      <h3>DDP Workflow</h3>
+      The DDP Workflow assumes the OTM Bridge has already done a certain amount of work in order to get a filegroup ready
+      for ingestion into a DDP.
+
+      <h4>Chronopolis Implementation Notes</h4>
+
+      <p>New Deposit</p>
+      <ol>
+        <li>
+          Query the OTM Bridge for incoming deposits
+          <ul>
+            <li>`GET /deposit`</li>
+          </ul>
+        </li>
+        <li>
+          Look for the Deposit based on the `filegroup-id` in Chronopolis
+          <ul>
+            <li>Expected to find nothing based on this flow</li>
+          </ul>
+        </li>
+        <li>
+          Ensure space exists in Chronopolis for this Deposit
+          <ul>
+            <li>If reserving space, an API needs to be built similar to the [[APTrust-Volume-Service]]</li>
+            <li>Otherwise wait for staging filesystem to have available space</li>
+          </ul>
+        </li>
+        <li>
+          Package the Deposit for Chronopolis
+          <ul>
+            <li>Create an OCFL Object</li>
+            <li>Create ACE Tokens</li>
+          </ul>
+        </li>
+        <li>Use Chronopolis Ingest API to distribute the Deposit</li>
+        <li>
+          Query Chronopoils Ingest API for Deposit status
+          <ul>
+            <li>
+              Inform the OTM Bridge using `PUT /deposit/{filegroup-id}` when the Deposit has
+              fully distrubted throughout Chronopolis
+            </li>
+            <li>Create an `Ingest` audit event for the deposit</li>
+          </ul>
+        </li>
+      </ol>
+
+      <p>Updated Deposit</p>
+      <ol>
+        <li>
+          Query the OTM Bridge for incoming deposits
+          <ul>
+            <li>`GET /deposit`</li>
+          </ul>
+        </li>
+        <li>
+          Look for the Deposit based on the `filegroup-id` in Chronopolis
+          <ul>
+            <li>Expected to find nothing based on this flow</li>
+          </ul>
+        </li>
+        <li>
+          Request to have the Deposit re-staged
+          <ul>
+            <li>Should only need OCFL metadata (inventory.json)</li>
+            <li>This could also handle storage reservation</li>
+          </ul>
+        </li>
+        <li>
+          Using the json response from the OTM Bridge:
+          <ul>
+            <li>
+              Mint a new version using the `version-id` from the OTM Bridge
+              <ul>
+                <li>The OCFL Object version will increment as usual</li>
+                <li>An extra json field will be included to encapsulate the OTM Repository version (e.g. `otm-version`)</li>
+              </ul>
+            </li>
+            <li>New files will be added to the OCFL inventory and distributed in full</li>
+            <li>Existing files referenced in the OCFL inventory that have not been modified will not be redistributed</li>
+            <li>Files omitted from the json response will not be included in the current version</li>
+            <li>Create additional ACE Tokens for OCFL payload files</li>
+          </ul>
+        </li>
+        <li>Use Chronopolis Ingest API to distribute the updated Deposit</li>
+        <li>
+          Query Chronopoils Ingest API for Deposit status
+          <ul>
+            <li>
+              Inform the OTM Bridge using `PUT /deposit/{filegroup-id}` when the Deposit has
+              fully distrubted throughout Chronopolis
+            </li>
+            <li>Create an `Ingest` audit event for the deposit</li>
+          </ul>
+        </li>
+      </ol>
+
+      <ul class="note">
+        <li>The json field name for the OTM `version-id` is not set in stone</li>
+        <li>An additional [[OCFL-Evaluation]] has been done with implementation notes for integration in Chronopolis</li>
+      </ul>
     </p>
+
+    <figure id="ddp-deposit">
+      <figcaption>DDP Deposit Workflow</figcaption>
+      <img src="images/ddp_deposit.png"/>
+    </figure>
+
   </section>
 
 </section>
 <section>
-  <h2>Delete Filegroup Workflow</h2>
+  <h2>Delete</h2>
   The Delete Workflow handles removing data from a DDP. It is assumed that this will be an operation
   which is non-recoverable and permanently removes data from a DDP.
 
-  <img src="images/delete_object.png"/>
+  <section>
+    <h3>System to System Flow</h3>
+
+    <ol>
+      <li>The Repository manager selects an object to be deleted from preservation storage</li>
+      <li>The Repository calls the Gateway `DELETE Object` endpoint for the object to be deleted</li>
+      <li>The Gateway resolves the object into a set of files to be deleted</li>
+      <li>The Gateway calls the Bridge `Delete Content` endpoint with the list of files to be deleted</li>
+      <li>The Bridge initiates a delete action for all files in the delete request</li>
+      <li>The DDP calls the Bridge `List Deletes` endpoint on a regular schedule to check for new delete requests</li>
+      <li>
+        The DDP performs a delete on each requested file; when all deletes are completed, the DDP calls the Bridge 
+        `Complete Delete` endpoint to inform the Bridge that the delete is complete
+      </li>
+      <li>
+        The Repository administrator checks the object status in the Repository; the Repository requests information about the
+        object from the Gateway to provide information.
+      </li>
+    </ol>
+
+    <figure id="system-delete">
+      <figcaption>Delete Workflow</figcaption>
+      <img src="images/delete_content.png"/>
+    </figure>
+  </section>
 
   <section>
-    <h3>Chronopolis Implementation Notes</h3>
+    <h3>DDP Workflow</h3>
+
+    <h4>Chronopolis Implementation Notes</h4>
 
     <p>Delete filegroup</p>
     <ol>
@@ -226,17 +359,63 @@
         </ul>
       </li>
     </ol>
+
+
+    <figure id="ddp-delete">
+      <figcaption>DDP Delete Workflow</figcaption>
+      <img src="images/ddp_delete.png"/>
+    </figure>
   </section>
 </section>
 <section>
-  <h2>Retrieve Filegroup Workflow</h2>
-  The Retrieve Workflow handles returning data back to a Repository which had been previously
-  deposited.
-
-  <img src="images/retrieve_object.png"/>
+  <h2>Restore</h2>
+  The Restore Workflow handles returning data back to a Repository which had been previously deposited.
 
   <section>
-    <h3>Chronopolis Implementation Notes</h3>
+    <h3>System to System Flow</h3>
+
+    <ol>
+      <li>The Repository manager selects an object to be restored from preservation storage</li>
+      <li>The Repository calls the Gateway `POST Object Restore` endpoint for the object to be restored</li>
+      <li>The Gateway resolves the object into a set of files to be restored</li>
+      <li>The Gateway calls the Bridge `Restore Content` endpoint with the list of files to be restored</li>
+      <li>
+        The Bridge initiates a restore action for all files in the restore request and creates a directory in Bridge staging
+        storage for the restored files
+      </li>
+      <li>The DDP calls the Bridge `List Restores` endpoint on a regular schedule to check for new restore requests</li>
+      <li>The DDP copies each file in the restore request to the specified directory in Bridge staging storage</li>
+      <li>
+        When all files have been copied into Bridge staging storage the DDP calls the Bridge `Complete Restore` endpoint to inform
+        the Bridge that the restored files are available
+      </li>
+      <li>
+        The Bridge validates that all file checksums match the checksums provided in the restore request (when checksums are
+        provided)
+      </li>
+      <li>The Bridge updates the status of the restore action to `STAGED_FOR_RESTORE`</li>
+      <li>
+        The Gateway calls the Bridge `Restore Status` endpoint on a regular basis to determine if the status of the restore is
+        `STAGED_FOR_RESTORE`
+      </li>
+      <li>
+        The Gateway calls the Bridge `Get Restored Content` endpoint for each file in the restore request and stores each file in
+        the Gateway staging storage
+      </li>
+      <li>The Repository calls the Gateway Get Object endpoint and pulls the content into repository storage</li>
+      <li>The Repository sends a notification to the Repository manager that requested the restore</li>
+    </ol>
+
+    <figure alt="system-restore">
+      <figcaption>Restore workflow</figcaption>
+      <img src="images/restore_content.png"/>
+    </figure>
+  </section>
+
+
+  <section>
+    <h3>DDP Workflow</h3>
+    <h4>Chronopolis Implementation Notes</h4>
     <ol>
       <li>
         Query the OTM Bridge for Restores
@@ -274,6 +453,40 @@
         </ul>
       </li>
     </ol>
+
+
+    <figure id="ddp-restore">
+      <figcaption>DDP Restore Workflow</figcaption>
+      <img src="images/ddp_restore.png"/>
+    </figure>
+  </section>
+</section>
+<section>
+  <h2>Audit</h2>
+  The Audit workflow retrieves actions taken on filegroups which have been deposited.
+
+  <section>
+  <h3>Flow</h3>
+  <ol>
+    <li>The Repository manager selects an object and requests a preservation audit history</li>
+    <li>The Repository calls the Gateway `GET Object Audit` endpoint for the object</li>
+    <li>The Gateway calls the Bridge `Get Audit History` endpoint, specifying the object ID as the filegroup identifier</li>
+    <li>
+      The Bridge gathers audit data for the given filegroup and associated files from its internal data store and responds to
+      Gateway with the requested audit history data
+    </li>
+    <li>
+      The Gateway translates the Bridge audit data into a format familiar to the repository and responds to the Repository
+      request
+    </li>
+    <li>The Repository displays the audit data to the Repository manager</li>
+  </ol>
+
+  <figure id="audit-diagram">
+    <figcaption>Get Audit Workflow</figcaption>
+    <img src="images/audit_content.png">
+  </figure>
+
   </section>
 </section>
 </body>
