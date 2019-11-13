@@ -11,7 +11,12 @@
     specStatus: "unofficial",
     editors: [{
       name: "Mike Ritter",
-      company: "Chronopolis"
+      company: "Chronopolis",
+      companyURL: "http://libraries.ucsd.edu/chronopolis/"
+    },{
+      name: "Sibyl Schaefer",
+      company: "University of California, San Diego",
+      companyURL: "https://ucsd.edu"
     }],
     gitHub: "ucsdlib/otm-specs",
     shortName: "preservation-workflow-appendix",
@@ -33,10 +38,10 @@
   <section id='abstract'>
     <p>
       The preservation workflow outlines the expected behavior from a DDP and how it will interact with
-      the OTM Bridge. It then does a brief dive into what the Chronopolis workflow will look like.     
+      the OTM Bridge. It then does a brief dive into what the Chronopolis workflow will look like.
     </p>
     <p>
-      This workflow uses an intermideriary service which transforms data from the OTM Bridge to something 
+      This workflow uses an intermideriary service which transforms data from the OTM Bridge to something
       usable by the DDP and handles queries for OTM actions to perform. The implmentation of this
       piece will be dependent on the architecture of the DDP, and is only as a separate service in order to
       delineate the operations which are likely required by a DDP.

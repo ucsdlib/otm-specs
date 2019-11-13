@@ -11,7 +11,12 @@
     specStatus: "unofficial",
     editors: [{
       name: "Mike Ritter",
-      company: "Chronopolis"
+      company: "Chronopolis",
+      companyURL: "http://libraries.ucsd.edu/chronopolis/"
+    },{
+      name: "Sibyl Schaefer",
+      company: "University of California, San Diego",
+      companyURL: "https://ucsd.edu"
     }],
     gitHub: "ucsdlib/otm-specs",
     shortName: "audit-appendix",
@@ -164,7 +169,7 @@
     <section>
       <h3>Deletion</h3>
       A Deletion event represents the removal of one or more files from DDP storage.
-       
+
 
       <table id="delete-fields" class="simple">
         <thead>
@@ -196,7 +201,7 @@
 
     <section>
       <h3>Repair</h3>
-      A Repair event occurs when a DDP resolves any file corruption. Although this is internal to 
+      A Repair event occurs when a DDP resolves any file corruption. Although this is internal to
       the DDP, it is considered to be an event that may be auditable.
 
       <table id="repair-fields" class="simple">
