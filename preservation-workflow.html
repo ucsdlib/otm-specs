@@ -56,12 +56,18 @@
       Specification and are intended to capture the context in which the API calls are expected to be used.
     </p>
     <p>
-      The DDP workflow uses an intermideriary service which transforms data from the OTM Bridge to something
+      The DDP workflow assumes an intermideriary service which transforms data from the OTM Bridge to something
       usable by the DDP and handles queries for OTM actions to perform. The implmentation of this
-      piece will be dependent on the architecture of the DDP, and is only as a separate service in order to
+      piece will be dependent on the architecture of the DDP, and is only a separate service in order to
       delineate the operations which are likely required by a DDP. Additional notes are provided for the minimum
       required steps for implementation in Chronopolis.
     </p>
+  </section>
+
+  <section>
+    <h2>Status of This Document</h2>
+    <p>This document is an appendix to a specification, created as part of the One-to-Many grant, funded by the Andrew W.
+    Mellon Foundation.</p>
   </section>
 
   <section>
@@ -91,7 +97,7 @@
 
   <section>
     <h2>Deposit</h2>
-    The Deposit workflow allows a Repository to specify content to be preserved within a DDP.
+    <p>The Deposit workflow describes the process when an OTM Gateway requests that a filegroup be preserved.</p>
 
     <section>
       <h3>System to System Flow</h3>
@@ -152,8 +158,8 @@
 
     <section>
       <h3>DDP Workflow</h3>
-      The DDP Workflow assumes the OTM Bridge has already done a certain amount of work in order to get a filegroup ready
-      for ingestion into a DDP.
+      <p>The DDP portion of the Deposit workflow assumes that the OTM Bridge has already performed initial processing in order to prepare
+      the filegroup for ingestion into a DDP.</p>
 
       <h4>Chronopolis Implementation Notes</h4>
 
@@ -264,8 +270,8 @@
 </section>
 <section>
   <h2>Delete</h2>
-  The Delete Workflow handles removing data from a DDP. It is assumed that this will be an operation
-  which is non-recoverable and permanently removes data from a DDP.
+  <p>The Delete workflow handles removing data from a DDP. It is assumed that this will be an operation
+  which is non-recoverable and permanently removes data from a DDP.</p>
 
   <section>
     <h3>System to System Flow</h3>
@@ -347,7 +353,7 @@
       <li>
         Push package changes throughout Chronopolis
         <ul>
-          <li>If this is considered a new package, ok treat it like a new deposit</li>
+          <li>If this is considered a new package, treat it like a new deposit</li>
           <li>Otherwise need workflow to cover overwriting files in a package</li>
         </ul>
       </li>
@@ -369,7 +375,7 @@
 </section>
 <section>
   <h2>Restore</h2>
-  The Restore Workflow handles returning data back to a Repository which had been previously deposited.
+  <p>The Restore workflow handles returning data back to a Repository which had been previously deposited.</p>
 
   <section>
     <h3>System to System Flow</h3>
