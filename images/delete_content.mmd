@@ -1,0 +1,13 @@
+sequenceDiagram
+  participant R as Repo
+  participant G as Gateway
+  participant B as Bridge
+  participant D as DDP
+
+  R ->> G: DELETE Object
+  G ->> B: Delete Content
+  D ->> B: List Delete
+  B -->> D: 
+  Note over D: DDP Delete Workflow
+  D ->> B: Complete Delete
+  

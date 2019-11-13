@@ -1,0 +1,10 @@
+sequenceDiagram
+  participant R as Repo
+  participant G as Gateway
+  participant B as Bridge
+
+  R ->> G: GET Object Audit
+  G ->> B: Audit History
+  Note over B: Audit Events
+  B ->> G: Audit History Response
+  G ->> R: Translation
