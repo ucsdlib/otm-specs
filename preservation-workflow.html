@@ -44,11 +44,11 @@
       The One To Many (OTM) Specification defines two APIs to support communication between digital content
       repository systems (Repository) and distributed digital preservation systems (DDP) in order to facilitate
       depositing, deletion, restoration, and auditing of digital content managed by one or both systems. The
-      APIs defined are the OTM Repository Gateway API (Gateway) for the Repository and the OTM Bridge API
-      (Bridge) for the DDP. The Gateway and the Bridge APIs handle intermediary communication between the Repository
-      and DDP and allow each system to operate without any knowledge of the internals of the other system. Each
-      API is designed to facilitate deployment either as part of or extension to the Repository (in the case
-      of the Gateway) or the DDP (in the case of the Bridge) or as a stand-alone application. They each provide an
+      APIs defined are the <a href="otm-gateway.html">OTM Repository Gateway API (Gateway)</a> for the Repository and the 
+      <a href="otm-bridge.html">OTM Bridge API (Bridge)</a> for the DDP. The Gateway and the Bridge APIs handle intermediary
+      communication between the Repository and DDP and allow each system to operate without any knowledge of the internals of
+      the other system. Each API is designed to facilitate deployment either as part of or extension to the Repository (in the 
+      case of the Gateway) or the DDP (in the case of the Bridge) or as a stand-alone application. They each provide an
       HTTP-based approach for authentication, communication, and data transfer.
     </p>
     <p>
@@ -83,13 +83,14 @@
         into the DDP; appropriate SLA/MOU and other legal documentation is signed and arrangements for billing/invoicing are made
       </li>
       <li>
-        The DDP administrator calls the Bridge `Add Account` endpoint to add the repository to the Bridge system and generate the
-        credentials needed for the repository's Gateway to connect to the Bridge
+        The DDP administrator calls the Bridge <a href="otm-bridge.html#add-account">Add Account</a> endpoint to add the 
+        repository to the Bridge system and generate the credentials needed for the repository's Gateway to connect to the Bridge
       </li>
       <li>The DDP administrator provides the Bridge credentials to the Gateway administrator</li>
       <li>
-        The Gateway administrator enters the Bridge credentials into the Gateway and the Gateway calls the Bridge `Register`
-        endpoint to provide the Bridge with the details necessary to make calls back to the Gateway
+        The Gateway administrator enters the Bridge credentials into the Gateway and the Gateway calls the Bridge 
+        <a href="otm-bridge.html#register">Register</a> endpoint to provide the Bridge with the details necessary to make calls 
+        back to the Gateway
       </li>
     </ol>
     </section>
@@ -104,21 +105,21 @@
       <ol>
         <li>The Repository administrator selects a set of objects to be deposited</li>
         <li>
-          The Repository calls the Gateway `PUT Object` endpoint once for each object to be deposited; this starts the deposit 
-          process
+          The Repository calls the Gateway <a href="otm-gateway.html#deposit-object">PUT Object</a> endpoint once for each 
+          object to be deposited; this starts the deposit process
         </li>
         <li>
           The Gateway resolves each object into a set of files to be deposited; each file is either copied to the Gateway staging
           storage area or a link to the file is captured to allow transfer to the Bridge
         </li>
         <li>
-          The Gateway calls the Bridge `Deposit Content` endpoint using the object ID as the filegroup identifier and providing an
-          identifier for each file to be deposited
+          The Gateway calls the Bridge <a href="otm-bridge.html#deposit-content">Deposit Content</a> endpoint using the object 
+          ID as the filegroup identifier and providing an identifier for each file to be deposited
         </li>
         <li>The Bridge initiates a deposit action for each filegroup in the deposit request</li>
         <li>
-          For each file in each filegroup the Bridge calls the Gateway `GET File` endpoint to transfer the file to the Bridge 
-          staging storage location
+          For each file in each filegroup the Bridge calls the Gateway <a href="otm-gateway.html#transfer-file">GET File</a> 
+          endpoint to transfer the file to the Bridge staging storage location
         </li>
 
         <li>
@@ -131,8 +132,8 @@
           is updated to `STAGED_FOR_DEPOSIT`
         </li>
         <li>
-          The DDP calls the Bridge `List Deposits` endpoint on a regular schedule to check for new deposits in the
-          `STAGED_FOR_DEPOSIT` state
+          The DDP calls the Bridge <a href="otm-bridge.html#list-deposits">List Deposits</a> endpoint on a regular schedule to 
+          check for new deposits in the `STAGED_FOR_DEPOSIT` state
         </li>
 
         <li>
@@ -140,8 +141,8 @@
           and performs a deposit (and replication)
         </li>
         <li>
-          When the deposit into the DDP is finished, the DDP calls the Bridge `Complete Deposit` endpoint to inform the Bridge 
-          that the deposit is complete
+          When the deposit into the DDP is finished, the DDP calls the Bridge <a href="otm-bridge.html#complete-deposit">
+          Complete Deposit</a> endpoint to inform the Bridge that the deposit is complete
         </li>
         <li>The Bridge clears the files associated with the completed deposit from Bridge staging storage</li>
         <li>
@@ -278,14 +279,23 @@
 
     <ol>
       <li>The Repository manager selects an object to be deleted from preservation storage</li>
-      <li>The Repository calls the Gateway `DELETE Object` endpoint for the object to be deleted</li>
-      <li>The Gateway resolves the object into a set of files to be deleted</li>
-      <li>The Gateway calls the Bridge `Delete Content` endpoint with the list of files to be deleted</li>
-      <li>The Bridge initiates a delete action for all files in the delete request</li>
-      <li>The DDP calls the Bridge `List Deletes` endpoint on a regular schedule to check for new delete requests</li>
       <li>
-        The DDP performs a delete on each requested file; when all deletes are completed, the DDP calls the Bridge 
-        `Complete Delete` endpoint to inform the Bridge that the delete is complete
+        The Repository calls the Gateway <a href="otm-gateway.html#destroy-object">DELETE Object</a> endpoint for the object
+        to be deleted
+      </li>
+      <li>The Gateway resolves the object into a set of files to be deleted</li>
+      <li>
+        The Gateway calls the Bridge <a href="otm-bridge.html#delete-content">Delete Content</a> endpoint with the list of files
+        to be deleted
+      </li>
+      <li>The Bridge initiates a delete action for all files in the delete request</li>
+      <li>
+        The DDP calls the Bridge <a href="otm-bridge.html#list-deletes">List Deletes</a> endpoint on a regular schedule to check
+        for new delete requests
+      </li>
+      <li>
+        The DDP performs a delete on each requested file; when all deletes are completed, the DDP calls the Bridge
+        <a href="otm-bridge.html#complete-delete">Complete Delete</a> endpoint to inform the Bridge that the delete is complete
       </li>
       <li>
         The Repository administrator checks the object status in the Repository; the Repository requests information about the
@@ -382,18 +392,28 @@
 
     <ol>
       <li>The Repository manager selects an object to be restored from preservation storage</li>
-      <li>The Repository calls the Gateway `POST Object Restore` endpoint for the object to be restored</li>
+      <li>
+        The Repository calls the Gateway <a href="otm-gateway.html#initiate-restore">POST Object Restore</a> endpoint for 
+        the object to be restored
+      </li>
       <li>The Gateway resolves the object into a set of files to be restored</li>
-      <li>The Gateway calls the Bridge `Restore Content` endpoint with the list of files to be restored</li>
+      <li>
+        The Gateway calls the Bridge <a href="otm-bridge.html#restore-content">Restore Content</a> endpoint with the list of 
+        files to be restored
+      </li>
       <li>
         The Bridge initiates a restore action for all files in the restore request and creates a directory in Bridge staging
         storage for the restored files
       </li>
-      <li>The DDP calls the Bridge `List Restores` endpoint on a regular schedule to check for new restore requests</li>
+      <li>
+        The DDP calls the Bridge <a href="otm-bridge.html#list-restores">List Restores</a> endpoint on a regular schedule to 
+        check for new restore requests
+      </li>
       <li>The DDP copies each file in the restore request to the specified directory in Bridge staging storage</li>
       <li>
-        When all files have been copied into Bridge staging storage the DDP calls the Bridge `Complete Restore` endpoint to inform
-        the Bridge that the restored files are available
+        When all files have been copied into Bridge staging storage the DDP calls the Bridge 
+        <a href="otm-bridge.html#complete-restore">Complete Restore</a> endpoint to inform the Bridge that the restored files 
+        are available
       </li>
       <li>
         The Bridge validates that all file checksums match the checksums provided in the restore request (when checksums are
@@ -405,10 +425,13 @@
         `STAGED_FOR_RESTORE`
       </li>
       <li>
-        The Gateway calls the Bridge `Get Restored Content` endpoint for each file in the restore request and stores each file in
-        the Gateway staging storage
+        The Gateway calls the Bridge <a href="otm-bridge.html#get-restored-content">Get Restored Content</a> endpoint for each 
+        file in the restore request and stores each file in the Gateway staging storage
       </li>
-      <li>The Repository calls the Gateway Get Object endpoint and pulls the content into repository storage</li>
+      <li>
+        The Repository calls the Gateway <a href="otm-gateway.html#retrieve-object">Get Object</a> endpoint and pulls the content
+        into repository storage
+      </li>
       <li>The Repository sends a notification to the Repository manager that requested the restore</li>
     </ol>
 
@@ -475,8 +498,13 @@
   <h3>Flow</h3>
   <ol>
     <li>The Repository manager selects an object and requests a preservation audit history</li>
-    <li>The Repository calls the Gateway `GET Object Audit` endpoint for the object</li>
-    <li>The Gateway calls the Bridge `Get Audit History` endpoint, specifying the object ID as the filegroup identifier</li>
+    <li>
+      The Repository calls the Gateway <a href="otm-gateway.html#get-object-audit">GET Object Audit</a> endpoint for the object
+    </li>
+    <li>
+      The Gateway calls the Bridge <a href="otm-bridge.html#get-audit-log">Get Audit Log</a> endpoint, specifying the object ID 
+      as the filegroup identifier
+    </li>
     <li>
       The Bridge gathers audit data for the given filegroup and associated files from its internal data store and responds to
       Gateway with the requested audit history data
