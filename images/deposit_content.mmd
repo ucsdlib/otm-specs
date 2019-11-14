@@ -1,0 +1,33 @@
+sequenceDiagram
+  participant R as Repo
+  participant G as Gateway
+  participant B as Bridge
+  participant D as DDP
+
+  R ->> G: PUT Object
+  G -->> R: Ok
+
+  G ->>+ B: Deposit Content
+  B -->> G: ACK/NAK
+
+  rect rgba(0, 255, 255, 0.1)
+      Note over R, G: Proxy for Object
+      loop Loop filegroup
+          B ->> G: Request File
+          G ->> R: Get File
+          R -->> B: Return file
+      end
+  end
+
+  Note over B: Validate Checksum
+  
+  G ->> B: Get Deposit Status
+  B -->> G: Status Response
+
+  D ->> B: List Deposits
+  B -->> D: Deposits 
+
+  Note over D: DDP Preservation <br/> Workflow
+
+  D ->>- B: Complete Deposit
+
