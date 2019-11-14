@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+DOCTYPE html>
 <html>
 <head>
   <meta charset='utf-8'>
@@ -161,8 +161,8 @@
 
     <section>
       <h3>DDP Workflow</h3>
-      <p>The DDP portion of the Deposit workflow assumes that the OTM Bridge has already performed initial processing in order to prepare
-      the filegroup for ingestion into a DDP.</p>
+      <p>The DDP portion of the Deposit workflow assumes that the OTM Bridge has already performed initial processing in order 
+      to prepare the filegroup for ingestion into a DDP.</p>
 
       <h4>Chronopolis Implementation Notes</h4>
 
@@ -171,7 +171,7 @@
         <li>
           Query the OTM Bridge for incoming deposits
           <ul>
-            <li>`GET /deposit`</li>
+            <li><a href="otm-bridge.html#list-deposits">GET /deposit</a></li>
           </ul>
         </li>
         <li>
@@ -199,10 +199,10 @@
           Query Chronopoils Ingest API for Deposit status
           <ul>
             <li>
-              Inform the OTM Bridge using `PUT /deposit/{filegroup-id}` when the Deposit has
-              fully distrubted throughout Chronopolis
+              Inform the OTM Bridge using <a href="otm-bridge.html#complete-deposit">POST /deposit/{filegroup-id}</a> when 
+              the Deposit has fully distrubted throughout Chronopolis
             </li>
-            <li>Create an `Ingest` audit event for the deposit</li>
+            <li>Create an <a href="audit-appendix.html#ingest">Ingest</a> audit event for the deposit</li>
           </ul>
         </li>
       </ol>
@@ -212,13 +212,13 @@
         <li>
           Query the OTM Bridge for incoming deposits
           <ul>
-            <li>`GET /deposit`</li>
+            <li><a href="otm-bridge.html#list-deposits">GET /deposit</a></li>
           </ul>
         </li>
         <li>
           Look for the Deposit based on the `filegroup-id` in Chronopolis
           <ul>
-            <li>Expected to find nothing based on this flow</li>
+            <li>Expected to find existing content based on this flow</li>
           </ul>
         </li>
         <li>
@@ -249,16 +249,15 @@
           Query Chronopoils Ingest API for Deposit status
           <ul>
             <li>
-              Inform the OTM Bridge using `PUT /deposit/{filegroup-id}` when the Deposit has
-              fully distrubted throughout Chronopolis
+              Inform the OTM Bridge using <a href="otm-bridge.html#complete-deposit">POST /deposit/{filegroup-id}</a> when the 
+              Deposit has fully distrubted throughout Chronopolis
             </li>
-            <li>Create an `Ingest` audit event for the deposit</li>
+            <li>Create an <a href="audit-appendix.html#ingest">Ingest</a> audit event for the deposit</li>
           </ul>
         </li>
       </ol>
 
       <ul class="note">
-        <li>The json field name for the OTM `version-id` is not set in stone</li>
         <li>An additional [[OCFL-Evaluation]] has been done with implementation notes for integration in Chronopolis</li>
       </ul>
     </p>
@@ -321,7 +320,7 @@
       <li>
         Query the OTM Bridge for deletions
         <ul>
-          <li>`GET /delete`</li>
+          <li><a href="otm-bridge.html#list-deletes">GET /delete</a></li>
         </ul>
       </li>
       <li>Identify the Chronpolis package associated with the `filegroup-id`</li>
@@ -334,8 +333,8 @@
       <li>
         When Chronopolis package is deprecated, update the status of the OTM Bridge
         <ul>
-          <li>`POST /delete/{deleteId}`</li>
-          <li>Send `Deletion` audit event to OTM Bridge</li>
+          <li><a href="otm-bridge.html#complete-delete">POST /delete/{deleteId}</a></li>
+          <li>Send <a href="audit-appendix.html#deletion">Deletion</a> audit event to OTM Bridge</li>
         </ul>
       </li>
     </ol>
@@ -345,7 +344,7 @@
       <li>
         Query the OTM Bridge for deletions
         <ul>
-          <li>`GET /delete`</li>
+          <li><a href="otm-bridge.html#list-deletes">GET /delete</a></li>
         </ul>
       </li>
       <li>
@@ -372,8 +371,8 @@
       <li>
         When propogation of deletes is complete, update the status of the OTM Bridge
         <ul>
-          <li>`POST /delete/{deleteId}`</li>
-          <li>Send `Deletion` audit event to OTM Bridge</li>
+          <li><a href="otm-bridge.html#complete-delete">POST /delete/{deleteId}</a></li>
+          <li>Send <a href="audit-appendix.html#deletion">Deletion</a> audit event to OTM Bridge</li>
         </ul>
       </li>
     </ol>
@@ -423,8 +422,8 @@
       </li>
       <li>The Bridge updates the status of the restore action to `STAGED_FOR_RESTORE`</li>
       <li>
-        The Gateway calls the Bridge `Restore Status` endpoint on a regular basis to determine if the status of the restore is
-        `STAGED_FOR_RESTORE`
+        The Gateway calls the Bridge <a href="otm-bridge.html#get-restore-status">Restore Status</a> endpoint on a regular basis
+        to determine if the status of the restore is `STAGED_FOR_RESTORE`
       </li>
       <li>
         The Gateway calls the Bridge <a href="otm-bridge.html#get-restored-content">Get Restored Content</a> endpoint for each
@@ -451,7 +450,7 @@
       <li>
         Query the OTM Bridge for Restores
         <ul>
-          <li>`GET /restores`</li>
+          <li><a href="otm-bridge.html#list-restores">GET /restores</a></li>
           <li>Validate data to restore exists in Chronopolis</li>
         </ul>
       </li>
@@ -473,14 +472,15 @@
       <li>
         Notify the OTM Bridge that the Restore is staged an accessible with a given TTL
         <ul>
-          <li>Call OTM Bridge indicating the restore is ready: `POST /restore/{restoreId}`</li>
+          <li>Call OTM Bridge indicating the restore is ready: <a href="otm-bridge.html#complete-restore">
+              POST /restore/{restoreId}</a></li>
         </ul>
       </li>
       <li>
         Upon expiration of the TTL
         <ul>
           <li>Remove staged content</li>
-          <li>Send `Restoration` audit event to OTM Bridge</li>
+          <li>Send <a href="audit-appendix.html#restoration">Restoration</a> audit event to OTM Bridge</li>
         </ul>
       </li>
     </ol>
