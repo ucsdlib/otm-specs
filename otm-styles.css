@@ -1,0 +1,9 @@
+/* Hides W3C logo */
+.logo {
+  display: none;
+}
+
+/* Hides W3C Document subheader */
+div.head h2 {
+  display: none;
+}
