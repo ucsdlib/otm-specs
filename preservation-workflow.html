@@ -474,13 +474,13 @@
         <ul>
           <li>Call OTM Bridge indicating the restore is ready: <a href="otm-bridge.html#complete-restore">
               POST /restore/{restoreId}</a></li>
+          <li>Send <a href="audit-appendix.html#restoration">Restoration</a> audit event to OTM Bridge</li>
         </ul>
       </li>
       <li>
         Upon expiration of the TTL
         <ul>
           <li>Remove staged content</li>
-          <li>Send <a href="audit-appendix.html#restoration">Restoration</a> audit event to OTM Bridge</li>
         </ul>
       </li>
     </ol>
