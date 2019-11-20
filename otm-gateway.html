@@ -33,8 +33,8 @@
     <section id='abstract'>
       <p>
         The One To Many (OTM) Gateway API Specification is one of two APIs used to support communication between digital
-        content repository systems (Repository) and distributed digital preservation systems (DDP) in order to facilitate
-        depositing, deletion, restoration, and auditing of digital content managed by one or both systems.
+        content repository systems (Repository) and distributed digital preservation systems (DDP). These APIs work in tandem
+        to allow content captured in Repository systems to be transitioned to DDP systems for preservation.
       </p>
       <p>
         The preservation Gateway functions as an aggregating cache for preservation requests originating with a repository
@@ -43,7 +43,10 @@
       </p>
     </section>
 
-    <section id='sotd'>
+    <section>
+      <h2>Status of This Document</h2>
+      <p>This document is a draft of a specification, created as part of the One-to-Many grant, funded by the Andrew W.
+      Mellon Foundation.</p>
     </section>
 
     <section id="conformance">
@@ -98,8 +101,8 @@
             <li>Request Path: <code>/{object-id}</code></li>
             <li>Request Headers:
               <ul>
-                <li><code>Content-Type</code>:</li>
-                <li><code>Content-Length</code>: Size in bytes of the restored file</li>
+                <li><code>Content-Type</code>: Media type of the object to be deposited</li>
+                <li><code>Content-Length</code>: Size in bytes of the object to be deposited</li>
                 <li><code>x-otm-preservation-provider</code>: the name of preservation systems targeted for this deposit.</li>
               </ul>
             </li>
