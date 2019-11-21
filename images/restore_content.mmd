@@ -5,6 +5,8 @@ sequenceDiagram
   participant D as DDP
 
   R ->> G: Object Restore
+  G ->> B: Get Deposited Content
+  B <<- G: 200 Ok
   G ->> B: Restore Content
   D ->> B: List Restores
   B -->> D: 200 Ok
