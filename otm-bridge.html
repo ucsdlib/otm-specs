@@ -66,14 +66,13 @@
           <li>Response Body: <code>JSON</code>
             <ul>
               <li><code>bridge-version</code>: The current version of the Bridge application</li>
-              <li><code>checksum-types-supported</code>: The checksum types that are supported by the Bridge in a
-              comma-separated list.</li>
+              <li><code>checksum-types-supported</code>: The checksum types that are supported by the Bridge</li>
             </ul>
           </li>
           <pre class="example">
             {
               "bridge-version" : "1.0.0",
-              "checksum-types-supported" : "MD5,SHA-256,SHA-512"
+              "checksum-types-supported" : [ "MD5", "SHA-256", "SHA-512" ]
             }
           </pre>
           <li>Response Code: <code>200</code> (on success)</li>
@@ -90,7 +89,7 @@
         OTM Gateway to register with the Bridge. This call can also be used to reset the access credentials for an
         account.</p>
         <ul>
-          <li>Request Type: <code>POST</code></li>
+          <li>Request Type: <code>PUT</code></li>
           <li>Request Path: <code>/account/{account-id}</code></li>
           <li>Request Path Parameters:
             <ul>
@@ -246,7 +245,9 @@
 
       <section>
         <h3><dfn>List Deposits</dfn></h3>
-        <p>Retrieves a listing of all in-process deposits</p>
+        <p>Retrieves a listing of all initiated and in-process deposits. This list includes all deposits that have been
+        requested (via <a>Deposit Content</a>) but have not yet completed the deposit process (which occurs when the DDP
+        calls <a>Complete Deposit</a>)</p>
         <ul>
           <li>Request Type: <code>GET</code></li>
           <li>Request Path: <code>/deposit ? status</code></li>
@@ -324,9 +325,10 @@
           </li>
         </ul>
         <ul class="note">
-          <li>It would be possible to retain enough information to be able to provide a tombstone-type response for
-          filegroups which have completed deposit. Alternatively, requests for filegroups that have completed deposit could
-          be forwarded to <a>Get Deposited Details</a>.</li>
+          <li>This endpoint is intended to provide status on deposits which have not yet completed. The length of time that a
+          deposit in the completed status remains available to query via this endpoint may vary.</li>
+          <li>An additional property may be included in the response JSON for completed deposits to provide the <a>Get
+          Deposited Details</a> URL for this deposit.</li>
           <li>The set of possible values for <code>status</code> will be set by the DDP. This field is intended to
           be informational rather than actionable.</li>
         </ul>
@@ -375,7 +377,7 @@
 
       <section>
         <h3><dfn>Get Deposited Details</dfn></h3>
-        <p>Retrieves details about a deposited filesgroup, including versions and associated files</p>
+        <p>Retrieves details about a deposited filegroup, including versions and associated files</p>
         <ul>
           <li>Request Type: <code>GET</code></li>
           <li>Request Path: <code>/list/{filegroup-id}/{file-id}</code></li>
@@ -387,37 +389,37 @@
           </li>
           <li>Response Body: <code>JSON</code>
             <ul>
-              <li><code>checksum-type</code>: Type of checksum used for files</li>
               <li><code>filegroup</code>: Filegroup identifier</li>
               <li>Version: The version of the filegroup</li>
               <li>File ID: Identifies a file within a filegroup</li>
               <li><code>size</code>: Size of a file in bytes</li>
-              <li><code>checksum</code>: Checksum of a file (type of checksum is defined by <code>checksum-type</code>)</li>
+              <li>Checksum: Type of checksum and checksum of the file (a list of supported checksum types are provided in
+              <a>Bridge Details</a>)</li>
             </ul>
           </li>
           <pre class="example">
             {
-              "checksum-type" : "",
               "filegroup" : "filegroup-1",
-              "2019-12-31T23:59:60Z" : {  # Version
-                "file-1" : {              # File ID
+              "2019-12-31T23:59:60Z" : {                      # Version
+                "file-1" : {                                  # File ID
                   "size" : "654321",
-                  "checksum" : "d41d8cd98f00b204e9800998ecf8427e"
+                  "MD5" : "d41d8cd98f00b204e9800998ecf8427e"  # Checksum
                 },
-                "file-2" : {              # File ID
+                "file-2" : {                                  # File ID
                   "size" : "654321",
-                  "checksum" : "d41d8cd98f00b204e9800998ecf8427e"
-                },                        # Additional files listed here
-              },                          # Additional filegroup versions listed here
+                  "MD5" : "d41d8cd98f00b204e9800998ecf8427e"  # Checksum
+                },                                            # Additional files listed here
+              },                                              # Additional filegroup versions here
             }
           </pre>
           <li>Response Code: <code>200</code> (on success)</li>
         </ul>
         <ul class="note">
           <li>When a file-id is included, the file matching that ID is the only one returned in files list</li>
+          <li>Multiple checksums may be returned for each file (e.g. MD5 and SHA-512)</li>
           <li>This list would not include deleted versions or files. A tombstone capability is possible, but not currently
           part of this specification.</li>
-          <li>The checksum type provided is at the descretion of the DDP and may or may not match the checksum type used when
+          <li>The checksum type provided is at the discretion of the DDP and may or may not match the checksum type used when
           content was deposited</li>
         </ul>
       </section>
@@ -437,16 +439,18 @@
               <li>Filegroup ID: Identifies the filegroup from which the file should be restored</li>
               <li><code>version</code>: The version of a filegroup from which the file should be restored</li>
               <li><code>files</code>: List of files to be restored</li>
+              <li><code>checksum-type</code>: The type of checksum to be used for file verification; valid values are those
+              in the checksum-types-supported list provided in <a>Bridge Details</a></li>
               <li>File ID: Identifies a file to be restored</li>
-              <li>File Checksum: The checksum of a file of the file to be restored. The checksum type must match the type
-              returned in <a>Get Deposited Details</a>. Including the checksum is optional and is used only to verify that
-              the correct file is being restored</li>
+              <li>File Checksum: The checksum of the file to be restored. Including the checksum is optional and is used only
+              to verify that the correct file is being restored</li>
             </ul>
           </li>
           <pre class="example">
             {
               "filegroup-1" : {                                   # Filegroup ID
                 "version" : "2019-12-31T23:59:60Z",
+                "checksum-type" : "MD5",
                 "files" : {
                   "file-1" : "d41d8cd98f00b204e9800998ecf8427e",  # File ID and File Checksum
                   "file-2" : "d41d8cd98f00b204e9800998ecf8427e"   # File ID and File Checksum
@@ -470,7 +474,8 @@
           <li>It would be possible to allow the "files" section to be omitted if all files in a given filegroup version are
           to be restored.</li>
           <li>It would be possible to allow the value associated with a filegroup ID to be omitted if all files in all
-          versions of a filegroup are to be restored.</li>
+          versions of a filegroup are to be restored. In the provided example, the alternative request would be:
+          <code>"filegroup-1" : {}</code></li>
         </ul>
       </section>
 
@@ -508,7 +513,8 @@
         <ul class="note">
           <li>Use is anticipated by both the Gateway (to check on restore requests) and the DDP (to determine if there are
           restore requests which are ready for processing)</li>
-          <li>Restore IDs returned by this method are only those that are in-process</li>
+          <li>Restore IDs returned by this method are those that have been initiated, are in-process, or have completed but
+          not yet expired</li>
           <li>Restored content will only be made available on the Bridge for a limited time. After this time, content will be
           removed and the status of the restore will be changed to expired.</li>
         </ul>
@@ -577,6 +583,8 @@
           <li>Response Code:
              <ul>
                <li><code>200</code> (on success)</li>
+               <li><code>307</code> (if the requested content is available at an alternative URI, a <code>Location</code>
+               header is required)</li>
                <li><code>404</code> (if the provided Restore ID, Filegroup ID, or File ID does not exist in the system)</li>
              </ul>
           </li>
@@ -648,7 +656,8 @@
           <li>It would be possible to allow the "files" section to be omitted if all files in a given filegroup version are
           to be deleted.</li>
           <li>It would be possible to allow the value associated with a filegroup ID to be omitted if all files in all
-          versions of a filegroup are to be deleted.</li>
+          versions of a filegroup are to be deleted. In the provided example, the alternative request would be:
+          <code>"filegroup-1" : {}</code></li></li>
         </ul>
       </section>
 
@@ -683,7 +692,7 @@
         <ul class="note">
           <li>Use is anticipated by both the Gateway (to check on delete requests) and the DDP (to determine if there are
           delete requests which are ready for processing)</li>
-          <li>Delete IDs returned by this method are only those that are in-process</li>
+          <li>Delete IDs returned by this method are only those that have been initiated or are in-process</li>
         </ul>
       </section>
 
