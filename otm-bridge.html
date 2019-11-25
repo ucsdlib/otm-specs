@@ -46,7 +46,7 @@
 
     <section>
       <h2>Status of This Document</h2>
-      <p>This document is a draft of a specification, created as part of the One-to-Many grant, funded by the Andrew W.
+      <p>This document is a draft of a specification, created as part of the One to Many grant, funded by the Andrew W.
       Mellon Foundation.</p>
     </section>
 
@@ -190,7 +190,7 @@
           <li>Request Body: <code>JSON</code>
             <ul>
               <li>Filegroup ID: Identifies a filegroup. Filegroups are generic groupings of files that can be used to
-              capture structure such as in a digital object or work</li>
+              capture structure such as in a digital object or work.</li>
               <li><code>version</code>: The version of a filegroup</li>
               <li><code>files</code>: List of files included in the filegroup</li>
               <li>File ID: Identifies a file within a filegroup</li>
@@ -624,7 +624,7 @@
               <li>File ID: Identifies a file to be deleted</li>
               <li>File Checksum: The checksum of a file of the file to be deleted. The checksum type must match the type
               returned in <a>Get Deposited Details</a>. Including the checksum is optional and is used only to verify that
-              the correct file is being deleted</li>
+              the correct file is being deleted.</li>
             </ul>
           </li>
           <pre class="example">
@@ -758,7 +758,7 @@
           <li>Request Path: <code>/audit</code></li>
           <li>Response Body: <code>JSON</code>
             <ul>
-              <li>ID: Identifier of Filegroup or File to which this audit event it to be applied</li>
+              <li>ID: Identifier of Filegroup or File to which this audit event is to be applied</li>
               <li><code>event-type</code>: Type of event</li>
               <li><code>event</code>: Event details</li>
             </ul>
@@ -793,7 +793,7 @@
             <ul>
               <li><code>filegroup-id</code>: The identifier of the filegroup for which an audit report is requested</li>
               <li><code>file-id</code>: (Optional) The identifier of the file for which an audit report is requested. If this
-              is not provided the audit report is requested based on the filegroup-id</li>
+              is not provided the audit report is requested based on the filegroup-id.</li>
             </ul>
           </li>
           <li>Response Body: <code>JSON</code>
