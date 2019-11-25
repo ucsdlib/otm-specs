@@ -51,7 +51,7 @@ In order for a Distributed Digital Preservation system to make use of an applica
 * The DDP must deploy and run the Bridge application
 * The DDP must provide the Bridge application access to a staging storage location that is also available to the DDP
 * The DDP must Implement tooling to interact with the Bridge application API
-* The DDP must support at least minimal versioning capability
+* The DDP must support at least minimal versioning capability (ingesting, restoring, and deleting named filegroup versions)
 
 ## Usage Notes
 
