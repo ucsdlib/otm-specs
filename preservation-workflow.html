@@ -58,7 +58,7 @@
       are expected to be used.
     </p>
     <p>
-      The DDP workflow assumes an intermederiary service which transforms data from the OTM Bridge to something
+      The DDP workflow assumes an intermediary service which transforms data from the OTM Bridge into something
       usable by the DDP and handles queries for OTM actions to perform. The implementation of this
       piece will be dependent on the architecture of the DDP, and is only a separate service in order to
       delineate the operations which are likely required by a DDP. Additional notes are provided for the minimum
@@ -241,7 +241,7 @@
           <ul>
             <li>
               Inform the OTM Bridge using <a href="otm-bridge.html#complete-deposit">POST /deposit/{filegroup-id}</a> when
-              the Deposit has fully distrubted throughout Chronopolis
+              the Deposit has fully distributed throughout Chronopolis
             </li>
             <li>Create an <a href="audit-appendix.html#ingest">Ingest</a> audit event for the deposit</li>
           </ul>
@@ -287,11 +287,11 @@
         </li>
         <li>Use Chronopolis Ingest API to distribute the updated Deposit</li>
         <li>
-          Query Chronopoils Ingest API for Deposit status
+          Query Chronopolis Ingest API for Deposit status
           <ul>
             <li>
               Inform the OTM Bridge using <a href="otm-bridge.html#complete-deposit">POST /deposit/{filegroup-id}</a> when the
-              Deposit has fully distrubted throughout Chronopolis
+              Deposit has fully distributed throughout Chronopolis
             </li>
             <li>Create an <a href="audit-appendix.html#ingest">Ingest</a> audit event for the deposit</li>
           </ul>
@@ -364,7 +364,7 @@
           <li><a href="otm-bridge.html#list-deletes">GET /delete</a></li>
         </ul>
       </li>
-      <li>Identify the Chronpolis package associated with the `filegroup-id`</li>
+      <li>Identify the Chronopolis package associated with the `filegroup-id`</li>
       <li>
         Removing package
         <ul>
@@ -391,7 +391,7 @@
       <li>
         Query Chronopolis for the `filegroup-id`
         <ul>
-          <li>Identify the Chronpolis package associated with the `filegroup-id`</li>
+          <li>Identify the Chronopolis package associated with the `filegroup-id`</li>
           <li>Identify the files within the package to remove</li>
         </ul>
       </li>
@@ -410,7 +410,7 @@
         </ul>
       </li>
       <li>
-        When propogation of deletes is complete, update the status of the OTM Bridge
+        When propagation of deletes is complete, update the status of the OTM Bridge
         <ul>
           <li><a href="otm-bridge.html#complete-delete">POST /delete/{deleteId}</a></li>
           <li>Send <a href="audit-appendix.html#deletion">Deletion</a> audit event to OTM Bridge</li>
@@ -508,7 +508,7 @@
         Restage data
         <ul>
           <li>OTM With RO Mount: Create symbolic links which can be pulled from</li>
-          <li>OTM Without RO Mount: Need process for retrieving data from Chronopoils nodes</li>
+          <li>OTM Without RO Mount: Need process for retrieving data from Chronopolis nodes</li>
         </ul>
       </li>
       <li>
