@@ -44,7 +44,7 @@
     <p>
       The One To Many (OTM) Specification defines two APIs to support communication between digital content
       repository systems (Repository) and distributed digital preservation systems (DDP). These APIs work in tandem
-      to allow content captured in Repository systems to be transitioned to DDP systems for preservation. The
+      to allow content captured in Repository systems to be copied to DDP systems for preservation. The
       APIs defined are the <a href="otm-gateway.html">OTM Repository Gateway API (Gateway)</a> for the Repository and the
       <a href="otm-bridge.html">OTM Bridge API (Bridge)</a> for the DDP. The Gateway and the Bridge APIs handle intermediary
       communication between the Repository and DDP and allow each system to operate without any knowledge of the internals of
@@ -61,9 +61,8 @@
       The DDP workflow assumes an intermediary service which transforms data from the OTM Bridge into something
       usable by the DDP and handles queries for OTM actions to perform. The implementation of this
       piece will be dependent on the architecture of the DDP, and is only a separate service in order to
-      delineate the operations which are likely required by a DDP. Additional notes are provided for the minimum
-      required steps for implementation in Chronopolis.
-    </p>
+      delineate the operations which are likely required by a DDP.</p>
+    <p>Additional notes are provided for the minimum required steps for implementation in Chronopolis.</p>
   </section>
 
   <section>
