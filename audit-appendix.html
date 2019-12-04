@@ -83,6 +83,10 @@
             <td>The checksum recorded by the DDP at Ingest</td>
           </tr>
           <tr>
+            <td>Checksum Algorithm</td>
+            <td>The algorithm used to generate the checksum</td>
+          </tr>
+          <tr>
             <td>Bytes Ingested</td>
             <td>The number of bytes ingested for the filegroup or the file</td>
           </tr>
@@ -149,14 +153,14 @@
           </tr>
           <tr>
             <td>Timestamp</td>
-            <td>The timestamp of when the Fixity event occured</td>
+            <td>The timestamp of when the Fixity event occurred</td>
           </tr>
           <tr>
             <td>Checksum</td>
             <td>The checksum calculated according to the algorithm used</td>
           </tr>
           <tr>
-            <td>Algorithm</td>
+            <td>Checksum Algorithm</td>
             <td>The algorithm used to validate the file</td>
           </tr>
           <tr>
@@ -190,11 +194,15 @@
           </tr>
           <tr>
             <td>Timestamp</td>
-            <td>The timestamp of when the Delete event occured</td>
+            <td>The timestamp of when the Delete event occurred</td>
           </tr>
           <tr>
             <td>Checksum</td>
             <td>The checksum value of the file which was deleted</td>
+          </tr>
+          <tr>
+            <td>Checksum Algorithm</td>
+            <td>The algorithm used to generate the checksum</td>
           </tr>
         </tbody>
       </table>
@@ -223,7 +231,7 @@
           </tr>
           <tr>
             <td>Timestamp</td>
-            <td>The timestamp of when the Delete event occured</td>
+            <td>The timestamp of when the Repair event occurred</td>
           </tr>
           <tr>
             <td>Repair Outcome</td>
@@ -255,11 +263,15 @@
           </tr>
           <tr>
             <td>Timestamp</td>
-            <td>The timestamp of when the Delete event occured</td>
+            <td>The timestamp of when the Restore event occurred</td>
+          </tr>
+          <tr>
+            <td>Expiration</td>
+            <td>The timestamp of when the Restore event expired</td>
           </tr>
           <tr>
             <td>Success</td>
-            <td>The result of the Restoration</td>
+            <td>The result of the Restoration: true or false</td>
           </tr>
           <tr>
             <td>From</td>
