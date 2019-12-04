@@ -17,7 +17,7 @@ The members of the OTM project team are listed on the [Team Roles and Responsibi
 ## Specifications
 The One To Many (OTM) Specification defines two APIs to support communication between digital content repository systems
 (Repository) and distributed digital preservation systems (DDP). These APIs work in tandem to allow content captured in
-Repository systems to be transitioned to DDP systems for preservation. The two APIs are the [OTM Gateway
+Repository systems to be copied to DDP systems for preservation. The two APIs are the [OTM Gateway
 API](otm-gateway.html) (Gateway) for the Repository and the [OTM Bridge API](otm-bridge.html) (Bridge) for the DDP. The
 Gateway and the Bridge APIs handle intermediary communication between the Repository and DDP and allow each system to operate
 without any knowledge of the internals of the other system. Each API is designed to facilitate deployment either as part of
