@@ -44,7 +44,7 @@
     <p>
       The One To Many (OTM) Specification defines two APIs to support communication between digital content
       repository systems (Repository) and distributed digital preservation systems (DDP). These APIs work in tandem
-      to allow content captured in Repository systems to be transitioned to DDP systems for preservation. The
+      to allow content captured in Repository systems to be copied to DDP systems for preservation. The
       APIs defined are the <a href="otm-gateway.html">OTM Repository Gateway API (Gateway)</a> for the Repository and the
       <a href="otm-bridge.html">OTM Bridge API (Bridge)</a> for the DDP. The Gateway and the Bridge APIs handle intermediary
       communication between the Repository and DDP and allow each system to operate without any knowledge of the internals of
@@ -58,12 +58,11 @@
       are expected to be used.
     </p>
     <p>
-      The DDP workflow assumes an intermideriary service which transforms data from the OTM Bridge to something
-      usable by the DDP and handles queries for OTM actions to perform. The implmentation of this
+      The DDP workflow assumes an intermediary service which transforms data from the OTM Bridge into something
+      usable by the DDP and handles queries for OTM actions to perform. The implementation of this
       piece will be dependent on the architecture of the DDP, and is only a separate service in order to
-      delineate the operations which are likely required by a DDP. Additional notes are provided for the minimum
-      required steps for implementation in Chronopolis.
-    </p>
+      delineate the operations which are likely required by a DDP.</p>
+    <p>Additional notes are provided for the minimum required steps for implementation in Chronopolis.</p>
   </section>
 
   <section>
@@ -74,7 +73,7 @@
 
   <section>
     <h2>Initialize</h2>
-    <p>The intialization operation allows a DDP and Repository to connect their respective OTM Bridge and OTM Gateway applications
+    <p>The initialization operation allows a DDP and Repository to connect their respective OTM Bridge and OTM Gateway applications
        so that data can be transferred between the two systems.</p>
 
     <section>
@@ -98,9 +97,50 @@
     </section>
   </section>
 
+<section>
+  <h2>Audit</h2>
+  <p>The Audit workflow retrieves actions taken on filegroups which have been deposited. It is expected that the Audit Log will
+  be maintained by the OTM Bridge, and that events passed to it from a DDP do not need to continue to be stored by the DDP.</p>
+
+  <p>See also: <a href="audit-appendix.html">Audit Event Appendix</a></p>
+
+  <section>
+  <h3>Flow</h3>
+  <ol>
+    <li>The Repository manager selects an object and requests a preservation audit history</li>
+    <li>
+      The Repository calls the Gateway <a href="otm-gateway.html#get-object-audit">GET Object Audit</a> endpoint for the object
+    </li>
+    <li>
+      The Gateway calls the Bridge <a href="otm-bridge.html#get-audit-log">Get Audit Log</a> endpoint, specifying the object ID
+      as the filegroup identifier
+    </li>
+    <li>
+      The Bridge gathers audit data for the given filegroup and associated files from its internal data store and responds to
+      Gateway with the requested audit history data
+    </li>
+    <li>
+      The Gateway translates the Bridge audit data into a format familiar to the repository and responds to the Repository
+      request
+    </li>
+    <li>The Repository displays the audit data to the Repository manager</li>
+  </ol>
+
+  <figure id="audit-diagram">
+    <figcaption>Get Audit Workflow</figcaption>
+    <img src="images/audit_content.png">
+  </figure>
+
+  </section>
+</section>
+
+
   <section>
     <h2>Deposit</h2>
     <p>The Deposit workflow describes the process when an OTM Gateway requests that a filegroup be preserved.</p>
+    <p>As part of this workflow, a version identifier is passed from the OTM Gateway through the system so that a deposit can be
+    related to a point in time. It is up to the DDP to determine how to store this information in a manner suited for long term
+    preservation.</p>
 
     <section>
       <h3>System to System Flow</h3>
@@ -177,7 +217,7 @@
         <li>
           Look for the Deposit based on the `filegroup-id` in Chronopolis
           <ul>
-            <li>Expected to find nothing based on this flow</li>
+            <li>Expect there to be no existing object in the DDP with an identifier of `filegroup-id`</li>
           </ul>
         </li>
         <li>
@@ -196,11 +236,11 @@
         </li>
         <li>Use Chronopolis Ingest API to distribute the Deposit</li>
         <li>
-          Query Chronopoils Ingest API for Deposit status
+          Query Chronopolis Ingest API for Deposit status
           <ul>
             <li>
               Inform the OTM Bridge using <a href="otm-bridge.html#complete-deposit">POST /deposit/{filegroup-id}</a> when
-              the Deposit has fully distrubted throughout Chronopolis
+              the Deposit has fully distributed throughout Chronopolis
             </li>
             <li>Create an <a href="audit-appendix.html#ingest">Ingest</a> audit event for the deposit</li>
           </ul>
@@ -235,7 +275,7 @@
               Mint a new version using the `version-id` from the OTM Bridge
               <ul>
                 <li>The OCFL Object version will increment as usual</li>
-                <li>An extra json field will be included to encapsulate the OTM Repository version (e.g. `otm-version`)</li>
+                <li>Store the version from the OTM Gateway in the `inventory.json`</li>
               </ul>
             </li>
             <li>New files will be added to the OCFL inventory and distributed in full</li>
@@ -246,11 +286,11 @@
         </li>
         <li>Use Chronopolis Ingest API to distribute the updated Deposit</li>
         <li>
-          Query Chronopoils Ingest API for Deposit status
+          Query Chronopolis Ingest API for Deposit status
           <ul>
             <li>
               Inform the OTM Bridge using <a href="otm-bridge.html#complete-deposit">POST /deposit/{filegroup-id}</a> when the
-              Deposit has fully distrubted throughout Chronopolis
+              Deposit has fully distributed throughout Chronopolis
             </li>
             <li>Create an <a href="audit-appendix.html#ingest">Ingest</a> audit event for the deposit</li>
           </ul>
@@ -323,7 +363,7 @@
           <li><a href="otm-bridge.html#list-deletes">GET /delete</a></li>
         </ul>
       </li>
-      <li>Identify the Chronpolis package associated with the `filegroup-id`</li>
+      <li>Identify the Chronopolis package associated with the `filegroup-id`</li>
       <li>
         Removing package
         <ul>
@@ -350,7 +390,7 @@
       <li>
         Query Chronopolis for the `filegroup-id`
         <ul>
-          <li>Identify the Chronpolis package associated with the `filegroup-id`</li>
+          <li>Identify the Chronopolis package associated with the `filegroup-id`</li>
           <li>Identify the files within the package to remove</li>
         </ul>
       </li>
@@ -369,7 +409,7 @@
         </ul>
       </li>
       <li>
-        When propogation of deletes is complete, update the status of the OTM Bridge
+        When propagation of deletes is complete, update the status of the OTM Bridge
         <ul>
           <li><a href="otm-bridge.html#complete-delete">POST /delete/{deleteId}</a></li>
           <li>Send <a href="audit-appendix.html#deletion">Deletion</a> audit event to OTM Bridge</li>
@@ -397,7 +437,8 @@
         The Repository calls the Gateway <a href="otm-gateway.html#initiate-restore">POST Object Restore</a> endpoint for
         the object to be restored
       </li>
-      <li>The Gateway resolves the object into a set of files to be restored</li>
+      <li>The Gateway calls the Bridge <a href="otm-bridge.html#get-deposited-details">Get Deposited Content</a> in order to
+          resolve the set of files to be restored</li>
       <li>
         The Gateway calls the Bridge <a href="otm-bridge.html#restore-content">Restore Content</a> endpoint with the list of
         files to be restored
@@ -466,21 +507,21 @@
         Restage data
         <ul>
           <li>OTM With RO Mount: Create symbolic links which can be pulled from</li>
-          <li>OTM Without RO Mount: Need process for retrieving data from Chronopoils nodes</li>
+          <li>OTM Without RO Mount: Need process for retrieving data from Chronopolis nodes</li>
         </ul>
       </li>
       <li>
-        Notify the OTM Bridge that the Restore is staged an accessible with a given TTL
+        Notify the OTM Bridge that the Restore is staged and accessible with a given TTL
         <ul>
           <li>Call OTM Bridge indicating the restore is ready: <a href="otm-bridge.html#complete-restore">
               POST /restore/{restoreId}</a></li>
+          <li>Send <a href="audit-appendix.html#restoration">Restoration</a> audit event to OTM Bridge</li>
         </ul>
       </li>
       <li>
         Upon expiration of the TTL
         <ul>
           <li>Remove staged content</li>
-          <li>Send <a href="audit-appendix.html#restoration">Restoration</a> audit event to OTM Bridge</li>
         </ul>
       </li>
     </ol>
@@ -490,40 +531,6 @@
       <figcaption>DDP Restore Workflow</figcaption>
       <img src="images/ddp_restore.png"/>
     </figure>
-  </section>
-</section>
-<section>
-  <h2>Audit</h2>
-  <p>The Audit workflow retrieves actions taken on filegroups which have been deposited. See also:
-     <a href="audit-appendix.html">Audit Event Appendix</a></p>
-
-  <section>
-  <h3>Flow</h3>
-  <ol>
-    <li>The Repository manager selects an object and requests a preservation audit history</li>
-    <li>
-      The Repository calls the Gateway <a href="otm-gateway.html#get-object-audit">GET Object Audit</a> endpoint for the object
-    </li>
-    <li>
-      The Gateway calls the Bridge <a href="otm-bridge.html#get-audit-log">Get Audit Log</a> endpoint, specifying the object ID
-      as the filegroup identifier
-    </li>
-    <li>
-      The Bridge gathers audit data for the given filegroup and associated files from its internal data store and responds to
-      Gateway with the requested audit history data
-    </li>
-    <li>
-      The Gateway translates the Bridge audit data into a format familiar to the repository and responds to the Repository
-      request
-    </li>
-    <li>The Repository displays the audit data to the Repository manager</li>
-  </ol>
-
-  <figure id="audit-diagram">
-    <figcaption>Get Audit Workflow</figcaption>
-    <img src="images/audit_content.png">
-  </figure>
-
   </section>
 </section>
 </body>
