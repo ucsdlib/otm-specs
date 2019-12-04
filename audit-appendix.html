@@ -102,8 +102,6 @@
       <h3>Replication</h3>
       <p>The Replication event represents the distribution of a filegroup or a file to a single location within a DDP.</p>
 
-      <p>It is up to the discretion of the DDP if it wants to provide a Replication event for each copy of the filegroup made or
-      for only the authoritative copy.</p>
       <table id="replication-fields" class="simple">
         <thead>
           <tr>
@@ -269,7 +267,7 @@
           </tr>
           <tr>
             <td>Expiration</td>
-            <td>The timestamp of when the Restore event expired</td>
+            <td>The expiration timestamp for the Restore</td>
           </tr>
           <tr>
             <td>Success</td>
