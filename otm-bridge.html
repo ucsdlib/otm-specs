@@ -77,6 +77,7 @@
           </pre>
           <li>Response Code: <code>200</code> (on success)</li>
         </ul>
+        <p>Expected client(s): Gateway, DDP</p>
       </section>
 
     </section>
@@ -112,6 +113,7 @@
           </pre>
           <li>Response Code: <code>201</code> (on success)</li>
         </ul>
+        <p>Expected client(s): DDP</p>
       </section>
 
       <section>
@@ -133,6 +135,7 @@
           </pre>
           <li>Response Code: <code>200</code> (on success)</li>
         </ul>
+        <p>Expected client(s): DDP</p>
       </section>
 
       <section>
@@ -168,6 +171,7 @@
           <li>This endpoint may be called both to perform an initial registration and to provide updates to registration
           information. Calls made by the Bridge after a registration update will use the updated details.</li>
         </ul>
+        <p>Expected client(s): Gateway</p>
       </section>
 
   </section>
@@ -241,6 +245,7 @@
           Bridge implementation may choose to only support deposits of certain types. Agreements between the depositor and
           the DDP should specify which types are to be used for deposit.</li>
         </ul>
+        <p>Expected client(s): Gateway</p>
       </section>
 
       <section>
@@ -287,6 +292,7 @@
           <li>The set of possible values for <code>status</code> will be set by the DDP. This field is intended to
           be informational rather than actionable.</li>
         </ul>
+        <p>Expected client(s): Gateway, DDP</p>
       </section>
 
       <section>
@@ -332,6 +338,7 @@
           <li>The set of possible values for <code>status</code> will be set by the DDP. This field is intended to
           be informational rather than actionable.</li>
         </ul>
+        <p>Expected client(s): Gateway</p>
       </section>
 
       <section>
@@ -347,6 +354,7 @@
           </li>
           <li>Response Code: <code>200</code> (on success)</li>
         </ul>
+        <p>Expected client(s): DDP</p>
       </section>
 
     </section>
@@ -373,6 +381,7 @@
           </pre>
           <li>Response Code: <code>200</code> (on success)</li>
         </ul>
+        <p>Expected client(s): Gateway</p>
       </section>
 
       <section>
@@ -422,6 +431,7 @@
           <li>The checksum type provided is at the discretion of the DDP and may or may not match the checksum type used when
           content was deposited</li>
         </ul>
+        <p>Expected client(s): Gateway</p>
       </section>
 
     </section>
@@ -477,6 +487,7 @@
           versions of a filegroup are to be restored. In the provided example, the alternative request would be:
           <code>"filegroup-1" : {}</code></li>
         </ul>
+        <p>Expected client(s): Gateway</p>
       </section>
 
       <section>
@@ -518,6 +529,7 @@
           <li>Restored content will only be made available on the Bridge for a limited time. After this time, content will be
           removed and the status of the restore will be changed to expired.</li>
         </ul>
+        <p>Expected client(s): Gateway, DDP</p>
       </section>
 
       <section>
@@ -557,6 +569,7 @@
           <li>Restored content will only be made available on the Bridge for a limited time. After this time, content will be
           removed and the status of the restore will be changed to expired.</li>
         </ul>
+        <p>Expected client(s): Gateway</p>
       </section>
 
       <section>
@@ -589,6 +602,7 @@
              </ul>
           </li>
         </ul>
+        <p>Expected client(s): Gateway</p>
       </section>
 
       <section>
@@ -604,6 +618,7 @@
           </li>
           <li>Response Code: <code>200</code> (on success)</li>
         </ul>
+        <p>Expected client(s): DDP</p>
       </section>
 
     </section>
@@ -659,6 +674,7 @@
           versions of a filegroup are to be deleted. In the provided example, the alternative request would be:
           <code>"filegroup-1" : {}</code></li></li>
         </ul>
+        <p>Expected client(s): Gateway</p>
       </section>
 
       <section>
@@ -694,6 +710,7 @@
           delete requests which are ready for processing)</li>
           <li>Delete IDs returned by this method are only those that have been initiated or are in-process</li>
         </ul>
+        <p>Expected client(s): Gateway, DDP</p>
       </section>
 
       <section>
@@ -729,6 +746,7 @@
              </ul>
           </li>
         </ul>
+        <p>Expected client(s): Gateway</p>
       </section>
 
       <section>
@@ -744,6 +762,7 @@
           </li>
           <li>Response Code: <code>200</code> (on success)</li>
         </ul>
+        <p>Expected client(s): DDP</p>
       </section>
 
     </section>
@@ -780,6 +799,7 @@
         <ul class="note">
           <li>The types of events and expected details of each event type are listed in the OTM Appendix</li>
         </ul>
+        <p>Expected client(s): DDP</p>
       </section>
 
       <section>
@@ -831,6 +851,7 @@
           <li>It may be desirable to provide paged results for large result sets</li>
           <li>Types and fields of expected history events are listed in the OTM Appendix</li>
         </ul>
+        <p>Expected client(s): Gateway</p>
       </section>
 
     </section>
