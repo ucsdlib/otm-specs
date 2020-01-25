@@ -185,11 +185,9 @@
         <p>Requests that a set of content be deposited into the DDP</p>
         <ul>
           <li>Request Type: <code>POST</code></li>
-          <li>Request Path: <code>/deposit ? checksum-type & deposit-format</code></li>
+          <li>Request Path: <code>/deposit ? deposit-format</code></li>
           <li>Request Query Parameters:
             <ul>
-              <li><code>checksum-type</code>: (Optional) Indicates the type of checksum used. Applies to all file checksums.
-              Must be one of the supported checksum types specified in the <a>Bridge Details</a> response.</li>
               <li><code>deposit-format</code>: (Optional) Format of content being deposited (e.g. "bagit-profile-v1.2")</li>
             </ul>
           </li>
@@ -200,26 +198,39 @@
               <li><code>version</code>: The version of a filegroup</li>
               <li><code>files</code>: List of files included in the filegroup</li>
               <li>File ID: Identifies a file within a filegroup</li>
-              <li>File Checksum: The checksum of a file; the type of checksum is defined by the
-                <code>checksum-type</code> query parameter</li>
+              <li><code>size</code>: Size of a file in bytes</li>
+              <li>Checksum: Type of checksum and checksum of the file (a list of supported checksum types are provided in
+              <a>Bridge Details</a>)</li>
             </ul>
           </li>
           <pre class="example">
             {
-              "filegroup-1" : {                                   # Filegroup ID
+              "filegroup-1" : {                                 # Filegroup ID
                 "version" : "2019-12-31T23:59:60Z",
                 "files" : {
-                  "file-1" : "d41d8cd98f00b204e9800998ecf8427e",  # File ID and File Checksum
-                  "file-2" : "d41d8cd98f00b204e9800998ecf8427e"   # File ID and File Checksum
+                  "file-1" : {                                  # File ID
+                    "size" : "654321",
+                    "MD5" : "d41d8cd98f00b204e9800998ecf8427e"  # Checksum
+                  },
+                  "file-2" : {                                  # File ID
+                    "size" : "654321",
+                    "MD5" : "d41d8cd98f00b204e9800998ecf8427e"  # Checksum
+                  },                                            # Additional files listed here
                 }
               },
-              "filegroup-2" : {                                   # Filegroup ID
+              "filegroup-2" : {                                 # Filegroup ID
                 "version" : "2019-12-31T23:59:60Z",
                 "files" : {
-                  "file-3" : "d41d8cd98f00b204e9800998ecf8427e",  # File ID and File Checksum
-                  "file-4" : "d41d8cd98f00b204e9800998ecf8427e"   # File ID and File Checksum
+                  "file-3" : {                                  # File ID
+                    "size" : "654321",
+                    "MD5" : "d41d8cd98f00b204e9800998ecf8427e"  # Checksum
+                  },
+                  "file-4" : {                                  # File ID
+                    "size" : "654321",
+                    "MD5" : "d41d8cd98f00b204e9800998ecf8427e"  # Checksum
+                  },                                            # Additional files listed here
                 }
-              },                                                  # Additional filegroups listed here
+              },                                                # Additional filegroups listed here
             }
           </pre>
           <li>Response Code: <code>201</code> (on success)</li>
@@ -232,6 +243,7 @@
           request to this URL is irrelevant to the Bridge.</li>
           <li>Provided filegroup IDs and file IDs must be URL-safe to support the Bridge requesting those files from the
           Gateway and the reverse in the restore context</li>
+          <li>Provided filegroup IDs must not include slash ("/" or "\") characters. File IDs may include slashes.</li>
           <li>There is no guarantee that all filegroups in a single deposit request will be deposited into the DDP at the
           same time. This allows the Bridge to manage transfers based on available resources (so as to not over-run local
           disk, for example).</li>
@@ -451,23 +463,26 @@
               <li>Filegroup ID: Identifies the filegroup from which the file should be restored</li>
               <li><code>version</code>: The version of a filegroup from which the file should be restored</li>
               <li><code>files</code>: List of files to be restored</li>
-              <li><code>checksum-type</code>: The type of checksum to be used for file verification; valid values are those
-              in the checksum-types-supported list provided in <a>Bridge Details</a></li>
               <li>File ID: Identifies a file to be restored</li>
-              <li>File Checksum: The checksum of the file to be restored. Including the checksum is optional and is used only
-              to verify that the correct file is being restored</li>
+              <li>Checksum: Type of checksum and checksum of the file (a list of supported checksum types are provided in
+              <a>Bridge Details</a>). Including the checksum is optional and is used only to verify that the correct file is
+              being restored</li>
             </ul>
           </li>
           <pre class="example">
             {
-              "filegroup-1" : {                                   # Filegroup ID
+              "filegroup-1" : {                                 # Filegroup ID
                 "version" : "2019-12-31T23:59:60Z",
                 "checksum-type" : "MD5",
                 "files" : {
-                  "file-1" : "d41d8cd98f00b204e9800998ecf8427e",  # File ID and File Checksum
-                  "file-2" : "d41d8cd98f00b204e9800998ecf8427e"   # File ID and File Checksum
+                  "file-1" : {                                  # File ID
+                    "MD5" : "d41d8cd98f00b204e9800998ecf8427e"  # Checksum
+                  },
+                  "file-2" : {                                  # File ID
+                    "MD5" : "d41d8cd98f00b204e9800998ecf8427e"  # Checksum
+                  },
                 }
-              },                                                  # Additional filegroups listed here
+              },                                                # Additional filegroups listed here
             }
           </pre>
           <li>Response Code: <code>202</code> (on success)</li>
@@ -481,13 +496,6 @@
               "restore-id" : "54321"
             }
           </pre>
-        </ul>
-        <ul class="note">
-          <li>It would be possible to allow the "files" section to be omitted if all files in a given filegroup version are
-          to be restored.</li>
-          <li>It would be possible to allow the value associated with a filegroup ID to be omitted if all files in all
-          versions of a filegroup are to be restored. In the provided example, the alternative request would be:
-          <code>"filegroup-1" : {}</code></li>
         </ul>
         <p>Expected client(s): Gateway</p>
       </section>
@@ -591,11 +599,11 @@
               <li><code>file-id</code>: The identifier of the file to retrieve</li>
             </ul>
           </li>
-          <li>Respnse: File stream of the restored file</li>
+          <li>Response: File stream of the restored file</li>
           <li>Response Headers:
              <ul>
-               <li><code>ETag</code>: Checksum of the restored file in the format indicated by <a>Get Deposited
-               Details</a></li>
+               <li><code>Digest</code>: Checksum type and value of the restored file, <a
+               href="https://tools.ietf.org/html/rfc3230#section-4.3.2">as defined in RFC3230</a></li>
                <li><code>Content-Length</code>: Size in bytes of the restored file</li>
              </ul>
           </li>
@@ -643,20 +651,24 @@
               <li><code>version</code>: The version of a filegroup from which the file should be deleted</li>
               <li><code>files</code>: List of files to be deleted</li>
               <li>File ID: Identifies a file to be deleted</li>
-              <li>File Checksum: The checksum of a file of the file to be deleted. The checksum type must match the type
-              returned in <a>Get Deposited Details</a>. Including the checksum is optional and is used only to verify that
-              the correct file is being deleted.</li>
+              <li>Checksum: Type of checksum and checksum of the file to be deleted (a list of supported checksum types are
+              provided in <a>Bridge Details</a>). Including the checksum is optional and is used only to verify that the
+              correct file is being deleted</li>
             </ul>
           </li>
           <pre class="example">
             {
-              "filegroup-1" : {                                   # Filegroup ID
+              "filegroup-1" : {                                 # Filegroup ID
                 "version" : "2019-12-31T23:59:60Z",
                 "files" : {
-                  "file-1" : "d41d8cd98f00b204e9800998ecf8427e",  # File ID and File Checksum
-                  "file-2" : "d41d8cd98f00b204e9800998ecf8427e"   # File ID and File Checksum
+                  "file-1" : {                                  # File ID
+                    "MD5" : "d41d8cd98f00b204e9800998ecf8427e"  # Checksum
+                  },
+                  "file-2" : {                                  # File ID
+                    "MD5" : "d41d8cd98f00b204e9800998ecf8427e"  # Checksum
+                  }
                 }
-              },                                                  # Additional filegroups listed here
+              },                                                # Additional filegroups listed here
             }
           </pre>
           <li>Response Code: <code>202</code> (on success)</li>
@@ -680,7 +692,6 @@
           versions of a filegroup are to be deleted. In the provided example, the alternative request would be:
           <code>"filegroup-1" : {}</code></li></li>
         </ul>
-        <p>Expected client(s): Gateway</p>
       </section>
 
       <section>
@@ -807,7 +818,8 @@
           <li>Response Code: <code>200</code> (on success)</li>
         </ul>
         <ul class="note">
-          <li>The types of events and expected details of each event type are listed in the OTM Appendix</li>
+          <li>The types of events and expected details of each event type are listed in the <a
+          href="audit-appendix.html">Audit Events Appendix</a></li>
         </ul>
         <p>Expected client(s): DDP</p>
       </section>
@@ -837,15 +849,15 @@
           </li>
           <pre class="example">
             {
-              "filegroup-1" : [                                           # Filegroup ID
+              "filegroup-1" : [                           # Filegroup ID
                 {
-                  "file-1" : [                                            # File ID
+                  "file-1" : [                            # File ID
                     {
                       "date" : "2019-12-31T23:59:60Z",
                       "type" : "replication",
                       "details" : "Replication to the UCSD storage node"
-                    },                                                    # Additional events for this file listed here
-                  ],                                                      # Additional files listed here
+                    },                                    # Additional events for this file listed here
+                  ],                                      # Additional files listed here
                 }
               ]
             }
@@ -859,7 +871,8 @@
         </ul>
         <ul class="note">
           <li>It may be desirable to provide paged results for large result sets</li>
-          <li>Types and fields of expected history events are listed in the OTM Appendix</li>
+          <li>The types of events and expected details of each event type are listed in the <a
+          href="audit-appendix.html">Audit Events Appendix</a></li>
         </ul>
         <p>Expected client(s): Gateway</p>
       </section>
