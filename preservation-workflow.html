@@ -104,8 +104,8 @@
 
 <section>
   <h2>Audit</h2>
-  <p>The Audit workflow retrieves actions taken on filegroups which have been deposited. It is expected that the Audit Log will
-  be maintained by the OTM Bridge, and that events passed to it from a DDP do not need to continue to be stored by the DDP.</p>
+  <p>The Audit workflow retrieves actions taken on filegroups that have been deposited. It is expected that the Audit Log will
+  be maintained by the OTM Bridge and will contain events provided by the DDP.</p>
 
   <p>See also: <a href="audit-appendix.html">Audit Event Appendix</a></p>
 
@@ -191,10 +191,11 @@
           When the deposit into the DDP is finished, the DDP calls the Bridge <a href="otm-bridge.html#complete-deposit">
           Complete Deposit</a> endpoint to inform the Bridge that the deposit is complete
         </li>
-        <li>The Bridge clears the files associated with the completed deposit from Bridge staging storage</li>
+        <li>The Bridge clears the files associated with the completed deposit from Bridge staging storage and transitions the
+        deposit into a completed status</li>
         <li>
-          The Repository administrator checks the object status in the Repository; the Repository requests information about the
-          object from the Gateway to provide information.
+          The Gateway calls the Bridge <a href="otm-bridge.html#get-deposit-status">Get Deposit Status</a> endpoint in order
+          to provide the Respository administrator with deposit status information
         </li>
       </ol>
 
@@ -218,6 +219,9 @@
           <ul>
             <li><a href="otm-bridge.html#list-deposits">GET /deposit</a></li>
           </ul>
+        </li>
+        <li>
+          Extract `filegroup-id` set from deposits response
         </li>
         <li>
           Look for the Deposit based on the `filegroup-id` in Chronopolis
@@ -259,6 +263,9 @@
           <ul>
             <li><a href="otm-bridge.html#list-deposits">GET /deposit</a></li>
           </ul>
+        </li>
+        <li>
+          Extract `filegroup-id` set from deposits response
         </li>
         <li>
           Look for the Deposit based on the `filegroup-id` in Chronopolis
@@ -326,10 +333,11 @@
     <ol>
       <li>The Repository manager selects an object to be deleted from preservation storage</li>
       <li>
-        The Repository calls the Gateway <a href="otm-gateway.html#destroy-object">DELETE Object</a> endpoint for the object
+        The Repository calls the Gateway <a href="otm-gateway.html#delete-object">DELETE Object</a> endpoint for the object
         to be deleted
       </li>
-      <li>The Gateway resolves the object into a set of files to be deleted</li>
+      <li>The Gateway calls the Bridge <a href="otm-bridge.html#get-deposited-content">Get Deposited Content</a> endpoint and
+      resolves the object into a set of files to be deleted</li>
       <li>
         The Gateway calls the Bridge <a href="otm-bridge.html#delete-content">Delete Content</a> endpoint with the list of files
         to be deleted
