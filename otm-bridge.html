@@ -253,7 +253,7 @@
           <li>Request Path: <code>/deposit ? status</code></li>
           <li>Request Query Parameters:
             <ul>
-              <li><code>status</code>: (Optional) Limit list to deposits with a specific deposit status</li>
+              <li><code>status</code>: (Optional) Limit list to deposits with a specific deposit <a>status</a></li>
             </ul>
           </li>
           <li>Response Body: <code>JSON</code>
@@ -261,7 +261,8 @@
               <li>Filegroup ID: Identifies the filegroup being deposited</li>
               <li><code>version</code>: The version of a filegroup</li>
               <li><code>file-count</code>: The number of files in a deposit</li>
-              <li><code>status</code>: The current state of the deposit</li>
+              <li><code>status</code>: The current <a>status</a> of the deposit</li>
+              <li><code>details</code>: Additional details about the state of the deposit</li>
             </ul>
           </li>
           <pre class="example">
@@ -269,7 +270,8 @@
               "filegroup-1" : {                     # Filegroup ID
                 "version : "2019-12-31T23:59:60Z",
                 "file-count" : "2",
-                "status" : "TRANSFERRING"
+                "status" : "ACCEPTED",
+                "details" : ""
               },                                    # Additional filegroups listed here
             }
           </pre>
@@ -284,8 +286,6 @@
           <li>This list will grow large if many deposits are initiated at once and may require paged results</li>
           <li>This list will not include all historical deposits, but only those that are in the process of being
           deposited</li>
-          <li>The set of possible values for <code>status</code> will be set by the DDP. This field is intended to
-          be informational rather than actionable.</li>
         </ul>
       </section>
 
@@ -305,7 +305,8 @@
               <li>Filegroup ID: Identifies the filegroup being deposited</li>
               <li><code>version</code>: The version of a filegroup</li>
               <li><code>file-count</code>: The number of files in a deposit</li>
-              <li><code>status</code>: The current state of the deposit</li>
+              <li><code>status</code>: The current <a>status</a> of the deposit</li>
+              <li><code>details</code>: Additional details about the state of the deposit</li>
             </ul>
           </li>
           <pre class="example">
@@ -313,7 +314,8 @@
               "filegroup-1" : {                     # Filegroup ID
                 "version : "2019-12-31T23:59:60Z",
                 "file-count" : "2",
-                "status" : "TRANSFERRING"
+                "status" : "ACCEPTED",
+                "details" : ""
               }
             }
           </pre>
@@ -329,8 +331,6 @@
           deposit in the completed status remains available to query via this endpoint may vary.</li>
           <li>An additional property may be included in the response JSON for completed deposits to provide the <a>Get
           Deposited Details</a> URL for this deposit.</li>
-          <li>The set of possible values for <code>status</code> will be set by the DDP. This field is intended to
-          be informational rather than actionable.</li>
         </ul>
       </section>
 
@@ -487,14 +487,15 @@
           <li>Request Path: <code>/restore ? status</code></li>
           <li>Request Query Parameters:
             <ul>
-              <li><code>status</code>: (Optional) Limit list to restore actions with a specific status</li>
+              <li><code>status</code>: (Optional) Limit list to restore actions with a specific <a>status</a></li>
             </ul>
           </li>
           <li>Response Body: <code>JSON</code>
             <ul>
               <li>Restore ID: Identifier for restore action</li>
               <li><code>file-count</code>: The number of files to be restored</li>
-              <li><code>status</code>: The current state of the restore action</li>
+              <li><code>status</code>: The current <a>status</a> of the restore action</li>
+              <li><code>details</code>: Additional details about the state of the restore action</li>
               <li><code>expiration</code>: The date on which the restored content will expire (and no longer be available for
               retrieval). This value may be empty until a restore action completes.</li>
             </ul>
@@ -503,7 +504,8 @@
             {
               "restore-1" : {                          # Restore ID
                 "file-count" : "12",
-                "status" : "STAGING",
+                "status" : "COMPLETE",
+                "details" : "",
                 "expiration" : "2020-12-31T23:59:60Z"
               },                                       # Additional restore actions listed here
             }
@@ -534,7 +536,8 @@
           <li>Response Body: <code>JSON</code>
             <ul>
               <li><code>file-count</code>: The number of files to be restored</li>
-              <li><code>status</code>: The current state of the restore action</li>
+              <li><code>status</code>: The current <a>status</a> of the restore action</li>
+              <li><code>details</code>: Additional details about the state of the restore action</li>
               <li><code>expiration</code>: The date on which the restored content will expire (and no longer be available for
               retrieval). This value may be empty until a restore action completes.</li>
             </ul>
@@ -542,7 +545,8 @@
           <pre class="example">
             {
               "file-count" : "12",
-              "status" : "STAGING",
+              "status" : "COMPLETE",
+              "details" : "",
               "expiration" : "2020-12-31T23:59:60Z"
             }
           </pre>
@@ -669,21 +673,23 @@
           <li>Request Path: <code>/delete ? status</code></li>
           <li>Request Query Parameters:
             <ul>
-              <li><code>status</code>: (Optional) Limit list to delete actions with a specific status</li>
+              <li><code>status</code>: (Optional) Limit list to delete actions with a specific <a>status</a></li>
             </ul>
           </li>
           <li>Response Body: <code>JSON</code>
             <ul>
               <li>Delete ID: Identifier for delete action</li>
               <li><code>file-count</code>: The number of files to be deleted</li>
-              <li><code>status</code>: The current state of the delete action</li>
+              <li><code>status</code>: The current <a>status</a> of the delete action</li>
+              <li><code>details</code>: Additional details about the state of the delete action</li>
             </ul>
           </li>
           <pre class="example">
             {
               "delete-1" : {           # Delete ID
                 "file-count" : "7",
-                "status" : "DELETING"
+                "status" : "ACCEPTED",
+                "details" : ""
               },                       # Additional delete actions listed here
             }
           </pre>
@@ -711,14 +717,16 @@
             <ul>
               <li>Delete ID: Identifier for delete action</li>
               <li><code>file-count</code>: The number of files to be deleted</li>
-              <li><code>status</code>: The current state of the delete action</li>
+              <li><code>status</code>: The current <a>status</a> of the delete action</li>
+              <li><code>details</code>: Additional details about the state of the delete action</li>
             </ul>
           </li>
           <pre class="example">
             {
               "delete-1" : {
                 "file-count" : "7",
-                "status" : "DELETING"
+                "status" : "ACCEPTED",
+                "details" : ""
               }
             }
           </pre>
@@ -834,5 +842,30 @@
       </section>
 
     </section>
+    <section>
+      <h2><dfn>Status</dfn></h2>
+
+      <p>All Deposit, Restore, and Delete endpoints must support the following set of status values. Other status values
+      may be added to this list to provide additional detail about processing activity.</p>
+      <ul>
+        <li>
+          <code>ACCEPTED</code> - The first status value set on a valid deposit, restore, or delete action. Indicates that
+          an action has been initiated.
+        </li>
+        <li>
+          <code>COMPLETE</code> - The final status value set on a deposit, restore, or delete action that has completed
+          successfully. Indicates that all work on the action is done.
+        </li>
+        <li>
+          <code>ERROR</code> - Indicates that an error occurred while performing the deposit, restore, or delete action and
+          processing has halted. Further details should be provided as to the cause of the error.
+        </li>
+      </ul>
+      <ul class="note">
+        <li>The full set of status values is expected to be defined the DDP</li>
+      </ul>
+
+    </section>
+
   </body>
 </html>
