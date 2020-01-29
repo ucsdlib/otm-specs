@@ -91,6 +91,9 @@
       <section>
         <h3><dfn>Deposit Object</dfn></h3>
         <p>Creates or updates a Gateway Object for preservation of an Object from the repository.</p>
+        <p>Upon acceptance of the request, the Gateway MUST create a unique version identifier
+          for the object, corresponding to the exact content in this request. This identifier MUST be
+          returned to the client in a <code>x-otm-version-id</code> response header.</p>
         <ul>
           <li>Request Type: <code>PUT</code></li>
           <li>Request Path: <code>/{object-id}</code></li>
@@ -106,6 +109,7 @@
           <li>Response Headers:
             <ul>
               <li><code>ETag</code>: Entity tag for the deposited object.</li>
+              <li><code>x-otm-version-id</code>: Version of the object.</li>
             </ul>
           </li>
           <pre class="example" title="Deposit Object Request">
@@ -147,10 +151,14 @@
 
       <section>
         <h3><dfn>Purge Object</dfn></h3>
-        <p></p>
+        <p>Initiates a purge of the object from the preservation system. This
+          will result in eradication of the object's content. If a <code>versionId</code> is provided,
+          the Gateway MUST request deletion objects matching the specified version. Otherwise it MUST
+          request deletion of all versions of the requested object.
+        </p>
         <ul>
           <li>Request Type: <code>DELETE</code></li>
-          <li>Request Path: <code>/{object-id}</code></li>
+          <li>Request Path: <code>/{object-id}[?versionId={version-id}]</code></li>
           <li>Response Code: <code>204</code> (on success)</li>
         </ul>
         <pre class="example" title="Purge Object Request">
@@ -165,14 +173,30 @@
           Content-Length: 0
           Server: OTM Preservation Gateway
         </pre>
+        <pre class="example" title="Purge Object Version Request">
+          DELETE /af48c3d?versionId=20190702T201500.001 HTTP/1.1
+          Host: preservation-gateway.institution.edu
+          Date: Tue, 02 Jul 2019 20:25:00 GMT
+          Content-Type: text/plain
+        </pre>
+        <pre class="example" title="Purge Object Version Response">
+          HTTP/1.1 204 NoContent
+          Date: Tue, 02 Jul 2019 20:25:00 GMT
+          Content-Length: 0
+          Server: OTM Preservation Gateway
+        </pre>
       </section>
 
       <section>
         <h3><dfn>Initiate Restore</dfn></h3>
-        <p>Request restore of an Object and all its contents for later retrieval</p>
+        <p>Request restore of an Object and all its contents for later retrieval.</p>
+        <p>The client can request restore of a specific version of the object by providing a
+          <code>versionId</code> URL parameter. If this parameter is present, the Gateway MUST
+          restore the exact content of the requested version. When the client does not specify
+          a version, the Gateway SHOULD seek to restore the most recent version.</p>
         <ul>
           <li>Request Type: <code>POST</code></li>
-          <li>Request Path: <code>/{object-id}?restore</code></li>
+          <li>Request Path: <code>/{object-id}?restore[&versionId={version-id}]</code></li>
           <li>Response Code:
             <ul>
               <li><code>202</code> (if the object)</li>
@@ -183,6 +207,12 @@
         </ul>
         <pre class="example" title="Restore Object Request">
           POST /af48c3d?restore HTTP/1.1
+          Host: preservation-gateway.institution.edu
+          Date: Tue, 02 Jul 2019 20:35:00 GMT
+          Content-Length: 0
+        </pre>
+        <pre class="example" title="Restore Object Version Request">
+          POST /af48c3d?restore&versionId=20190702T201500.001 HTTP/1.1
           Host: preservation-gateway.institution.edu
           Date: Tue, 02 Jul 2019 20:35:00 GMT
           Content-Length: 0
@@ -216,10 +246,17 @@
 
       <section>
         <h3><dfn>Retrieve Object</dfn></h3>
-        <p></p>
+        <p>Retrieve the content of an object.</p>
+        <p>The client can request retrieval of a specific version of the object by providing a
+          <code>versionId</code> URL parameter. If this parameter is present, the Gateway MUST
+          provide the exact content of the requested version or return a failure response code.
+          When the client does not specify a version, the Gateway MUST return the most recent
+          available version. In either case, the response MUST include an
+          <code>x-otm-version-id</code> header specifying the identifier for returned version.
+          </p>
         <ul>
           <li>Request Type: <code>GET</code></li>
-          <li>Request Path: <code>/{object-id}</code></li>
+          <li>Request Path: <code>/{object-id}[?versionId={version-id}]</code></li>
           <li>Request Headers:
             <ul>
               <li><code>If-Match</code></li>
@@ -232,18 +269,25 @@
               <li><code>200</code> (on success)</li>
               <li><code>403</code> (when attempting to access an unavailable preserved object; i.e. one that has
                 not been restored)</li>
-              <li><code>412</code></li>
+              <li><code>412</code> (when an If-Match or If-None-Match header fails)</li>
             </ul>
           </li>
           <li>Response Headers:
             <ul>
               <li><code>Content-Type</code></li>
               <li><code>ETag</code></li>
+              <li><code>x-otm-version-id</code>: Version of the object.</li>
             </ul>
           </li>
         </ul>
         <pre class="example" title="Retrieve Object Request">
           GET /af48c3d HTTP/1.1
+          Host: preservation-gateway.institution.edu
+          Date: Tue, 02 Jul 2019 20:45:00 GMT
+          Content-Length: 0
+        </pre>
+        <pre class="example" title="Retrieve Object Version Request">
+          GET /af48c3d?versionId=20190702T201500.001 HTTP/1.1
           Host: preservation-gateway.institution.edu
           Date: Tue, 02 Jul 2019 20:45:00 GMT
           Content-Length: 0
@@ -254,6 +298,7 @@
           ETag: "4efcb3d98ce0fabfd585eb6c4332859"
           Content-Length: 493285
           Content-Type: application/zip
+          x-otm-version-id: 20190702T201500.001
           Server: OTM Preservation Gateway
 
           [493285 bytes of object data]
