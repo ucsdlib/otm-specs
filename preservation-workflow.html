@@ -173,12 +173,12 @@
         </li>
 
         <li>
-          Once all files in a filegroup are in Bridge staging storage and all checksums are validated, the status of the deposit
-          is updated to `STAGED_FOR_DEPOSIT`
+          Once all files in a filegroup are in Bridge staging storage and all checksums are validated, the status of the
+          deposit is updated to <a href="otm-bridge.html#deposit-status">`DEPOSIT_STAGED`</a>
         </li>
         <li>
-          The DDP calls the Bridge <a href="otm-bridge.html#list-deposits">List Deposits</a> endpoint on a regular schedule to
-          check for new deposits in the `STAGED_FOR_DEPOSIT` state
+          The DDP calls the Bridge <a href="otm-bridge.html#list-deposits">List Deposits</a> endpoint on a regular schedule
+          to check for new deposits in the <a href="otm-bridge.html#deposit-status">`DEPOSIT_STAGED`</a> state
         </li>
 
         <li>
@@ -464,10 +464,12 @@
         The Bridge validates that all file checksums match the checksums provided in the restore request (when checksums are
         provided)
       </li>
-      <li>The Bridge updates the status of the restore action to `STAGED_FOR_RESTORE`</li>
       <li>
-        The Gateway calls the Bridge <a href="otm-bridge.html#get-restore-status">Restore Status</a> endpoint on a regular basis
-        to determine if the status of the restore is `STAGED_FOR_RESTORE`
+        The Bridge updates the status of the restore action to <a href="otm-bridge.html#restore-status">`RESTORE_STAGED`</a>
+      </li>
+      <li>
+        The Gateway calls the Bridge <a href="otm-bridge.html#get-restore-status">Restore Status</a> endpoint on a regular
+        basis to determine if the status of the restore is <a href="otm-bridge.html#restore-status">`RESTORE_STAGED`</a>
       </li>
       <li>
         The Gateway calls the Bridge <a href="otm-bridge.html#get-restored-content">Get Restored Content</a> endpoint for each

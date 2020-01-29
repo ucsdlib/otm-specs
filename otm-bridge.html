@@ -54,7 +54,7 @@
     </section>
 
     <section>
-      <h2>Base Endpoints</h2>
+      <h2><dfn>Base Endpoints</dfn></h2>
 
       <section>
         <h3><dfn>Bridge Details</dfn></h3>
@@ -81,7 +81,7 @@
 
     </section>
     <section>
-      <h2>Account Management Endpoints</h2>
+      <h2><dfn>Account Management Endpoints</dfn></h2>
 
       <section>
         <h3><dfn>Add Account</dfn></h3>
@@ -172,7 +172,7 @@
 
   </section>
   <section>
-    <h2>Deposit Endpoints</h2>
+    <h2><dfn>Deposit Endpoints</dfn></h2>
 
       <section>
         <h3><dfn>Deposit Content</dfn></h3>
@@ -253,7 +253,7 @@
           <li>Request Path: <code>/deposit ? status</code></li>
           <li>Request Query Parameters:
             <ul>
-              <li><code>status</code>: (Optional) Limit list to deposits with a specific deposit <a>status</a></li>
+              <li><code>status</code>: (Optional) Limit list to deposits with a specific <a>deposit status</a></li>
             </ul>
           </li>
           <li>Response Body: <code>JSON</code>
@@ -261,7 +261,7 @@
               <li>Filegroup ID: Identifies the filegroup being deposited</li>
               <li><code>version</code>: The version of a filegroup</li>
               <li><code>file-count</code>: The number of files in a deposit</li>
-              <li><code>status</code>: The current <a>status</a> of the deposit</li>
+              <li><code>status</code>: The current <a>deposit status</a> of the deposit</li>
               <li><code>details</code>: Additional details about the state of the deposit</li>
             </ul>
           </li>
@@ -305,7 +305,7 @@
               <li>Filegroup ID: Identifies the filegroup being deposited</li>
               <li><code>version</code>: The version of a filegroup</li>
               <li><code>file-count</code>: The number of files in a deposit</li>
-              <li><code>status</code>: The current <a>status</a> of the deposit</li>
+              <li><code>status</code>: The current <a>deposit status</a> of the deposit</li>
               <li><code>details</code>: Additional details about the state of the deposit</li>
             </ul>
           </li>
@@ -351,7 +351,7 @@
 
     </section>
     <section>
-      <h2>Discovery Endpoints</h2>
+      <h2><dfn>Discovery Endpoints</dfn></h2>
 
       <section>
         <h3><dfn>List Deposited</dfn></h3>
@@ -426,7 +426,7 @@
 
     </section>
     <section>
-      <h2>Restore Endpoints</h2>
+      <h2><dfn>Restore Endpoints</dfn></h2>
 
       <section>
         <h3><dfn>Restore Content</dfn></h3>
@@ -487,14 +487,14 @@
           <li>Request Path: <code>/restore ? status</code></li>
           <li>Request Query Parameters:
             <ul>
-              <li><code>status</code>: (Optional) Limit list to restore actions with a specific <a>status</a></li>
+              <li><code>status</code>: (Optional) Limit list to restore actions with a specific <a>restore status</a></li>
             </ul>
           </li>
           <li>Response Body: <code>JSON</code>
             <ul>
               <li>Restore ID: Identifier for restore action</li>
               <li><code>file-count</code>: The number of files to be restored</li>
-              <li><code>status</code>: The current <a>status</a> of the restore action</li>
+              <li><code>status</code>: The current <a>restore status</a> of the restore action</li>
               <li><code>details</code>: Additional details about the state of the restore action</li>
               <li><code>expiration</code>: The date on which the restored content will expire (and no longer be available for
               retrieval). This value may be empty until a restore action completes.</li>
@@ -536,7 +536,7 @@
           <li>Response Body: <code>JSON</code>
             <ul>
               <li><code>file-count</code>: The number of files to be restored</li>
-              <li><code>status</code>: The current <a>status</a> of the restore action</li>
+              <li><code>status</code>: The current <a>restore status</a> of the restore action</li>
               <li><code>details</code>: Additional details about the state of the restore action</li>
               <li><code>expiration</code>: The date on which the restored content will expire (and no longer be available for
               retrieval). This value may be empty until a restore action completes.</li>
@@ -612,7 +612,7 @@
 
     </section>
     <section>
-      <h2>Delete Endpoints</h2>
+      <h2><dfn>Delete Endpoints</dfn></h2>
 
       <section>
         <h3><dfn>Delete Content</dfn></h3>
@@ -673,14 +673,14 @@
           <li>Request Path: <code>/delete ? status</code></li>
           <li>Request Query Parameters:
             <ul>
-              <li><code>status</code>: (Optional) Limit list to delete actions with a specific <a>status</a></li>
+              <li><code>status</code>: (Optional) Limit list to delete actions with a specific <a>delete status</a></li>
             </ul>
           </li>
           <li>Response Body: <code>JSON</code>
             <ul>
               <li>Delete ID: Identifier for delete action</li>
               <li><code>file-count</code>: The number of files to be deleted</li>
-              <li><code>status</code>: The current <a>status</a> of the delete action</li>
+              <li><code>status</code>: The current <a>delete status</a> of the delete action</li>
               <li><code>details</code>: Additional details about the state of the delete action</li>
             </ul>
           </li>
@@ -717,7 +717,7 @@
             <ul>
               <li>Delete ID: Identifier for delete action</li>
               <li><code>file-count</code>: The number of files to be deleted</li>
-              <li><code>status</code>: The current <a>status</a> of the delete action</li>
+              <li><code>status</code>: The current <a>delete status</a> of the delete action</li>
               <li><code>details</code>: Additional details about the state of the delete action</li>
             </ul>
           </li>
@@ -756,7 +756,7 @@
 
     </section>
     <section>
-      <h2>Audit Endpoints</h2>
+      <h2><dfn>Audit Endpoints</dfn></h2>
 
       <section>
         <h3><dfn>Add Audit Event</dfn></h3>
@@ -845,25 +845,73 @@
     <section>
       <h2><dfn>Status</dfn></h2>
 
-      <p>All Deposit, Restore, and Delete endpoints must support the following set of status values. Other status values
-      may be added to this list to provide additional detail about processing activity.</p>
-      <ul>
-        <li>
-          <code>ACCEPTED</code> - The first status value set on a valid deposit, restore, or delete action. Indicates that
-          an action has been initiated.
-        </li>
-        <li>
-          <code>COMPLETE</code> - The final status value set on a deposit, restore, or delete action that has completed
-          successfully. Indicates that all work on the action is done.
-        </li>
-        <li>
-          <code>ERROR</code> - Indicates that an error occurred while performing the deposit, restore, or delete action and
-          processing has halted. Further details should be provided as to the cause of the error.
-        </li>
-      </ul>
-      <ul class="note">
-        <li>The full set of status values is expected to be defined the DDP</li>
-      </ul>
+      <section>
+        <h3><dfn>Deposit Status</dfn></h3>
+        <p>All <a>Deposit Endpoints</a> must support the following set of status values. Other status values may be added to this
+        list to provide additional detail about processing activity.</p>
+        <ul>
+          <li>
+            <code>DEPOSIT_ACCEPTED</code> - The first status value set on a valid deposit action. Indicates that a deposit
+            has been initiated.
+          </li>
+          <li>
+            <code>DEPOSIT_STAGED</code> - Indicates when content to be deposited has been retrieved from the Gateway and is
+            available to the DDP for deposit processing.
+          </li>
+          <li>
+            <code>DEPOSIT_COMPLETE</code> - The final status value set on a deposit action that has completed successfully.
+            Indicates that all work on the deposit to be done by the Bridge and DDP has completed.
+          </li>
+          <li>
+            <code>DEPOSIT_ERROR</code> - Indicates that an error occurred while performing the deposit and processing has
+            halted. Further details should be provided as to the cause of the error.
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h3><dfn>Restore Status</dfn></h3>
+        <p>All <a>Restore endpoints</a> must support the following set of status values. Other status values may be added to this
+        list to provide additional detail about processing activity.</p>
+        <ul>
+          <li>
+            <code>RESTORE_ACCEPTED</code> - The first status value set on a valid restore action. Indicates that a restore
+            has been initiated.
+          </li>
+          <li>
+            <code>RESTORE_STAGED</code> - Indicates when content to be restored has been collected from the DDP and is
+            available for the Gateway to retrieve.
+          </li>
+          <li>
+            <code>RESTORE_COMPLETE</code> - The final status value set on a restore action that has completed successfully.
+            Indicates that all work on the restore to be done by the Bridge and DDP has completed.
+          </li>
+          <li>
+            <code>RESTORE_ERROR</code> - Indicates that an error occurred while performing the restore and processing has
+            halted. Further details should be provided as to the cause of the error.
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h3><dfn>Delete Status</dfn></h3>
+        <p>All <a>Delete endpoints</a> must support the following set of status values. Other status values may be added to this
+        list to provide additional detail about processing activity.</p>
+        <ul>
+          <li>
+            <code>DELETE_ACCEPTED</code> - The first status value set on a valid delete action. Indicates that a delete
+            has been initiated.
+          </li>
+          <li>
+            <code>DELETE_COMPLETE</code> - The final status value set on a delete action that has completed successfully.
+            Indicates that all work on the delete to be done by the Bridge and DDP has completed.
+          </li>
+          <li>
+            <code>DELETE_ERROR</code> - Indicates that an error occurred while performing the delete and processing has
+            halted. Further details should be provided as to the cause of the error.
+          </li>
+        </ul>
+      </section>
 
     </section>
 
