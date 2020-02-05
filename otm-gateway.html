@@ -158,7 +158,7 @@
         </p>
         <ul>
           <li>Request Type: <code>DELETE</code></li>
-          <li>Request Path: <code>/{object-id}[?versionId={version-id}]</code></li>
+          <li>Request Path: <code>/{object-id} ? versionId</code></li>
           <li>Response Code: <code>204</code> (on success)</li>
         </ul>
         <pre class="example" title="Purge Object Request">
@@ -196,7 +196,7 @@
           a version, the Gateway SHOULD seek to restore the most recent version.</p>
         <ul>
           <li>Request Type: <code>POST</code></li>
-          <li>Request Path: <code>/{object-id}?restore[&versionId={version-id}]</code></li>
+          <li>Request Path: <code>/{object-id} ? restore & versionId</code></li>
           <li>Response Code:
             <ul>
               <li><code>202</code> (if the object)</li>
@@ -256,7 +256,7 @@
           </p>
         <ul>
           <li>Request Type: <code>GET</code></li>
-          <li>Request Path: <code>/{object-id}[?versionId={version-id}]</code></li>
+          <li>Request Path: <code>/{object-id} ? versionId</code></li>
           <li>Request Headers:
             <ul>
               <li><code>If-Match</code></li>
