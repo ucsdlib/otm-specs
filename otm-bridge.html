@@ -185,7 +185,7 @@
         <p>Requests that a set of content be deposited into the DDP</p>
         <ul>
           <li>Request Type: <code>POST</code></li>
-          <li>Request Path: <code>/deposit ? deposit-format</code></li>
+          <li>Request Path: <code>/deposit ? deposit-format=</code></li>
           <li>Request Query Parameters:
             <ul>
               <li><code>deposit-format</code>: (Optional) Format of content being deposited (e.g. "bagit-profile-v1.2")</li>
@@ -269,7 +269,7 @@
         calls <a>Complete Deposit</a>)</p>
         <ul>
           <li>Request Type: <code>GET</code></li>
-          <li>Request Path: <code>/deposit ? status</code></li>
+          <li>Request Path: <code>/deposit ? status=</code></li>
           <li>Request Query Parameters:
             <ul>
               <li><code>status</code>: (Optional) Limit list to deposits with a specific <a>deposit status</a></li>
@@ -504,7 +504,7 @@
         <p>Retrieves a listing of all in-process restores</p>
         <ul>
           <li>Request Type: <code>GET</code></li>
-          <li>Request Path: <code>/restore ? status</code></li>
+          <li>Request Path: <code>/restore ? status=</code></li>
           <li>Request Query Parameters:
             <ul>
               <li><code>status</code>: (Optional) Limit list to restore actions with a specific <a>restore status</a></li>
@@ -743,7 +743,7 @@
         <p>Retrieves a listing of all in-process deletes</p>
         <ul>
           <li>Request Type: <code>GET</code></li>
-          <li>Request Path: <code>/delete ? status</code></li>
+          <li>Request Path: <code>/delete ? status=</code></li>
           <li>Request Query Parameters:
             <ul>
               <li><code>status</code>: (Optional) Limit list to delete actions with a specific <a>delete status</a></li>
