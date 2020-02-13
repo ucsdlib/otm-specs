@@ -29,6 +29,12 @@ application. They each provide an HTTP-based approach for authentication, commun
 * [OTM Bridge API Specification](otm-bridge.html) - The Bridge provides a consistent interface for systems (including repositories) to integrate with DDP platforms; the Bridge also serves as a staging point for content being transferred into or out of a DDP
 * [OTM Audit Events](audit-appendix.html) - A listing of preservation events that occur as part the workflow that may be captured by the DDP and made available through the Bridge
 
+### Status of the Specifications
+These specifications were created as part of the One to Many grant, funded by the Andrew W. Mellon Foundation. The goals
+and scope of this grant are described in [One to Many Project Overview and Goals](https://wiki.lyrasis.org/display/OTM/Project+Overview+and+Goals)</a>.
+
+The specifications aim provide the structure and interaction patterns necessary to meet the [One to Many User Stories](https://wiki.lyrasis.org/display/OTM/User+Stories). The team sought to define the APIs with enough specificity to allow future implementation efforts to succeed in delivering systems that satisfy those user stories, while leaving flexibility for implementers to adjust to the needs of the development phase. Future versions of these specifications are expected as an outcome of any effort to implement them.
+
 ## Usage Requirements
 
 #### Repository
