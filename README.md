@@ -30,7 +30,7 @@ application. They each provide an HTTP-based approach for authentication, commun
 * [OTM Audit Events](audit-appendix.html) - A listing of preservation events that occur as part the workflow that may be captured by the DDP and made available through the Bridge
 
 ### Status of the Specifications
-These specifications were created as part of the <a href="https://mellon.org/grants/grants-database/grants/university-of-california-at-san-diego/1805-05809/">One to Many grant</a>, 
+These specifications were created as part of the [One to Many grant](https://mellon.org/grants/grants-database/grants/university-of-california-at-san-diego/1805-05809/)</a>, 
 funded by the Andrew W. Mellon Foundation. The goals 
 and scope of this grant are described in [One to Many Project Overview and Goals](https://wiki.lyrasis.org/display/OTM/Project+Overview+and+Goals)</a>.
 
