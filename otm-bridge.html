@@ -238,9 +238,8 @@
         <ul class="note">
           <li>Each filegroup in the request body is considered an independent deposit which can be referred to in subsequent
           requests by the filegroup identifier.</li>
-          <li>There is an explicit expectation that the content to be deposited will be available from the Gateway at the
-          path: <code>gateway-url / filegroup-id / file-id</code>. How the Gateway resolves the file streams based on a
-          request to this URL is irrelevant to the Bridge.</li>
+          <li>The Bridge uses the Gateway's <a href="otm-gateway.html#transfer-file">Transfer File</a> endpoint, and the
+          credentials provided in the Register step to retrieve each file.</li>
           <li>Provided filegroup IDs and file IDs must be URL-safe to support the Bridge requesting those files from the
           Gateway and the reverse in the restore context</li>
           <li>Provided filegroup IDs must not include slash ("/" or "\") characters. File IDs may include slashes.</li>
