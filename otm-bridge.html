@@ -23,7 +23,13 @@
         wg: "One to Many Working Group",
         wgURI: "https://wiki.duraspace.org/display/OTM",
         edDraftURI: "https://github.com/ucsdlib/otm-specs/blob/master/otm-bridge.html",
-        maxTocLevel: 3
+        maxTocLevel: 3,
+        localBiblio: {
+          "RFC7617": {
+            title: "The 'Basic' HTTP Authentication Scheme",
+            href: "https://tools.ietf.org/html/rfc7617"
+          }
+        }
       };
     </script>
     <link rel="stylesheet" href="otm-styles.css">
@@ -1037,7 +1043,11 @@
           </li>
         </ul>
       </section>
+    </section>
 
+    <section>
+      <h2><dfn>Authentication</dfn></h2>
+      <p>Each endpoint MUST support HTTP Basic Authentication as described in [[RFC7617]] and allow access for registered credentials for <em>Expected clients</em>. Bridge implementations MAY support other authentication methods and/or allow access to access to using credentails other than those registered via the <a href="#add-account">Add Account</a> and <a href="#register">Register</a> endpoints.</p>
     </section>
 
   </body>
