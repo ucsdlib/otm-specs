@@ -29,7 +29,26 @@
             title: "The 'Basic' HTTP Authentication Scheme",
             href: "https://tools.ietf.org/html/rfc7617"
           }
-        }
+        },
+        otherLinks: [{
+          key: "OTM Specifications",
+          data: [{
+            value: "One to Many (OTM) Specifications Overview",
+            href: "https://ucsdlib.github.io/otm-specs/"
+          },
+          {
+            value: "OTM Preservation Workflow",
+            href: "preservation-workflow.html"
+          },
+          {
+            value: "OTM Gateway API Specification",
+            href: "otm-gateway.html"
+          },
+          {
+            value: "OTM Audit Events",
+            href: "audit-appendix.html"
+          }]
+        }]
       };
     </script>
     <link rel="stylesheet" href="otm-styles.css">
@@ -191,7 +210,7 @@
         <p>Requests that a set of content be deposited into the DDP</p>
         <ul>
           <li>Request Type: <code>POST</code></li>
-          <li>Request Path: <code>/deposit ? deposit-format=</code></li>
+          <li>Request Path: <code>/deposit ? deposit-format</code></li>
           <li>Request Query Parameters:
             <ul>
               <li><code>deposit-format</code>: (Optional) Format of content being deposited (e.g. "bagit-profile-v1.2")</li>
@@ -274,7 +293,7 @@
         calls <a>Complete Deposit</a>)</p>
         <ul>
           <li>Request Type: <code>GET</code></li>
-          <li>Request Path: <code>/deposit ? status=</code></li>
+          <li>Request Path: <code>/deposit ? status</code></li>
           <li>Request Query Parameters:
             <ul>
               <li><code>status</code>: (Optional) Limit list to deposits with a specific <a>deposit status</a></li>
@@ -509,7 +528,7 @@
         <p>Retrieves a listing of all in-process restores</p>
         <ul>
           <li>Request Type: <code>GET</code></li>
-          <li>Request Path: <code>/restore ? status=</code></li>
+          <li>Request Path: <code>/restore ? status</code></li>
           <li>Request Query Parameters:
             <ul>
               <li><code>status</code>: (Optional) Limit list to restore actions with a specific <a>restore status</a></li>
@@ -748,7 +767,7 @@
         <p>Retrieves a listing of all in-process deletes</p>
         <ul>
           <li>Request Type: <code>GET</code></li>
-          <li>Request Path: <code>/delete ? status=</code></li>
+          <li>Request Path: <code>/delete ? status</code></li>
           <li>Request Query Parameters:
             <ul>
               <li><code>status</code>: (Optional) Limit list to delete actions with a specific <a>delete status</a></li>
