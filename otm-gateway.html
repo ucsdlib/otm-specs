@@ -23,7 +23,13 @@
         wg: "One to Many Working Group",
         wgURI: "https://wiki.duraspace.org/display/OTM",
         edDraftURI: "https://github.com/ucsdlib/otm-specs/blob/master/otm-gateway.html",
-        maxTocLevel: 3
+        maxTocLevel: 3,
+        localBiblio: {
+          "RFC7617": {
+            title: "The 'Basic' HTTP Authentication Scheme",
+            href: "https://tools.ietf.org/html/rfc7617"
+          }
+        }
       };
     </script>
     <link rel="stylesheet" href="otm-styles.css">
@@ -324,17 +330,22 @@
       <section>
         <h3><dfn>Transfer File</dfn></h3>
         <p>Transfer a cached file. This endpoint allows a Bridge to pull content for storage in a preservation service.</p>
+        <p>The client MUST provide a <code>versionId</code> parameter to guarantee the object fetched for preservation is the exact version requested. For the same reason, the client SHOULD use the <code>If-Match</code> header.</p>
+        <p>This endpoint MUST support HTTP Basic Authentication as described in [[RFC7617]]. Appropriate credentials should be provided to the Bridge via the <a href="otm-bridge.html#register">Register</a> endpoint. Gateways SHOULD use different credentials for each Bridge/preservation system.</p>
+          </p>
         <ul>
           <li>Request Type: <code>GET</code></li>
-          <li>Request Path: <code>/{object-id}/{fileName}</code></li>
+          <li>Request Path: <code>/{object-id}/{fileName} ? versionId=</code></li>
           <li>Request Headers:
             <ul>
+              <li><code>Authorization</code></li>
               <li><code>If-Match</code></li>
             </ul>
           </li>
           <li>Response Code:
             <ul>
               <li><code>200</code> (on success)</li>
+              <li><code>401</code> (when the given credentials do not allow access to the file)</li>
               <li><code>404</code> (if the file is not present)</li>
               <li><code>412</code> (if the requested file does not match the <code>If-Match</code> checksum.</li>
             </ul>
@@ -343,9 +354,28 @@
             <ul>
               <li><code>Content-Type</code></li>
               <li><code>ETag</code></li>
+              <li><code>x-otm-version-id</code></li>
             </ul>
           </li>
         </ul>
+        <pre class="example" title="Transfer File Request">
+          GET /af48c3d/file1?versionId=20190702T201500.001 HTTP/1.1
+          Host: preservation-gateway.institution.edu
+          Date: Tue, 02 Jul 2020 12:00:00 GMT
+          If-Match: a93eddb6387aaaa61f6192926214d338
+          Authorization: Basic QWxhZGRpbjpPcGVuU2VzYW17
+        </pre>
+        <pre class="example" title="Transfer File Response">
+          HTTP/1.1 200 OK
+          Date: Tue, 02 Jul 2020 12:00:01 GMT
+          ETag: "Tag: "4efcb3d98ce0fabfd585eb6c4332859"
+          Content-Length: 2357
+          Content-Type: application/octet-stream
+          x-otm-version-id: 20190702T201500.001
+          Server: OTM Preservation Gateway
+
+          [2357 bytes of object data]
+        </pre>
       </section>
     </section>
   </body>
