@@ -63,10 +63,18 @@
       are expected to be used.
     </p>
     <p>
-      The DDP workflow assumes an intermediary service which transforms data from the OTM Bridge into something
-      usable by the DDP and handles queries for OTM actions to perform. The implementation of this
-      piece will be dependent on the architecture of the DDP, and is only a separate service in order to
-      delineate the operations which are likely required by a DDP.</p>
+      The DDP workflow sections below assume that an intermediary service will be used to communicate with the OTM Bridge and
+      transform data provided by the OTM Bridge into a format acceptable to the DDP. The implementation of this piece will be
+      dependent on the architecture and capabilities of the DDP. Allowing this service to remain separate from the Bridge
+      ensures that the Bridge implementation is able to support a wide variety of DDPs.
+    </p>
+    <p>
+      The primary purose of the systems and integrations described by the OTM Specifications is to support the deposit and
+      recovery of content. Content is to be considered recoverable only after it has completed a successful deposit. Objects
+      that have been successfully deposited from a Repository into a DDP are intended to be recoverable using only the data
+      that resides in the DDP, even if all other OTM system components have failed. There are no guarantees of recoverability
+      if content has not first completed a successful deposit.
+    </p>
     <p>Additional notes are provided for the minimum required steps for implementation in Chronopolis.</p>
   </section>
 
