@@ -283,6 +283,8 @@
           <li>The deposit-format parameter allows the depositor to specify the format of the content being deposited. The
           Bridge implementation may choose to only support deposits of certain types. Agreements between the depositor and
           the DDP should specify which types are to be used for deposit.</li>
+          <li>In the event of deposit or Bridge failure, incomplete deposits may require a resubmission. Systems interacting
+          with the Bridge, such as the Gateway, should support the capability to restart a deposit.</li>
         </ul>
         <p>Expected client(s): Gateway</p>
       </section>
@@ -934,6 +936,10 @@
         <ul class="note">
           <li>The types of events and expected details of each event type are listed in the <a
           href="audit-appendix.html">Audit Events Appendix</a></li>
+          <li>The Bridge maintains audit details provided through this endpoint as a cache for the DDP to support convenient
+          retrieval. This audit information is expected to remain in the DDP such that a rebuild of this cache could be
+          performed if the Bridge were to fail. The DDP is not required to maintain this data in a format that facilitates
+          easy access, but should be able to provide it upon request to facilitate a rebuild.</li>
         </ul>
         <p>Expected client(s): DDP</p>
       </section>
