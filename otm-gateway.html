@@ -46,8 +46,9 @@
       </p>
       <p>
         The preservation Gateway functions as an aggregating cache for preservation requests originating with a repository
-        and destined for a DDP via the Bridge. The API provides a synchronous interface for requests related to preservation
-        of content, even when the preservation system's interactions are fundamentally asynchronous.
+        and destined for a DDP via the <a href="otm-bridge.html">One to Many Bridge API</a>. The Gateway API provides a
+        synchronous interface for requests related to preservation of content, even when the preservation system's
+        interactions are fundamentally asynchronous.
       </p>
     </section>
 
@@ -58,6 +59,29 @@
     </section>
 
     <section id="conformance">
+    </section>
+
+    <section id="introduction" class="informative">
+      <h2>Introduction</h2>
+
+      <p>This specification describes APIs enabling digital object repository systems to manage preservation of content.
+      The interfaces described here are intended to fit within the larger context of the <a href="preservation-workflow.html">One to Many Preservation Workflow</a>.</p>
+      <p>This specification defines a set of interfaces for synchronous interactions for depositing, restoring,
+      and purging objects across multiple distributed digital preservation (DDP) systems, using a single system
+      managed by the repository administrators. Because DDPs (and the
+      <a href="otm-bridge.html">One to Many Bridge API</a>) perform deposit and retrieval actions
+      asynchronously, the Gateway's synchronous interfaces are needed to support real-time feedback for
+      repository managers and curators. The Gateway also serves as a short-term cache of content to be
+      preserved, allowing the repository system to continue its normal object life-cycle while ensuring exact
+      bitwise preservation of the objects at the time they were selected for preservation. The
+      Gateway relieves the repository of the requirement to manage preservation beyond calls to the Gateway
+      API. To this end, Gateway implementations should seek to provide robust guarantees to the repository
+      about the eventual preservation of content.
+      </p>
+      <p>For background, it may be helpful to read the
+      <a href="https://wiki.lyrasis.org/display/OTM/Project+Overview+and+Goals">One to Many Project Overview
+      and Goals</a> and the <a href="https://wiki.lyrasis.org/display/OTM/User+Stories">One to Many User Stories</a>.
+      </p>
     </section>
 
     <section>
