@@ -205,7 +205,7 @@
           <li>Request Path: <code>/{object-id} ? restore & versionId=</code></li>
           <li>Response Code:
             <ul>
-              <li><code>202</code> (if the object)</li>
+              <li><code>202</code> (if the object restore has been initiated and the object is not yet available for retrieval)</li>
               <li><code>200</code> (if the object is restored and available for retrieval)</li>
               <li><code>409</code> (if there is a restore already in progress)</li>
             </ul>
