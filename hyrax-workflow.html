@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <title>OTM Appendix - Hyrax Workflow</title>
+  <script
+  src='https://www.w3.org/Tools/respec/respec-w3c'
+  class='remove'></script>
+  <script class='remove'>
+    var respecConfig = {
+      specStatus: "base",
+      editors: [{
+        name: "Tom Johnson",
+        company: "University of California, Santa Barbara Library",
+        companyURL: "https://www.library.ucsb.edu/"
+      },{
+        name: "Sibyl Schaefer",
+        company: "University of California, San Diego",
+        companyURL: "https://ucsd.edu"
+      }],
+      gitHub: "ucsdlib/otm-specs",
+      shortName: "otm-gateway-api",
+      wg: "One to Many Working Group",
+      wgURI: "https://wiki.duraspace.org/display/OTM",
+      edDraftURI: "https://github.com/ucsdlib/otm-specs/blob/master/otm-gateway.html",
+      maxTocLevel: 3,
+      localBiblio: {
+        "Hyrax": {
+          title: "Hyrax: An open-source, Samvera-powered repository front-end",
+          href: "https://hyrax.samvera.org/"
+        }
+      }
+    };
+  </script>
+
+  <link rel="stylesheet" href="otm-styles.css">
+</head>
+<body>
+  <p class='copyright'>This document is licensed under a
+    <a class='subfoot' href='https://creativecommons.org/licenses/by/4.0/' rel='license'>Creative Commons Attribution 4.0 License</a>.
+  </p>
+  <section id='abstract'>
+    <p>
+      This document describes a workflow for the [[Hyrax]] repository system intended for use with the
+      <a href="otm-gateway.html">OTM Gateway API</a>. This workflow is designed to enable active selection and
+      management of content within a distributed digital preservation (DDP) system, in satisfaction of the
+      <a href="https://wiki.lyrasis.org/display/OTM/User+Stories">One to Many User Stories</a>.
+    </p>
+  </section>
+
+  <section>
+    <h2>Status of This Document</h2>
+    <p>This document is an appendix to a specification, created as part of the One to Many grant, funded by the Andrew W.
+    Mellon Foundation.</p>
+  </section>
+
+  <section>
+    <h2>Hyrax Preservation Workflow</h2>
+    <p>
+      <img src="images/hyrax-workflow.png" width="100%">
+    </p>
+    <section>
+      <h3>States</h3>
+      <dl>
+        <dt>New</dt>
+        <dd>The state of objects that are not yet deposited. Objects are in this state before being created and assigned an identifier.</dd>
+      </dl>
+      <dl>
+        <dt>Deposited</dt>
+        <dd>The state of object that has been saved in the repository system.</dd>
+      </dl>
+      <dl>
+        <dt>Preserved</dt>
+        <dd>The state of object that has been preserved in at least one DDP.</dd>
+      </dl>
+    </section>
+    <section>
+      <h3>Actions</h3>
+      <dl>
+        <dt>deposit</dt>
+        <dd>Deposits the item. Notifies curators of the new content which may be selected for preservation. Transitions the object from <code>New</code> to <code>Deposited</code>.</dd>
+      </dl>
+      <dl>
+        <dt>preserve</dt>
+        <dd>Requests deposit in one or more DDPs via the Gateway. Notifies curators and administrators that preservation has been requested. Transitions the object to <code>Preserved</code>.</dd>
+      </dl>
+      <dl>
+        <dt>purge</dt>
+        <dd>Requests purge from all DDPs via the Gateway. Notifies curators and administrators that purge has been requested. Transitions the object from <code>Preserved</code> to <code>Deposited</code>.</dd>
+      </dl>
+      <dl>
+        <dt>update preserved content</dt>
+        <dd>Triggered when content that has already been preserved in at least one DDP is updated locally. Notifies curators of the new content which may be selected for preservation. Does not transition object state.</dd>
+      </dl>
+      <dl>
+        <dt>comment</dt>
+        <dd>Allows curators, administrators, and automated auditors to comment on deposited or preserved objects without triggering other workflow actions. Does not transition object state.</dd>
+      </dl>
+    </section>
+    <section>
+      <h3>Workflow Specification JSON</h3>
+      <pre>
+{ "workflows": [
+    {
+      "name": "otm_preservation_deposit",
+      "label": "One to Many Mediated Deposit with Preservation",
+      "description": "",
+      "actions": [
+        {
+          "name": "deposit",
+          "from_states": [],
+          "transition_to": "deposited",
+          "notifications": [
+            {
+              "notification_type": "email",
+              "name": "Hyrax::Workflow::AvailableForPreservation",
+              "to": ["curating"]
+             }
+          ],
+          "methods": [
+            "Hyrax::Workflow::GrantReadToDepositor",
+            "Hyrax::Workflow::DeactivateObject"
+          ]
+        },
+        {
+          "name": "preserve",
+          "from_states": [{"names": ["deposited", "preserved"], "roles": ["curating"]}],
+          "transition_to": "preserved",
+          "notifications": [
+            {
+              "notification_type": "email",
+              "name": "Hyrax::Workflow::PreservationRequested",
+              "to": ["curating", "admin"]
+             }
+          ],
+          "methods": [
+            "Hyrax::Workflow::DepositToOtmGateway"
+          ]
+        },
+        {
+          "name": "purge",
+          "from_states": [{"names": ["preserved"], "roles": ["curating"]}],
+          "transition_to": "deposited",
+          "notifications": [
+            {
+              "notification_type": "email",
+              "name": "Hyrax::Workflow::PurgeRequested",
+              "to": ["curating", "admin"]
+             }
+          ],
+          "methods": [
+            "Hyrax::Workflow::PurgeFromOtmGateway"
+          ]
+        },
+        {
+          "name": "update_preserved_content",
+          "from_states": [{"names": ["preserved"], "roles": ["curating"]}],
+          "notifications": [
+            {
+              "notification_type": "email",
+              "name": "Hyrax::Workflow::PreservedContentChanged",
+              "to": ["curating"]
+             }
+          ]
+        },
+        {
+          "name": "comment",
+          "from_states": [
+            { "names": ["deposited"], "roles": ["curating", "admin", "auditing"] },
+            { "names": ["preserved"], "roles": ["curating", "admin", "auditing] }
+          ]
+        }
+      ]
+    }
+  ]
+}
+      </pre>
+    </section>
+  </section>
+</body>
