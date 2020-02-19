@@ -101,6 +101,24 @@
       <a href="https://wiki.lyrasis.org/display/OTM/Project+Overview+and+Goals">One to Many Project Overview
       and Goals</a> and the <a href="https://wiki.lyrasis.org/display/OTM/User+Stories">One to Many User Stories</a>.
       </p>
+      <section>
+        <h3>A note about <em>Objects</em></h3>
+        <p>The Gateway's repository-facing interfaces are concerned with the management of <em>objects</em>, represented
+          by <code>object-id</code> URL arguments and packaged in the BagIt format. In the context of the repository,
+          it's normal for these <em>objects</em> to be meaningful and interpretable beyond their bitwise content.</p>
+        <p>The Gateway exposes the <em>object</em> content as <em>files</em> within <em>file groups</em> for use by
+          the Bridge. This distinction reflects a separation of concerns: the Bridge and DDP are ultimately concerned
+          with guarantee of bitwise preservation and retrieval of <em>files</em>; the repository and Gateway are concerned
+          with the presentation and interpretation of those <em>files</em> as representations of meaningful resources. By
+          making this separation explicit, the Gateway and Bridge disclaim any out-of-band coordination of meaning between
+          the repository and the DDP.</p>
+        <p>The semantics of the <code>object-id</code>, the scope of the objects (i.e. which files are included), and
+          the relationships between the files are decisions left to the repository administrators. Repositories should
+          include in each <em>object</em> sufficient information for an agent to determine its schema, understand its
+          structure, and reconstruct it within the repository given only the <em>file group</em>, its
+          <em>file group identifier</em>, and the contents of the individual files.
+        </p>
+      </section>
     </section>
 
     <section>
