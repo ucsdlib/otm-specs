@@ -28,6 +28,10 @@
           "RFC7617": {
             title: "The 'Basic' HTTP Authentication Scheme",
             href: "https://tools.ietf.org/html/rfc7617"
+          },
+          "RFC8493": {
+            title: "The BagIt File Packaging Format (V1.0)",
+            href: "https://tools.ietf.org/html/rfc8493"
           }
         },
         otherLinks: [{
@@ -161,12 +165,23 @@
         <p>Upon acceptance of the request, the Gateway MUST create a unique version identifier
           for the object, corresponding to the exact content in this request. This identifier MUST be
           returned to the client in a <code>x-otm-version-id</code> response header.</p>
+        <p>The request body MUST be a BagIt <em>bag</em> as defined by [[RFC8493]], packaged and compressed
+          in the media type specified by the <code>Content-Type</code> request header. The Gateway MUST
+          request deposit of the payload files to the preservation provider given in
+          <code>x-otm-preservation-provider</code> via the <a href="otm-bridge.html#deposit-content">Bridge's
+          Deposit Content</a> endpoint.</p>
+        <p>For efficiency, the requester MAY omit some or all payload files from the <em>bag</em>, instead providing
+          a <code>fetch.txt</code> as specified in Section 2.2.3 of [[RFC8493]]. The URL given in the
+          <code>fetch.txt</code> MUST be reachable by the Bridge (i.e. on the public internet) using the credentials
+          and authentication methods described in <a href="#transfer-file">Transfer File</a>. In the case of files
+          provided in this way, the Gateway MAY implement <a href="#transfer-file">Transfer File</a> as a redirect to
+          the given URL.</p>
         <ul>
           <li>Request Type: <code>PUT</code></li>
           <li>Request Path: <code>/{object-id}</code></li>
           <li>Request Headers:
             <ul>
-              <li><code>Content-Type</code>: Media type of the object to be deposited</li>
+              <li><code>Content-Type</code>: Media type of the object to be deposited.</li>
               <li><code>Content-Length</code>: Size in bytes of the object to be deposited</li>
               <li><code>x-otm-preservation-provider</code>: the name of preservation systems targeted for this deposit.</li>
             </ul>
@@ -196,6 +211,14 @@
             Content-Length: 0
             Server: OTM Preservation Gateway
           </pre>
+          <ul class="note">
+            <li>The use of <code>fetch.txt</code> allows the repository to avoid the cost of packaging large payload files
+              and transmitting them to the Gateway. In exchange for this efficiency the repository sacrifices the caching
+              properties of the Gateway, increasing the likelihood of local changes causing checksum mismatches and
+              resulting deposit failures. Repositories that can guarantee the availability of content indefinitely (e.g.
+              because files are immutably versioned within the repository itself) won't suffer this drawback and may wish
+              to use this method of deposit exclusively.</li>
+          </ul>
       </section>
 
       <section>
@@ -403,6 +426,7 @@
           <li>Response Code:
             <ul>
               <li><code>200</code> (on success)</li>
+              <li><code>302</code> (when the file is not cached by the Gateway, but is available to the Bridge at an external URL)</li>
               <li><code>401</code> (when the given credentials do not allow access to the file)</li>
               <li><code>404</code> (if the file is not present)</li>
               <li><code>412</code> (if the requested file does not match the <code>If-Match</code> checksum.</li>
