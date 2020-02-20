@@ -28,6 +28,7 @@ application. They each provide an HTTP-based approach for authentication, commun
 * [OTM Gateway API Specification](otm-gateway.html) - The preservation Gateway functions as an aggregating cache for preservation requests originating with a repository and destined for a DDP via the OTM Bridge
 * [OTM Bridge API Specification](otm-bridge.html) - The Bridge provides a consistent interface for systems (including repositories) to integrate with DDP platforms; the Bridge also serves as a staging point for content being transferred into or out of a DDP
 * [OTM Audit Events](audit-appendix.html) - A listing of preservation events that occur as part the workflow that may be captured by the DDP and made available through the Bridge
+* [OTM Hyrax Workflow](hyrax-workflow.html) - An example content workflow designed to support the OTM use cases in Hyrax (Samvera) repository systems
 
 ### Status of the Specifications
 These specifications were created as part of the [One to Many grant](https://mellon.org/grants/grants-database/grants/university-of-california-at-san-diego/1805-05809/),
