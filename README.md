@@ -10,9 +10,9 @@ ensures they will persist over time. This project addresses this need by develop
 that will allow libraries and archives to seamlessly deposit system content into distributed digital preservation systems
 (DDPs) such as Chronopolis, APTrust, and LOCKSS. This project is funded by the Andrew W. Mellon Foundation.
 
-More information about the project [can be found on the project wiki](https://wiki.duraspace.org/display/OTM)
+More information about the project [can be found on the project wiki](https://wiki.lyrasis.org/display/OTM)
 
-The members of the OTM project team are listed on the [Team Roles and Responsibilities page](https://wiki.duraspace.org/display/OTM/Team+Roles+and+Responsibilities)
+The members of the OTM project team are listed on the [Team Roles and Responsibilities page](https://wiki.lyrasis.org/display/OTM/Team+Roles+and+Responsibilities)
 
 ## Specifications
 The One To Many (OTM) Specification defines two APIs to support communication between digital content repository systems
@@ -30,8 +30,8 @@ application. They each provide an HTTP-based approach for authentication, commun
 * [OTM Audit Events](audit-appendix.html) - A listing of preservation events that occur as part the workflow that may be captured by the DDP and made available through the Bridge
 
 ### Status of the Specifications
-These specifications were created as part of the [One to Many grant](https://mellon.org/grants/grants-database/grants/university-of-california-at-san-diego/1805-05809/), 
-funded by the Andrew W. Mellon Foundation. The goals 
+These specifications were created as part of the [One to Many grant](https://mellon.org/grants/grants-database/grants/university-of-california-at-san-diego/1805-05809/),
+funded by the Andrew W. Mellon Foundation. The goals
 and scope of this grant are described in [One to Many Project Overview and Goals](https://wiki.lyrasis.org/display/OTM/Project+Overview+and+Goals).
 
 These specifications aim to provide the structure and interaction patterns necessary to meet the [One to Many User Stories](https://wiki.lyrasis.org/display/OTM/User+Stories). The team sought to define the APIs with enough specificity to allow future implementation efforts to succeed in delivering systems that satisfy those user stories, while leaving flexibility for implementers to adjust to the needs of the development phase. Future versions of these specifications are expected as an outcome of any effort to implement them.
