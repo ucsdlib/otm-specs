@@ -10,7 +10,7 @@ ensures they will persist over time. This project addresses this need by develop
 that will allow libraries and archives to seamlessly deposit system content into distributed digital preservation systems
 (DDPs) such as Chronopolis, APTrust, and LOCKSS. This project is funded by the [Andrew W. Mellon Foundation](https://mellon.org/).
 
-More information about the project [can be found on the project wiki](https://wiki.lyrasis.org/display/OTM), including the members of the [OTM project team](https://wiki.lyrasis.org/display/OTM/Team+Roles+and+Responsibilities).
+More information about the project [can be found on the project wiki](https://wiki.lyrasis.org/display/OTM), including a list of the members of the [OTM project team](https://wiki.lyrasis.org/display/OTM/Team+Roles+and+Responsibilities).
 
 ## Specifications
 The One To Many (OTM) Specification defines two APIs to support communication between digital content repository systems
