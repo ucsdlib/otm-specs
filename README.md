@@ -8,7 +8,7 @@ effective management and access to digital assets. While these software systems 
 features, the digital materials and their associated metadata managed by such systems need to be preserved in a way that
 ensures they will persist over time. This project addresses this need by developing a specification for an integration model
 that will allow libraries and archives to seamlessly deposit system content into distributed digital preservation systems
-(DDPs) such as Chronopolis, APTrust, and LOCKSS. This project is funded by the [Andrew W. Mellon Foundation](https://mellon.org/).
+(DDPs) such as [Chronopolis](https://libraries.ucsd.edu/chronopolis/), [APTrust](http://aptrust.org/), and [LOCKSS](https://www.lockss.org/). This project is funded by the [Andrew W. Mellon Foundation](https://mellon.org/).
 
 More information about the project [can be found on the project wiki](https://wiki.lyrasis.org/display/OTM), including a list of the members of the [OTM project team](https://wiki.lyrasis.org/display/OTM/Team+Roles+and+Responsibilities).
 
