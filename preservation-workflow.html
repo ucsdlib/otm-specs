@@ -131,44 +131,6 @@
     </section>
   </section>
 
-<section>
-  <h2>Audit</h2>
-  <p>The Audit workflow retrieves actions taken on filegroups that have been deposited. It is expected that the Audit Log will
-  be maintained by the OTM Bridge and will contain events provided by the DDP.</p>
-
-  <p>See also: <a href="audit-appendix.html">Audit Event Appendix</a></p>
-
-  <section>
-  <h3>Flow</h3>
-  <ol>
-    <li>The Repository manager selects an object and requests a preservation audit history</li>
-    <li>
-      The Repository calls the Gateway <a href="otm-gateway.html#get-object-audit">GET Object Audit</a> endpoint for the object
-    </li>
-    <li>
-      The Gateway calls the Bridge <a href="otm-bridge.html#get-audit-log">Get Audit Log</a> endpoint, specifying the object ID
-      as the filegroup identifier
-    </li>
-    <li>
-      The Bridge gathers audit data for the given filegroup and associated files from its internal data store and responds to
-      Gateway with the requested audit history data
-    </li>
-    <li>
-      The Gateway translates the Bridge audit data into a format familiar to the repository and responds to the Repository
-      request
-    </li>
-    <li>The Repository displays the audit data to the Repository manager</li>
-  </ol>
-
-  <figure id="audit-diagram">
-    <figcaption>Get Audit Workflow</figcaption>
-    <img src="images/audit_content.png">
-  </figure>
-
-  </section>
-</section>
-
-
   <section>
     <h2>Deposit</h2>
     <p>The Deposit workflow describes the process when an OTM Gateway requests that a filegroup be preserved.</p>
@@ -351,6 +313,154 @@
   </section>
 
 </section>
+
+<section>
+  <h2>Audit</h2>
+  <p>The Audit workflow retrieves actions taken on filegroups that have been deposited. It is expected that the Audit Log will
+  be maintained by the OTM Bridge and will contain events provided by the DDP.</p>
+
+  <p>See also: <a href="audit-appendix.html">Audit Event Appendix</a></p>
+
+  <section>
+  <h3>Flow</h3>
+  <ol>
+    <li>The Repository manager selects an object and requests a preservation audit history</li>
+    <li>
+      The Repository calls the Gateway <a href="otm-gateway.html#get-object-audit">GET Object Audit</a> endpoint for the object
+    </li>
+    <li>
+      The Gateway calls the Bridge <a href="otm-bridge.html#get-audit-log">Get Audit Log</a> endpoint, specifying the object ID
+      as the filegroup identifier
+    </li>
+    <li>
+      The Bridge gathers audit data for the given filegroup and associated files from its internal data store and responds to
+      Gateway with the requested audit history data
+    </li>
+    <li>
+      The Gateway translates the Bridge audit data into a format familiar to the repository and responds to the Repository
+      request
+    </li>
+    <li>The Repository displays the audit data to the Repository manager</li>
+  </ol>
+
+  <figure id="audit-diagram">
+    <figcaption>Get Audit Workflow</figcaption>
+    <img src="images/audit_content.png">
+  </figure>
+
+  </section>
+</section>
+
+<section>
+  <h2>Restore</h2>
+  <p>The Restore workflow handles returning data back to a Repository which had been previously deposited.</p>
+
+  <section>
+    <h3>System to System Flow</h3>
+
+    <ol>
+      <li>The Repository manager selects an object to be restored from preservation storage</li>
+      <li>
+        The Repository calls the Gateway <a href="otm-gateway.html#initiate-restore">POST Object Restore</a> endpoint for
+        the object to be restored
+      </li>
+      <li>The Gateway calls the Bridge <a href="otm-bridge.html#get-deposited-details">Get Deposited Content</a> in order to
+          resolve the set of files to be restored</li>
+      <li>
+        The Gateway calls the Bridge <a href="otm-bridge.html#restore-content">Restore Content</a> endpoint with the list of
+        files to be restored
+      </li>
+      <li>
+        The Bridge initiates a restore action for all files in the restore request and creates a directory in Bridge staging
+        storage for the restored files
+      </li>
+      <li>
+        The DDP calls the Bridge <a href="otm-bridge.html#list-restores">List Restores</a> endpoint on a regular schedule to
+        check for new restore requests
+      </li>
+      <li>The DDP copies each file in the restore request to the specified directory in Bridge staging storage</li>
+      <li>
+        When all files have been copied into Bridge staging storage the DDP calls the Bridge
+        <a href="otm-bridge.html#complete-restore">Complete Restore</a> endpoint to inform the Bridge that the restored files
+        are available
+      </li>
+      <li>
+        The Bridge validates that all file checksums match the checksums provided in the restore request (when checksums are
+        provided)
+      </li>
+      <li>
+        The Bridge updates the status of the restore action to <a href="otm-bridge.html#restore-status">`RESTORE_STAGED`</a>
+      </li>
+      <li>
+        The Gateway calls the Bridge <a href="otm-bridge.html#get-restore-status">Restore Status</a> endpoint on a regular
+        basis to determine if the status of the restore is <a href="otm-bridge.html#restore-status">`RESTORE_STAGED`</a>
+      </li>
+      <li>
+        The Gateway calls the Bridge <a href="otm-bridge.html#get-restored-content">Get Restored Content</a> endpoint for each
+        file in the restore request and stores each file in the Gateway staging storage
+      </li>
+      <li>
+        The Repository calls the Gateway <a href="otm-gateway.html#retrieve-object">Get Object</a> endpoint and pulls the content
+        into repository storage
+      </li>
+      <li>The Repository sends a notification to the Repository manager that requested the restore</li>
+    </ol>
+
+    <figure alt="system-restore">
+      <figcaption>Restore workflow</figcaption>
+      <img src="images/restore_content.png"/>
+    </figure>
+  </section>
+
+  <section>
+    <h3>DDP Workflow</h3>
+    <h4>Chronopolis Implementation Notes</h4>
+    <ol>
+      <li>
+        Query the OTM Bridge for Restores
+        <ul>
+          <li><a href="otm-bridge.html#list-restores">GET /restores</a></li>
+          <li>Validate data to restore exists in Chronopolis</li>
+        </ul>
+      </li>
+      <li>
+        Identify space for the restore to be staged on
+        <ul>
+          <li>Needs to be accessible by the OTM Gateway</li>
+          <li>On insufficient space await or reject</li>
+          <li>Need guarantees about available space while re-staging data</li>
+        </ul>
+      </li>
+      <li>
+        Restage data
+        <ul>
+          <li>OTM With RO Mount: Create symbolic links to pull from</li>
+          <li>OTM Without RO Mount: Need process for retrieving data from Chronopolis nodes</li>
+        </ul>
+      </li>
+      <li>
+        Notify the OTM Bridge that the Restore is staged and accessible with a given TTL
+        <ul>
+          <li>Call OTM Bridge indicating the restore is ready: <a href="otm-bridge.html#complete-restore">
+              POST /restore/{restoreId}</a></li>
+          <li>Send <a href="audit-appendix.html#restoration">Restoration</a> audit event to OTM Bridge</li>
+        </ul>
+      </li>
+      <li>
+        Upon expiration of the TTL
+        <ul>
+          <li>Remove staged content</li>
+        </ul>
+      </li>
+    </ol>
+
+    <figure id="ddp-restore">
+      <figcaption>DDP Restore Workflow</figcaption>
+      <img src="images/ddp_restore.png"/>
+    </figure>
+  </section>
+</section>
+
 <section>
   <h2>Delete</h2>
   <p>The Delete workflow handles removing data from a DDP. It is assumed that this will be an operation
@@ -465,117 +575,6 @@
     <figure id="ddp-delete">
       <figcaption>DDP Delete Workflow</figcaption>
       <img src="images/ddp_delete.png"/>
-    </figure>
-  </section>
-</section>
-<section>
-  <h2>Restore</h2>
-  <p>The Restore workflow handles returning data back to a Repository which had been previously deposited.</p>
-
-  <section>
-    <h3>System to System Flow</h3>
-
-    <ol>
-      <li>The Repository manager selects an object to be restored from preservation storage</li>
-      <li>
-        The Repository calls the Gateway <a href="otm-gateway.html#initiate-restore">POST Object Restore</a> endpoint for
-        the object to be restored
-      </li>
-      <li>The Gateway calls the Bridge <a href="otm-bridge.html#get-deposited-details">Get Deposited Content</a> in order to
-          resolve the set of files to be restored</li>
-      <li>
-        The Gateway calls the Bridge <a href="otm-bridge.html#restore-content">Restore Content</a> endpoint with the list of
-        files to be restored
-      </li>
-      <li>
-        The Bridge initiates a restore action for all files in the restore request and creates a directory in Bridge staging
-        storage for the restored files
-      </li>
-      <li>
-        The DDP calls the Bridge <a href="otm-bridge.html#list-restores">List Restores</a> endpoint on a regular schedule to
-        check for new restore requests
-      </li>
-      <li>The DDP copies each file in the restore request to the specified directory in Bridge staging storage</li>
-      <li>
-        When all files have been copied into Bridge staging storage the DDP calls the Bridge
-        <a href="otm-bridge.html#complete-restore">Complete Restore</a> endpoint to inform the Bridge that the restored files
-        are available
-      </li>
-      <li>
-        The Bridge validates that all file checksums match the checksums provided in the restore request (when checksums are
-        provided)
-      </li>
-      <li>
-        The Bridge updates the status of the restore action to <a href="otm-bridge.html#restore-status">`RESTORE_STAGED`</a>
-      </li>
-      <li>
-        The Gateway calls the Bridge <a href="otm-bridge.html#get-restore-status">Restore Status</a> endpoint on a regular
-        basis to determine if the status of the restore is <a href="otm-bridge.html#restore-status">`RESTORE_STAGED`</a>
-      </li>
-      <li>
-        The Gateway calls the Bridge <a href="otm-bridge.html#get-restored-content">Get Restored Content</a> endpoint for each
-        file in the restore request and stores each file in the Gateway staging storage
-      </li>
-      <li>
-        The Repository calls the Gateway <a href="otm-gateway.html#retrieve-object">Get Object</a> endpoint and pulls the content
-        into repository storage
-      </li>
-      <li>The Repository sends a notification to the Repository manager that requested the restore</li>
-    </ol>
-
-    <figure alt="system-restore">
-      <figcaption>Restore workflow</figcaption>
-      <img src="images/restore_content.png"/>
-    </figure>
-  </section>
-
-
-  <section>
-    <h3>DDP Workflow</h3>
-    <h4>Chronopolis Implementation Notes</h4>
-    <ol>
-      <li>
-        Query the OTM Bridge for Restores
-        <ul>
-          <li><a href="otm-bridge.html#list-restores">GET /restores</a></li>
-          <li>Validate data to restore exists in Chronopolis</li>
-        </ul>
-      </li>
-      <li>
-        Identify space for the restore to be staged on
-        <ul>
-          <li>Needs to be accessible by the OTM Gateway</li>
-          <li>On insufficient space await or reject</li>
-          <li>Need guarantees about available space while re-staging data</li>
-        </ul>
-      </li>
-      <li>
-        Restage data
-        <ul>
-          <li>OTM With RO Mount: Create symbolic links to pull from</li>
-          <li>OTM Without RO Mount: Need process for retrieving data from Chronopolis nodes</li>
-        </ul>
-      </li>
-      <li>
-        Notify the OTM Bridge that the Restore is staged and accessible with a given TTL
-        <ul>
-          <li>Call OTM Bridge indicating the restore is ready: <a href="otm-bridge.html#complete-restore">
-              POST /restore/{restoreId}</a></li>
-          <li>Send <a href="audit-appendix.html#restoration">Restoration</a> audit event to OTM Bridge</li>
-        </ul>
-      </li>
-      <li>
-        Upon expiration of the TTL
-        <ul>
-          <li>Remove staged content</li>
-        </ul>
-      </li>
-    </ol>
-
-
-    <figure id="ddp-restore">
-      <figcaption>DDP Restore Workflow</figcaption>
-      <img src="images/ddp_restore.png"/>
     </figure>
   </section>
 </section>

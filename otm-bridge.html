@@ -481,6 +481,102 @@
 
     </section>
     <section>
+      <h2><dfn>Audit Endpoints</dfn></h2>
+
+      <section>
+        <h3><dfn>Add Audit Event</dfn></h3>
+        <p>Update audit index by providing additional audit details</p>
+        <ul>
+          <li>Request Type: <code>POST</code></li>
+          <li>Request Path: <code>/audit</code></li>
+          <li>Response Body: <code>JSON</code>
+            <ul>
+              <li>ID: Identifier of Filegroup or File to which this audit event is to be applied</li>
+              <li><code>event-type</code>: Type of event</li>
+              <li><code>event</code>: Event details</li>
+            </ul>
+          </li>
+          <pre class="example">
+            {
+              "filegroup-1" : {                        # ID
+                "event-type" : "replication",
+                "files" : [ "file-1", "file-2", "file-3" ],
+                "event" : {
+                  "version" : "2019-12-31T23:59:60Z",
+                  "timestamp" : "2020-01-01T23:59:60Z",
+                  "replicated-to" : "example-storage-node"
+                }
+              },                                       # Additional events listed here
+            }
+          </pre>
+          <li>Response Code: <code>200</code> (on success)</li>
+        </ul>
+        <ul class="note">
+          <li>The types of events and expected details of each event type are listed in the <a
+          href="audit-appendix.html">Audit Events Appendix</a></li>
+          <li>The Bridge maintains audit details provided through this endpoint as a cache for the DDP to support convenient
+          retrieval. This audit information is expected to remain in the DDP such that a rebuild of this cache could be
+          performed if the Bridge were to fail. The DDP is not required to maintain this data in a format that facilitates
+          easy access, but should be able to provide it upon request to facilitate a rebuild.</li>
+        </ul>
+        <p>Expected client(s): DDP</p>
+      </section>
+
+      <section>
+        <h3><dfn>Get Audit Log</dfn></h3>
+        <p>Retrieves an audit history report. The report will list audit events associated with a single file or set of files
+        in a filegroup.</p>
+        <ul>
+          <li>Request Type: <code>GET</code></li>
+          <li>Request Path: <code>/audit/{filegroup-id}/{file-id}</code></li>
+          <li>Request Path Parameters:
+            <ul>
+              <li><code>filegroup-id</code>: The identifier of the filegroup for which an audit report is requested</li>
+              <li><code>file-id</code>: (Optional) The identifier of the file for which an audit report is requested. If this
+              is not provided the audit report is requested based on the filegroup-id.</li>
+            </ul>
+          </li>
+          <li>Response Body: <code>JSON</code>
+            <ul>
+              <li>Filegroup ID: Identifies the filegroup for which audit data is requested</li>
+              <li>File ID: Identifies the file for which audit data is requested</li>
+              <li><code>date</code>: Date and time that the event occurred</li>
+              <li><code>type</code>: Type of event that occurred</li>
+              <li><code>details</code>: Details of the event that occurred</li>
+            </ul>
+          </li>
+          <pre class="example">
+            {
+              "filegroup-1" : [                           # Filegroup ID
+                {
+                  "file-1" : [                            # File ID
+                    {
+                      "date" : "2019-12-31T23:59:60Z",
+                      "type" : "replication",
+                      "details" : "Replication to the UCSD storage node"
+                    },                                    # Additional events for this file listed here
+                  ],                                      # Additional files listed here
+                }
+              ]
+            }
+          </pre>
+          <li>Response Code:
+             <ul>
+               <li><code>200</code> (on success)</li>
+               <li><code>404</code> (if no audit information exists for the requested Filegroup ID or File ID)</li>
+             </ul>
+          </li>
+        </ul>
+        <ul class="note">
+          <li>It may be desirable to provide paged results for large result sets</li>
+          <li>The types of events and expected details of each event type are listed in the <a
+          href="audit-appendix.html">Audit Events Appendix</a></li>
+        </ul>
+        <p>Expected client(s): Gateway</p>
+      </section>
+
+    </section>
+    <section>
       <h2><dfn>Restore Endpoints</dfn></h2>
 
       <section>
@@ -904,102 +1000,6 @@
           <li>Response Code: <code>200</code> (on success)</li>
         </ul>
         <p>Expected client(s): DDP</p>
-      </section>
-
-    </section>
-    <section>
-      <h2><dfn>Audit Endpoints</dfn></h2>
-
-      <section>
-        <h3><dfn>Add Audit Event</dfn></h3>
-        <p>Update audit index by providing additional audit details</p>
-        <ul>
-          <li>Request Type: <code>POST</code></li>
-          <li>Request Path: <code>/audit</code></li>
-          <li>Response Body: <code>JSON</code>
-            <ul>
-              <li>ID: Identifier of Filegroup or File to which this audit event is to be applied</li>
-              <li><code>event-type</code>: Type of event</li>
-              <li><code>event</code>: Event details</li>
-            </ul>
-          </li>
-          <pre class="example">
-            {
-              "filegroup-1" : {                        # ID
-                "event-type" : "replication",
-                "files" : [ "file-1", "file-2", "file-3" ],
-                "event" : {
-                  "version" : "2019-12-31T23:59:60Z",
-                  "timestamp" : "2020-01-01T23:59:60Z",
-                  "replicated-to" : "example-storage-node"
-                }
-              },                                       # Additional events listed here
-            }
-          </pre>
-          <li>Response Code: <code>200</code> (on success)</li>
-        </ul>
-        <ul class="note">
-          <li>The types of events and expected details of each event type are listed in the <a
-          href="audit-appendix.html">Audit Events Appendix</a></li>
-          <li>The Bridge maintains audit details provided through this endpoint as a cache for the DDP to support convenient
-          retrieval. This audit information is expected to remain in the DDP such that a rebuild of this cache could be
-          performed if the Bridge were to fail. The DDP is not required to maintain this data in a format that facilitates
-          easy access, but should be able to provide it upon request to facilitate a rebuild.</li>
-        </ul>
-        <p>Expected client(s): DDP</p>
-      </section>
-
-      <section>
-        <h3><dfn>Get Audit Log</dfn></h3>
-        <p>Retrieves an audit history report. The report will list audit events associated with a single file or set of files
-        in a filegroup.</p>
-        <ul>
-          <li>Request Type: <code>GET</code></li>
-          <li>Request Path: <code>/audit/{filegroup-id}/{file-id}</code></li>
-          <li>Request Path Parameters:
-            <ul>
-              <li><code>filegroup-id</code>: The identifier of the filegroup for which an audit report is requested</li>
-              <li><code>file-id</code>: (Optional) The identifier of the file for which an audit report is requested. If this
-              is not provided the audit report is requested based on the filegroup-id.</li>
-            </ul>
-          </li>
-          <li>Response Body: <code>JSON</code>
-            <ul>
-              <li>Filegroup ID: Identifies the filegroup for which audit data is requested</li>
-              <li>File ID: Identifies the file for which audit data is requested</li>
-              <li><code>date</code>: Date and time that the event occurred</li>
-              <li><code>type</code>: Type of event that occurred</li>
-              <li><code>details</code>: Details of the event that occurred</li>
-            </ul>
-          </li>
-          <pre class="example">
-            {
-              "filegroup-1" : [                           # Filegroup ID
-                {
-                  "file-1" : [                            # File ID
-                    {
-                      "date" : "2019-12-31T23:59:60Z",
-                      "type" : "replication",
-                      "details" : "Replication to the UCSD storage node"
-                    },                                    # Additional events for this file listed here
-                  ],                                      # Additional files listed here
-                }
-              ]
-            }
-          </pre>
-          <li>Response Code:
-             <ul>
-               <li><code>200</code> (on success)</li>
-               <li><code>404</code> (if no audit information exists for the requested Filegroup ID or File ID)</li>
-             </ul>
-          </li>
-        </ul>
-        <ul class="note">
-          <li>It may be desirable to provide paged results for large result sets</li>
-          <li>The types of events and expected details of each event type are listed in the <a
-          href="audit-appendix.html">Audit Events Appendix</a></li>
-        </ul>
-        <p>Expected client(s): Gateway</p>
       </section>
 
     </section>
