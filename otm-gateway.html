@@ -227,15 +227,46 @@
 
       <section>
         <h3><dfn>Get Object Audit</dfn></h3>
-        <p></p>
+        <p>Describes the status and history of the object's preservation. For more information about auditing, see <a href="audit-appendix.html">OTM Appendix - Audit Events</a>.</p>
+        <p>The information exposed by this endpoint is intended to be informational, allowing repository administrators
+          to monitor deposit activity and resolve issues encountered during the deposit process. The Gateway MUST report any errors that would
+          prevent it from requesting deposit via the Bridge in the <code>gateway-errors</code> field. The Gateway MAY
+          choose to poll status information from the Bridge asynchronously, and is not required to to provide real-time
+          information. The repository SHOULD NOT rely on the information in fields other than <code>gateway-errors</code>
+          to be up-to-date in real time.
+        </p>
         <ul>
           <li>Request Type: <code>GET</code></li>
-          <li>Request Path: <code>/{object-id}/audit</code></li>
+          <li>Request Path: <code>/{object-id}/audit ? versionId=</code></li>
           <li>Response Body: <code>JSON</code></li>
+            <ul>
+              <li><code>object-id</code>: The id of the object this describes.</li>
+              <li><code>deposits</code>: Data about the deposited versions; this exposes any errors within the Gateway (e.g. failed <em>bag</em> validation) and the <a href="otm-bridge.html#get-deposit-status">Bridge status<a>.
+                <ul>
+                  <li><code>version</code>: The object version this deposit corresponds to.</li>
+                  <li><code>gateway-errors</code>: Human readable description of any errors encountered by the gateway.</li>
+                  <li><code>status</code>: The status text given by the <a href="otm-bridge.html#get-deposit-status">Bridge<a>.</li>
+                  <li><code>file-count</code>: The count of files included in the deposit, as reported by the <a href="otm-bridge.html#get-deposit-status">Bridge<a>.</li>
+                  <li><code>details</code>: Additional details about the state of the deposit.</li>
+                </ul>
+              </li>
+              <li><code>audit-events</code>: A list of audit events intended to be formatted for display to curators and repository administrators; see the Bridge's <a href="otm-bridge.html#get-audit-log">Get Audit Log<a> for more information.</li>
+            </ul>
           <li>Response Code: <code>200</code> (on success)</li>
           <pre class="example" title="Object Audit JSON">
-            {
-            }
+            [
+              "object-id": "af48c3d",
+              "deposits": [
+                {
+                   "version" "20190702T201500.001",
+                   "gateway-errors": null,
+                   "status": "DEPOSIT_ACCEPTED",
+                   "file-count": "2",
+                   "details": ""
+                }
+              ],
+              "audit-events": []
+            ]
           </pre>
         </ul>
       </section>
