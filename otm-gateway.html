@@ -225,7 +225,7 @@
         <h3><dfn>Get Object Audit</dfn></h3>
         <p>Describes the status and history of the object's preservation. For more information about auditing, see <a href="audit-appendix.html">OTM Appendix - Audit Events</a>.</p>
         <p>The information exposed by this endpoint is intended to be informational, allowing repository administrators
-          to monitor content and resolve issues encountered during deposit. The Gateway MUST report any errors that would
+          to monitor deposit activity and resolve issues encountered during the deposit process. The Gateway MUST report any errors that would
           prevent it from requesting deposit via the Bridge in the <code>gateway-errors</code> field. The Gateway MAY
           choose to poll status information from the Bridge asynchronously, and is not required to to provide real-time
           information. The repository SHOULD NOT rely on the information in fields other than <code>gateway-errors</code>
