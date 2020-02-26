@@ -364,7 +364,7 @@
         The Repository calls the Gateway <a href="otm-gateway.html#initiate-restore">POST Object Restore</a> endpoint for
         the object to be restored
       </li>
-      <li>The Gateway calls the Bridge <a href="otm-bridge.html#get-deposited-details">Get Deposited Content</a> in order to
+      <li>The Gateway calls the Bridge <a href="otm-bridge.html#get-content-details">Get Content Details</a> in order to
           resolve the set of files to be restored</li>
       <li>
         The Gateway calls the Bridge <a href="otm-bridge.html#restore-content">Restore Content</a> endpoint with the list of
@@ -477,7 +477,7 @@
         The Repository calls the Gateway <a href="otm-gateway.html#purge-object">Purge Object</a> endpoint for the object
         or version to be deleted
       </li>
-      <li>The Gateway calls the Bridge <a href="otm-bridge.html#get-deposited-content">Get Deposited Content</a> endpoint and
+      <li>The Gateway calls the Bridge <a href="otm-bridge.html#get-content-details">Get Content Details</a> endpoint and
       resolves the object into a set of files to be deleted</li>
       <li>
         The Gateway calls the Bridge <a href="otm-bridge.html#delete-content">Delete Content</a> endpoint with the list of files
