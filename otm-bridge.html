@@ -280,8 +280,6 @@
           value.</li>
           <li>Not including "version" in the JSON is acceptable and is functionally the same as <code>"version" : ""</code>.
           This "empty" version is equivalent to any other version.</li>
-          <li>Attempting to deposit a filegroup with a filegroup ID and version that both match a previous deposit will be
-          considered an error and rejected.</li>
           <li>When new filegroup versions are deposited, the Bridge may choose to retrieve and submit to the DDP only those
           files which have changed between versions (based on file ID and checksum).</li>
           <li>The deposit-format parameter allows the depositor to specify the format of the content being deposited. The
