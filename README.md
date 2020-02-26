@@ -42,9 +42,6 @@ In order for a Repository system to make use of an application which has been de
 * The Gateway application must be deployed and made available to the Repository
 * The Repository must support the addition of preservation targets (DDPs)
 * The Repository must support the selection of content for preservation storage
-
-The following are recommended capabilities for a Repository that is to make use of a Gateway, but not required:
-
 * The Repository should support the selection of content for restore
 * The Repository should display details about object preservation status
 
