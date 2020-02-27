@@ -65,14 +65,14 @@
     <section id='abstract'>
       <p>
         The One To Many (OTM) Bridge API Specification is one of two APIs used to support communication between digital
-        content repository systems (Repository) and distributed digital preservation systems (DDP). These APIs work in tandem
-        to allow content captured in Repository systems to be copied to DDP systems for preservation. The two APIs are
-        the <a href="otm-gateway.html">OTM Repository Gateway API (Gateway)</a> for the Repository and the OTM Bridge API
-        (Bridge) for the DDP. The Gateway and the Bridge APIs handle intermediary communication between the Repository and
-        DDP and allow each system to operate without any knowledge of the internals of the other system. Each API is designed
-        to facilitate deployment either as part of or extension to the Repository (in the case of the Gateway) or the DDP (in
-        the case of the Bridge) or as a stand-alone application. They each provide an HTTP-based approach for authentication,
-        communication, and data transfer.
+        content repository systems (Repository) and distributed digital preservation systems (DDP). An application
+        implementing the OTM Bridge API (Bridge) will receive requests to deposit, restore, or delete content in a DDP from
+        an application implementing the <a href="otm-gateway.html">OTM Repository Gateway API (Gateway)</a>. The purpose of
+        the Bridge is to perform the transfer and workflow tasks required to collect and distribute content managed by DDP
+        systems. The Bridge is intended to provide a consistent interface for applications needing to interact with DDP
+        systems as well as a consistent interface for DDP systems that would like to accept content from a variety of
+        content repositories. The Bridge application is expected to be hosted by a DDP service as an extension of their
+        service offering.
       </p>
     </section>
 
