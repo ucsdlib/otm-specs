@@ -60,7 +60,9 @@
   </head>
   <body>
     <p class='copyright'>This document is licensed under a
-      <a class='subfoot' href='https://creativecommons.org/licenses/by/4.0/' rel='license'>Creative Commons Attribution 4.0 License</a>.
+      <a class='subfoot' href='https://creativecommons.org/licenses/by/4.0/' rel='license'>
+        Creative Commons Attribution 4.0 License
+      </a>.
     </p>
     <section id='abstract'>
       <p>
@@ -70,9 +72,9 @@
         an application implementing the <a href="otm-gateway.html">OTM Repository Gateway API (Gateway)</a>. The purpose of
         the Bridge is to perform the transfer and workflow tasks required to collect and distribute content managed by DDP
         systems. The Bridge is intended to provide a consistent interface for applications needing to interact with DDP
-        systems as well as a consistent interface for DDP systems that would like to accept content from a variety of
-        content repositories. The Bridge application is expected to be hosted by a DDP service as an extension of their
-        service offering.
+        systems as well as a consistent interface for DDP systems that would like to accept content from a variety of content
+        repositories. The Bridge application is expected to be hosted by a DDP service as an extension of their service
+        offering.
       </p>
     </section>
 
@@ -118,9 +120,8 @@
 
       <section>
         <h3><dfn>Add Account</dfn></h3>
-        <p>Allows the DDP to create a new user account in the Bridge. After this call it will be possible for the
-        OTM Gateway to register with the Bridge. This call can also be used to reset the access credentials for an
-        account.</p>
+        <p>Allows the DDP to create a new user account in the Bridge. After this call it will be possible for the OTM Gateway
+        to register with the Bridge. This call can also be used to reset the access credentials for an account.</p>
         <ul>
           <li>Request Type: <code>PUT</code></li>
           <li>Request Path: <code>/account/{account-id}</code></li>
@@ -223,8 +224,8 @@
           </li>
           <li>Request Body: <code>JSON</code>
             <ul>
-              <li>Filegroup ID: Identifies a filegroup. Filegroups are generic groupings of files that can be used to
-              capture structure such as in a digital object or work.</li>
+              <li>Filegroup ID: Identifies a filegroup. Filegroups are generic groupings of files that can be used to capture
+              structure such as in a digital object or work.</li>
               <li><code>version</code>: The version of a filegroup</li>
               <li><code>files</code>: List of files included in the filegroup</li>
               <li>File ID: Identifies a file within a filegroup</li>
@@ -1006,8 +1007,8 @@
 
       <section>
         <h3><dfn>Deposit Status</dfn></h3>
-        <p>All <a>Deposit Endpoints</a> must support the following set of status values. Other status values may be added to this
-        list to provide additional detail about processing activity.</p>
+        <p>All <a>Deposit Endpoints</a> must support the following set of status values. Other status values may be added to
+        this list to provide additional detail about processing activity.</p>
         <ul>
           <li>
             <code>DEPOSIT_ACCEPTED</code> - The first status value set on a valid deposit action. Indicates that a deposit
@@ -1030,8 +1031,8 @@
 
       <section>
         <h3><dfn>Restore Status</dfn></h3>
-        <p>All <a>Restore endpoints</a> must support the following set of status values. Other status values may be added to this
-        list to provide additional detail about processing activity.</p>
+        <p>All <a>Restore endpoints</a> must support the following set of status values. Other status values may be added to
+        this list to provide additional detail about processing activity.</p>
         <ul>
           <li>
             <code>RESTORE_ACCEPTED</code> - The first status value set on a valid restore action. Indicates that a restore
@@ -1054,8 +1055,8 @@
 
       <section>
         <h3><dfn>Delete Status</dfn></h3>
-        <p>All <a>Delete endpoints</a> must support the following set of status values. Other status values may be added to this
-        list to provide additional detail about processing activity.</p>
+        <p>All <a>Delete endpoints</a> must support the following set of status values. Other status values may be added to
+        this list to provide additional detail about processing activity.</p>
         <ul>
           <li>
             <code>DELETE_ACCEPTED</code> - The first status value set on a valid delete action. Indicates that a delete
@@ -1075,7 +1076,10 @@
 
     <section>
       <h2><dfn>Authentication</dfn></h2>
-      <p>Each endpoint MUST support HTTP Basic Authentication as described in [[RFC7617]] and allow access for registered credentials for <em>Expected clients</em>. Bridge implementations MAY support other authentication methods and/or allow access to access to using credentails other than those registered via the <a href="#add-account">Add Account</a> and <a href="#register">Register</a> endpoints.</p>
+      <p>Each endpoint MUST support HTTP Basic Authentication as described in [[RFC7617]] and allow access for registered
+      credentials for <em>Expected clients</em>. Bridge implementations MAY support other authentication methods and/or allow
+      access to access to using credentails other than those registered via the <a href="#add-account">Add Account</a> and <a
+      href="#register">Register</a> endpoints.</p>
     </section>
 
   </body>
