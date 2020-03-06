@@ -32,6 +32,10 @@
           "RFC8493": {
             title: "The BagIt File Packaging Format (V1.0)",
             href: "https://tools.ietf.org/html/rfc8493"
+          },
+          "S3API": {
+            title: "Amazon S3 REST API Introduction",
+            href: "https://docs.aws.amazon.com/AmazonS3/latest/API/Welcome.html"
           }
         },
         otherLinks: [{
@@ -109,6 +113,16 @@
       <a href="https://wiki.lyrasis.org/display/OTM/Project+Overview+and+Goals">One to Many Project Overview
       and Goals</a> and the <a href="https://wiki.lyrasis.org/display/OTM/User+Stories">One to Many User Stories</a>.
       </p>
+
+      <p class="note">
+        The gateway interfaces are designed with substantial overlap with the S3 API ([[S3API]]).
+        Interactions between the repository and the gateway closely follow patterns used by
+        S3-compatible object stores. This design descision is intended to support ease of
+        implementation and code reuse for repository systems that may already support S3 for
+        object storage, or may wish to replicate preserved content in an object store as well
+        as a DDP.
+      </p>
+
       <section>
         <h3>A note about <em>Objects</em></h3>
         <p>The Gateway's repository-facing interfaces are concerned with the management of <em>objects</em>, represented
