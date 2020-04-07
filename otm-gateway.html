@@ -67,7 +67,9 @@
   </head>
   <body>
     <p class='copyright'>This document is licensed under a
-      <a class='subfoot' href='https://creativecommons.org/licenses/by/4.0/' rel='license'>Creative Commons Attribution 4.0 License</a>.
+      <a class='subfoot' href='https://creativecommons.org/licenses/by/4.0/' rel='license'>
+        Creative Commons Attribution 4.0 License
+      </a>.
     </p>
     <section id='abstract'>
       <p>
@@ -95,23 +97,26 @@
     <section id="introduction" class="informative">
       <h2>Introduction</h2>
 
-      <p>This specification describes APIs enabling digital object repository systems to manage preservation of content.
-      The interfaces described here are intended to fit within the larger context of the <a href="preservation-workflow.html">One to Many Preservation Workflow</a>.</p>
-      <p>This specification defines a set of interfaces for synchronous interactions for depositing, restoring,
-      and purging objects across multiple distributed digital preservation (DDP) systems, using a single system
-      managed by the repository administrators. Because DDPs (and the
-      <a href="otm-bridge.html">One to Many Bridge API</a>) perform deposit and retrieval actions
-      asynchronously, the Gateway's synchronous interfaces are needed to support real-time feedback for
-      repository managers and curators. The Gateway also serves as a short-term cache of content to be
-      preserved, allowing the repository system to continue its normal object life-cycle while ensuring exact
-      bitwise preservation of the objects at the time they were selected for preservation. The
-      Gateway relieves the repository of the requirement to manage preservation beyond calls to the Gateway
-      API. To this end, Gateway implementations should seek to provide robust guarantees to the repository
-      about the eventual preservation of content.
+      <p>
+        This specification describes APIs enabling digital object repository systems to manage preservation of content. The
+        interfaces described here are intended to fit within the larger context of the <a
+        href="preservation-workflow.html">One to Many Preservation Workflow</a>.
       </p>
-      <p>For background, it may be helpful to read the
-      <a href="https://wiki.lyrasis.org/display/OTM/Project+Overview+and+Goals">One to Many Project Overview
-      and Goals</a> and the <a href="https://wiki.lyrasis.org/display/OTM/User+Stories">One to Many User Stories</a>.
+      <p>
+        This specification defines a set of interfaces for synchronous interactions for depositing, restoring, and purging
+        objects across multiple distributed digital preservation (DDP) systems, using a single system managed by the
+        repository administrators. Because DDPs (and the <a href="otm-bridge.html">One to Many Bridge API</a>) perform
+        deposit and retrieval actions asynchronously, the Gateway's synchronous interfaces are needed to support real-time
+        feedback for repository managers and curators. The Gateway also serves as a short-term cache of content to be
+        preserved, allowing the repository system to continue its normal object life-cycle while ensuring exact bitwise
+        preservation of the objects at the time they were selected for preservation. The Gateway relieves the repository of
+        the requirement to manage preservation beyond calls to the Gateway API. To this end, Gateway implementations should
+        seek to provide robust guarantees to the repository about the eventual preservation of content.
+      </p>
+      <p>
+        For background, it may be helpful to read the
+        <a href="https://wiki.lyrasis.org/display/OTM/Project+Overview+and+Goals">One to Many Project Overview and Goals</a>
+        and the <a href="https://wiki.lyrasis.org/display/OTM/User+Stories">One to Many User Stories</a>.
       </p>
 
       <p class="note">
@@ -125,21 +130,20 @@
 
       <section>
         <h3>A note about <em>Objects</em></h3>
-        <p>The Gateway's repository-facing interfaces are concerned with the management of <em>objects</em>, represented
-          by <code>object-id</code> URL arguments and packaged in the BagIt format. In the context of the repository,
-          it's normal for these <em>objects</em> to be meaningful and interpretable beyond their bitwise content.</p>
-        <p>The Gateway exposes the <em>object</em> content as <em>files</em> within <em>file groups</em> for use by
-          the Bridge. This distinction reflects a separation of concerns: the Bridge and DDP are ultimately concerned
-          with guarantee of bitwise preservation and retrieval of <em>files</em>; the repository and Gateway are concerned
-          with the presentation and interpretation of those <em>files</em> as representations of meaningful resources. By
-          making this separation explicit, the Gateway and Bridge disclaim any out-of-band coordination of meaning between
-          the repository and the DDP.</p>
-        <p>The semantics of the <code>object-id</code>, the scope of the objects (i.e. which files are included), and
-          the relationships between the files are decisions left to the repository administrators. Repositories should
-          include in each <em>object</em> sufficient information for an agent to determine its schema, understand its
-          structure, and reconstruct it within the repository given only the <em>file group</em>, its
-          <em>file group identifier</em>, and the contents of the individual files.
-        </p>
+        <p>The Gateway's repository-facing interfaces are concerned with the management of <em>objects</em>, represented by
+        <code>object-id</code> URL arguments and packaged in the BagIt format. In the context of the repository, it's normal
+        for these <em>objects</em> to be meaningful and interpretable beyond their bitwise content.</p>
+        <p>The Gateway exposes the <em>object</em> content as <em>files</em> within <em>file groups</em> for use by the
+        Bridge. This distinction reflects a separation of concerns: the Bridge and DDP are ultimately concerned with
+        guarantee of bitwise preservation and retrieval of <em>files</em>; the repository and Gateway are concerned with the
+        presentation and interpretation of those <em>files</em> as representations of meaningful resources. By making this
+        separation explicit, the Gateway and Bridge disclaim any out-of-band coordination of meaning between the repository
+        and the DDP.</p>
+        <p>The semantics of the <code>object-id</code>, the scope of the objects (i.e. which files are included), and the
+        relationships between the files are decisions left to the repository administrators. Repositories should include in
+        each <em>object</em> sufficient information for an agent to determine its schema, understand its structure, and
+        reconstruct it within the repository given only the <em>file group</em>, its <em>file group identifier</em>, and the
+        contents of the individual files. </p>
       </section>
     </section>
 
@@ -156,7 +160,8 @@
               <li><code>gateway-version</code>: The current version of the Gateway API.</li>
               <li><code>providers</code>: The preservation providers available through this Gateway.
                 <ul>
-                  <li><code>name</code>: The name of the preservation provider; e.g. "chronopolis". This name MUST be unique in the context of this gateway. Gateways SHOULD NOT change the names of preservation providers.</li>
+                  <li><code>name</code>: The name of the preservation provider; e.g. "chronopolis". This name MUST be unique
+                  in the context of this gateway. Gateways SHOULD NOT change the names of preservation providers.</li>
                 </ul>
               </li>
 
@@ -165,13 +170,13 @@
           <li>Response Code: <code>200</code> (on success)</li>
           <pre class="example" title="Gateway Service Description JSON">
             {
-            "gateway-version" : "0.1.0",
-            "providers" : [{
-            "name": "ddp1_name"
-            },
-            {
-            "name": "ddp2_name"
-            }]
+              "gateway-version" : "0.1.0",
+              "providers" : [{
+                "name": "ddp1_name"
+              },
+              {
+                "name": "ddp2_name"
+              }]
             }
           </pre>
         </ul>
@@ -180,20 +185,18 @@
       <section>
         <h3><dfn>Deposit Object</dfn></h3>
         <p>Creates or updates a Gateway Object for preservation of an Object from the repository.</p>
-        <p>Upon acceptance of the request, the Gateway MUST create a unique version identifier
-          for the object, corresponding to the exact content in this request. This identifier MUST be
-          returned to the client in a <code>x-otm-version-id</code> response header.</p>
-        <p>The request body MUST be a BagIt <em>bag</em> as defined by [[RFC8493]], packaged and compressed
-          in the media type specified by the <code>Content-Type</code> request header. The Gateway MUST
-          request deposit of the payload files to the preservation provider given in
-          <code>x-otm-preservation-provider</code> via the <a href="otm-bridge.html#deposit-content">Bridge's
-          Deposit Content</a> endpoint.</p>
-        <p>For efficiency, the requester MAY omit some or all payload files from the <em>bag</em>, instead providing
-          a <code>fetch.txt</code> as specified in Section 2.2.3 of [[RFC8493]]. The URL given in the
-          <code>fetch.txt</code> MUST be reachable by the Bridge (i.e. on the public internet) using the credentials
-          and authentication methods described in <a href="#transfer-file">Transfer File</a>. In the case of files
-          provided in this way, the Gateway MAY implement <a href="#transfer-file">Transfer File</a> as a redirect to
-          the given URL.</p>
+        <p>Upon acceptance of the request, the Gateway MUST create a unique version identifier for the object, corresponding
+        to the exact content in this request. This identifier MUST be returned to the client in a
+        <code>x-otm-version-id</code> response header.</p>
+        <p>The request body MUST be a BagIt <em>bag</em> as defined by [[RFC8493]], packaged and compressed in the media type
+        specified by the <code>Content-Type</code> request header. The Gateway MUST request deposit of the payload files to
+        the preservation provider given in <code>x-otm-preservation-provider</code> via the <a
+        href="otm-bridge.html#deposit-content">Bridge's Deposit Content</a> endpoint.</p>
+        <p>For efficiency, the requester MAY omit some or all payload files from the <em>bag</em>, instead providing a
+        <code>fetch.txt</code> as specified in Section 2.2.3 of [[RFC8493]]. The URL given in the <code>fetch.txt</code> MUST
+        be reachable by the Bridge (i.e. on the public internet) using the credentials and authentication methods described
+        in <a href="#transfer-file">Transfer File</a>. In the case of files provided in this way, the Gateway MAY implement
+        <a href="#transfer-file">Transfer File</a> as a redirect to the given URL.</p>
         <ul>
           <li>Request Type: <code>PUT</code></li>
           <li>Request Path: <code>/{object-id}</code></li>
@@ -231,40 +234,45 @@
           </pre>
           <ul class="note">
             <li>The use of <code>fetch.txt</code> allows the repository to avoid the cost of packaging large payload files
-              and transmitting them to the Gateway. In exchange for this efficiency the repository sacrifices the caching
-              properties of the Gateway, increasing the likelihood of local changes causing checksum mismatches and
-              resulting deposit failures. Repositories that can guarantee the availability of content indefinitely (e.g.
-              because files are immutably versioned within the repository itself) won't suffer this drawback and may wish
-              to use this method of deposit exclusively.</li>
+            and transmitting them to the Gateway. In exchange for this efficiency the repository sacrifices the caching
+            properties of the Gateway, increasing the likelihood of local changes causing checksum mismatches and resulting
+            deposit failures. Repositories that can guarantee the availability of content indefinitely (e.g. because files
+            are immutably versioned within the repository itself) won't suffer this drawback and may wish to use this method
+            of deposit exclusively.</li>
           </ul>
       </section>
 
       <section>
         <h3><dfn>Get Object Audit</dfn></h3>
-        <p>Describes the status and history of the object's preservation. For more information about auditing, see <a href="audit-appendix.html">OTM Appendix - Audit Events</a>.</p>
-        <p>The information exposed by this endpoint is intended to be informational, allowing repository administrators
-          to monitor deposit activity and resolve issues encountered during the deposit process. The Gateway MUST report any errors that would
-          prevent it from requesting deposit via the Bridge in the <code>gateway-errors</code> field. The Gateway MAY
-          choose to poll status information from the Bridge asynchronously, and is not required to to provide real-time
-          information. The repository SHOULD NOT rely on the information in fields other than <code>gateway-errors</code>
-          to be up-to-date in real time.
-        </p>
+        <p>Describes the status and history of the object's preservation. For more information about auditing, see
+        <a href="audit-appendix.html">OTM Appendix - Audit Events</a>.</p>
+        <p>The information exposed by this endpoint is intended to be informational, allowing repository administrators to
+        monitor deposit activity and resolve issues encountered during the deposit process. The Gateway MUST report any
+        errors that would prevent it from requesting deposit via the Bridge in the <code>gateway-errors</code> field. The
+        Gateway MAY choose to poll status information from the Bridge asynchronously, and is not required to to provide
+        real-time information. The repository SHOULD NOT rely on the information in fields other than
+        <code>gateway-errors</code> to be up-to-date in real time.</p>
         <ul>
           <li>Request Type: <code>GET</code></li>
           <li>Request Path: <code>/{object-id}/audit ? versionId=</code></li>
           <li>Response Body: <code>JSON</code></li>
             <ul>
               <li><code>object-id</code>: The id of the object this describes.</li>
-              <li><code>deposits</code>: Data about the deposited versions; this exposes any errors within the Gateway (e.g. failed <em>bag</em> validation) and the <a href="otm-bridge.html#get-deposit-status">Bridge status</a>.
+              <li><code>deposits</code>: Data about the deposited versions; this exposes any errors within the Gateway (e.g.
+              failed <em>bag</em> validation) and the <a href="otm-bridge.html#get-deposit-status">Bridge status</a>.
                 <ul>
                   <li><code>version</code>: The object version this deposit corresponds to.</li>
                   <li><code>gateway-errors</code>: Human readable description of any errors encountered by the gateway.</li>
-                  <li><code>status</code>: The status text given by the <a href="otm-bridge.html#get-deposit-status">Bridge</a>.</li>
-                  <li><code>file-count</code>: The count of files included in the deposit, as reported by the <a href="otm-bridge.html#get-deposit-status">Bridge</a>.</li>
+                  <li><code>status</code>: The status text given by the
+                  <a href="otm-bridge.html#get-deposit-status">Bridge</a>.</li>
+                  <li><code>file-count</code>: The count of files included in the deposit, as reported by the
+                  <a href="otm-bridge.html#get-deposit-status">Bridge</a>.</li>
                   <li><code>details</code>: Additional details about the state of the deposit.</li>
                 </ul>
               </li>
-              <li><code>audit-events</code>: A list of audit events intended to be formatted for display to curators and repository administrators; see the Bridge's <a href="otm-bridge.html#get-audit-log">Get Audit Log</a> for more information.</li>
+              <li><code>audit-events</code>: A list of audit events intended to be formatted for display to curators and
+              repository administrators; see the Bridge's <a href="otm-bridge.html#get-audit-log">Get Audit Log</a> for more
+              information.</li>
             </ul>
           <li>Response Code: <code>200</code> (on success)</li>
           <pre class="example" title="Object Audit JSON">
@@ -272,11 +280,11 @@
               "object-id": "af48c3d",
               "deposits": [
                 {
-                   "version" "20190702T201500.001",
-                   "gateway-errors": null,
-                   "status": "DEPOSIT_ACCEPTED",
-                   "file-count": "2",
-                   "details": ""
+                  "version" "20190702T201500.001",
+                  "gateway-errors": null,
+                  "status": "DEPOSIT_ACCEPTED",
+                  "file-count": "2",
+                  "details": ""
                 }
               ],
               "audit-events": []
@@ -288,16 +296,16 @@
       <section>
         <h3><dfn>Initiate Restore</dfn></h3>
         <p>Request restore of an Object and all its contents for later retrieval.</p>
-        <p>The client can request restore of a specific version of the object by providing a
-          <code>versionId</code> URL parameter. If this parameter is present, the Gateway MUST
-          restore the exact content of the requested version. When the client does not specify
-          a version, the Gateway SHOULD seek to restore the most recent version.</p>
+        <p>The client can request restore of a specific version of the object by providing a <code>versionId</code> URL
+        parameter. If this parameter is present, the Gateway MUST restore the exact content of the requested version. When
+        the client does not specify a version, the Gateway SHOULD seek to restore the most recent version.</p>
         <ul>
           <li>Request Type: <code>POST</code></li>
           <li>Request Path: <code>/{object-id} ? restore & versionId=</code></li>
           <li>Response Code:
             <ul>
-              <li><code>202</code> (if the object restore has been initiated and the object is not yet available for retrieval)</li>
+              <li><code>202</code> (if the object restore has been initiated and the object is not yet available for
+              retrieval)</li>
               <li><code>200</code> (if the object is restored and available for retrieval)</li>
               <li><code>409</code> (if there is a restore already in progress)</li>
             </ul>
@@ -327,31 +335,30 @@
           Content-Length: 0
           Server: OTM Preservation Gateway
         </pre>
-        <pre class="example" title="Restore Object Response when a restore is already in progress and a new one will not be created">
+        <pre class="example" title="Restore Object Response when a restore is already in progress and a new one will not be
+        created">
           HTTP/1.1 409 Conflict
           Date: Tue, 02 Jul 2019 20:35:00 GMT
           Content-Type: application/xml
           Server: OTM Preservation Gateway
 
-          <?xml version="1.0" encoding="UTF-8"?>
-          <Error>
-            <Code>RestoreAlreadyInProgress</Code>
-            <Message>Object restore is already in progress.</Message>
-            <Resource>/af48c3d</Resource>
-          </Error>
+          &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+          &lt;Error&gt;
+            &lt;Code&gt;RestoreAlreadyInProgress&lt;/Code&gt;
+            &lt;Message&gt;Object restore is already in progress.&lt;/Message&gt;
+            &lt;Resource&gt;/af48c3d&lt;Resource&gt;
+          &lt;/Error&gt;
         </pre>
       </section>
 
       <section>
         <h3><dfn>Retrieve Object</dfn></h3>
         <p>Retrieve the content of an object.</p>
-        <p>The client can request retrieval of a specific version of the object by providing a
-          <code>versionId</code> URL parameter. If this parameter is present, the Gateway MUST
-          provide the exact content of the requested version or return a failure response code.
-          When the client does not specify a version, the Gateway MUST return the most recent
-          available version. In either case, the response MUST include an
-          <code>x-otm-version-id</code> header specifying the identifier for returned version.
-          </p>
+        <p>The client can request retrieval of a specific version of the object by providing a <code>versionId</code> URL
+        parameter. If this parameter is present, the Gateway MUST provide the exact content of the requested version or
+        return a failure response code. When the client does not specify a version, the Gateway MUST return the most recent
+        available version. In either case, the response MUST include an <code>x-otm-version-id</code> header specifying the
+        identifier for returned version. </p>
         <ul>
           <li>Request Type: <code>GET</code></li>
           <li>Request Path: <code>/{object-id} ? versionId=</code></li>
@@ -365,8 +372,8 @@
           <li>Response Code:
             <ul>
               <li><code>200</code> (on success)</li>
-              <li><code>403</code> (when attempting to access an unavailable preserved object; i.e. one that has
-                not been restored)</li>
+              <li><code>403</code> (when attempting to access an unavailable preserved object; i.e. one that has not been
+              restored)</li>
               <li><code>412</code> (when an If-Match or If-None-Match header fails)</li>
             </ul>
           </li>
@@ -408,22 +415,20 @@
           Content-Type: application/xml
           Server: OTM Preservation Gateway
 
-          <?xml version="1.0" encoding="UTF-8"?>
-          <Error>
-            <Code>InvalidObjectState</Code>
-            <Message>The Object is not available </Message>
-            <Resource>/af48c3d</Resource>
-          </Error>
+          &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+          &lt;Error&gt;
+            &lt;Code&gt;InvalidObjectState&lt;/Code&gt;
+            &lt;Message&gt;The Object is not available&lt;/Message&gt;
+            &lt;Resource&gt;/af48c3d&lt;/Resource&gt;
+          &lt;/Error&gt;
         </pre>
       </section>
 
       <section>
         <h3><dfn>Purge Object</dfn></h3>
-        <p>Initiates a purge of the object from the preservation system. This
-          will result in eradication of the object's content. If a <code>versionId</code> is provided,
-          the Gateway MUST request deletion objects matching the specified version. Otherwise it MUST
-          request deletion of all versions of the requested object.
-        </p>
+        <p>Initiates a purge of the object from the preservation system. This will result in eradication of the object's
+        content. If a <code>versionId</code> is provided, the Gateway MUST request deletion objects matching the specified
+        version. Otherwise it MUST request deletion of all versions of the requested object. </p>
         <ul>
           <li>Request Type: <code>DELETE</code></li>
           <li>Request Path: <code>/{object-id} ? versionId=</code></li>
@@ -460,8 +465,11 @@
       <section>
         <h3><dfn>Transfer File</dfn></h3>
         <p>Transfer a cached file. This endpoint allows a Bridge to pull content for storage in a preservation service.</p>
-        <p>The client MUST provide a <code>versionId</code> parameter to guarantee the object fetched for preservation is the exact version requested. For the same reason, the client SHOULD use the <code>If-Match</code> header.</p>
-        <p>This endpoint MUST support HTTP Basic Authentication as described in [[RFC7617]]. Appropriate credentials should be provided to the Bridge via the <a href="otm-bridge.html#register">Register</a> endpoint. Gateways SHOULD use different credentials for each Bridge/preservation system.</p>
+        <p>The client MUST provide a <code>versionId</code> parameter to guarantee the object fetched for preservation is the
+        exact version requested. For the same reason, the client SHOULD use the <code>If-Match</code> header.</p>
+        <p>This endpoint MUST support HTTP Basic Authentication as described in [[RFC7617]]. Appropriate credentials should
+        be provided to the Bridge via the <a href="otm-bridge.html#register">Register</a> endpoint. Gateways SHOULD use
+        different credentials for each Bridge/preservation system.</p>
           </p>
         <ul>
           <li>Request Type: <code>GET</code></li>
@@ -475,7 +483,8 @@
           <li>Response Code:
             <ul>
               <li><code>200</code> (on success)</li>
-              <li><code>302</code> (when the file is not cached by the Gateway, but is available to the Bridge at an external URL)</li>
+              <li><code>302</code> (when the file is not cached by the Gateway, but is available to the Bridge at an external
+              URL)</li>
               <li><code>401</code> (when the given credentials do not allow access to the file)</li>
               <li><code>404</code> (if the file is not present)</li>
               <li><code>412</code> (if the requested file does not match the <code>If-Match</code> checksum.</li>
